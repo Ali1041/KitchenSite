@@ -1,0 +1,132 @@
+{% extends 'adminPanel/admin_home.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+    {% if not add and not add2 %}
+
+    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-2">
+        <form action="{% url 'adminPanel:add-worktop' product  %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3 class="text-center">Add {{ product }}</h3>
+            {% bootstrap_form form %}
+            <button class="btn btn-success w-100 my-2">Add</button>
+            <button onclick="history.back()" class="btn btn-secondary w-100">Back</button>
+
+        </form>
+    </div>
+
+
+    {% elif add2 %}
+
+        <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-2">
+        <form action="{% url 'adminPanel:edit-worktop' product item.pk %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3 class="text-center">Edit {{ product }}</h3>
+
+            <label for="">Category</label>
+            <select name="category" id="" class="form-control mb-2">
+                <option value="{{ item.category.pk }}">{{ item.category}}</option>
+                <option value="1">Wood Worktops</option>
+                <option value="2">Laminate Worktops</option>
+                <option value="3">Solid Laminate Worktops</option>
+                <option value="4">Solid Surface Worktops</option>
+                <option value="5">Stone Worktops</option>
+            </select>
+
+            <label for="" class="d-block mb-2">
+                Name
+                <input type="text" class="form-control" name="name" value="{{ item.name }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Color
+                <input type="text" class="form-control" name="color" value="{{ item.color }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Description
+                <textarea class="form-control" name="description" >{{ item.description }}</textarea>
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Price
+                <input type="text" class="form-control" name="price" value="{{ item.price }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Size
+                <input type="text" class="form-control" name="size" value="{{ item.size }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Img
+                <input type="file" name="img" value="{{ item.get_photo_url }}">
+            </label>
+
+            <button class="btn btn-success w-100 my-2">Add</button>
+            <a href="{% url 'adminPanel:admin-worktop-list' item.category.pk %}" class="btn btn-secondary w-100">Back</a>
+
+        </form>
+    </div>
+
+    {% elif add %}
+
+        <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-2">
+        <form action="{% url 'adminPanel:edit-worktop' product item2.pk %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3 class="text-center">Edit {{ product }}</h3>
+
+            <label for="">Category</label>
+            <select name="category" id="" class="form-control mb-2">
+                <option value="{{ item2.category.pk }}">{{ item2.category}}</option>
+                <option value="1">Laundry</option>
+                <option value="2">Dishwashers</option>
+                <option value="3">Refrigeration</option>
+                <option value="4">Cooking</option>
+                <option value="5">Cooker head</option>
+                <option value="6">Hobs</option>
+            </select>
+
+            <label for="" class="d-block mb-2">
+                Name
+                <input type="text" class="form-control" name="name" value="{{ item2.name }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Description
+                <textarea class="form-control" name="description" >{{ item2.description }}</textarea>
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Price
+                <input type="text" class="form-control" name="price" value="{{ item2.price }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Type
+                <input type="text" class="form-control" name="type" value="{{ item2.appliances_type }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Brand
+                <input type="text" class="form-control" name="brand" value="{{ item2.brand_name }}">
+            </label>
+
+            <label for="" class="d-block mb-2">
+                Img
+                <input type="file" name="img" value="{{ item2.get_photo_url }}">
+            </label>
+            <button class="btn btn-success w-100 my-2">Add</button>
+            <a href="{% url 'adminPanel:admin-appliances-list' item2.category.pk %}" class="btn btn-secondary w-100">Back</a>
+
+        </form>
+    </div>
+
+
+
+
+    {% endif %}
+
+
+
+{% endblock %}

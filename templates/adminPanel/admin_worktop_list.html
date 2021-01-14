@@ -1,0 +1,72 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+    <div class="container">
+    {% ifequal product 'Worktop' %}
+        <a href="{% url 'adminPanel:admin-worktop' %}" class="btn btn-secondary mb-3">Back</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Name</th>
+                    <th>Color</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list %}
+                    <tr>
+                        <td>{{ item.category }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.color }}</td>
+                        <td>{{ item.description|truncatechars:50 }}</td>
+                        <td>{{ item.price }}</td>
+                        <td><a href="{% url 'adminPanel:edit-worktop' product item.pk %}" class="btn btn-success">Edit</a>
+                            <a href="{% url 'adminPanel:admin-worktop-detail' item.pk %}" class="btn btn-primary">Detail</a>
+
+                        </td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <a href="{% url 'adminPanel:admin-appliances' %}" class="btn btn-secondary mb-3">Back</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Name</th>
+                    <th>Brand Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list %}
+                    <tr>
+                        <td>{{ item }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.brand_name }}</td>
+                        <td>{{ item.description|truncatechars:50 }}</td>
+                        <td>{{ item.price }}</td>
+                        <td><a href="{% url 'adminPanel:edit-worktop' product item.pk %}" class="btn btn-success">Edit</a>
+                            <a href="{% url 'adminPanel:admin-appliance-detail' item.pk %}" class="btn btn-primary">Details</a>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endifequal %}
+
+    </div>
+
+
+
+{% endblock %}

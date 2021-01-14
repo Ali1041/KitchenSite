@@ -1,0 +1,88 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+    <div class="my-4">
+        <div class="container">
+            <a href="{% url 'adminPanel:admin-all-orders' %}" class="btn btn-secondary">Back</a>
+        </div>
+
+        <div class="card p-3 shadow" style="width: 60%;margin: auto">
+            <h5 class="card-title text-center" style="color: rgb(46, 154, 135)">Customer Info</h5>
+            <div class="card-body row m-0">
+                <p class="col-md-4">Name: <b>{{ detail.user.first_name }} {{ detail.user.last_name }}</b></p>
+                <p class="col-md-4">Phone: <b>{{ detail.user.phone_number }}</b></p>
+                <p class="col-md-4">Email: <b>{{ detail.user.email_address }}</b></p>
+                <p class="col-md-4">City: <b>{{ detail.user.city }}</b></p>
+                <p class="col-md-4">Region: <b>{{ detail.user.region }}</b></p>
+                <p class="col-md-4">Post Code: <b>{{ detail.user.postcode }}</b></p>
+                <p class="col-md-4">Country: <b>{{ detail.user.country }}</b></p>
+                <p class="col-md-8">Street Address: <b>{{ detail.user.street_address }}</b></p>
+            </div>
+        </div>
+        {% for items in detail.order.all|slice:":1" %}
+            <div class="d-flex my-3 justify-content-around" style="width: 90%;margin:auto">
+                {% if items.worktop %}
+                    <div class="card p-3 shadow" >
+                        <h5 class="card-title text-center" >
+                            Worktops: <span style="color: rgb(46, 154, 135)">{{ items.worktop }}</span></h5>
+                        <div class="card-body row m-0">
+                            <p class="col-md-3">Name: <b>{{ items.worktop.name }}</b></p>
+                            <p class="col-md-5 text-center">Category: <b>{{ items.worktop.category }}</b></p>
+                            <p class="col-md-3">Color: <b>{{ items.worktop.color }}</b></p>
+                            <p class="col-md-4">Price: <b>£ {{ items.worktop.price }}</b></p>
+                            <p class="col-md-4">Size: <b>{{ items.worktop.size }}</b></p>
+                            <p class="col-md-12">Description: <b>{{ items.worktop.description }}</b></p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if items.appliances %}
+                    <div class="card p-3 shadow ml-2" >
+                        <h5 class="card-title text-center" >
+                            Appliance: <span style="color: rgb(46, 154, 135)">{{ items.appliances }}</span>
+                        </h5>
+                        <div class="card-body row m-0">
+                            <p class="col-md-3">Name: <b>{{ items.appliances.name }}</b></p>
+                            <p class="col-md-5 text-center">Category: <b>{{ items.appliances.category }}</b></p>
+                            <p class="col-md-3">Type: <b>{{ items.appliances.appliances_type }}</b></p>
+                            <p class="col-md-4">Price: <b>£ {{ items.appliances.price }}</b></p>
+                            <p class="col-md-4">Brand: <b>{{ items.appliances.brand_name }}</b></p>
+                            <p class="col-md-12">Description: <b>{{ items.appliances.description }}</b></p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% if i.kitchen_order %}
+            <div class="container">
+                <h5>Kitchen:{{ items.kitchen_order.kitchen_type }}</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        {% for i in items.kitchen_order.units.all %}
+                            <tr>
+                                <td>{{ i.name }}</td>
+                                <td>{{ i.unit_type }}</td>
+                                <td>{{ i.description }}</td>
+                                <td>{{ i.price }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+
+    </div>
+
+
+
+{% endblock %}

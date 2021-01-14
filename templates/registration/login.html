@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <div class="p-5 border border-rounded my-4" style="width: 40%;margin: auto">
+        <form action="{% url 'application:login' %}" method="POST">
+            <h4 class="text-center" style="color: rgb(46, 154, 135)">Login</h4>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button class="btn btn-success w-100">Login</button>
+            <small>No account?<a href="{% url 'application:signup' %}">Signup here</a></small>
+        </form>
+    </div>
+{% endblock %}

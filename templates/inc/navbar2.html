@@ -1,0 +1,130 @@
+{% load static %}
+<div class="d-flex justify-content-center p-4 mt-2" id="second_bar">
+    <div class="d-flex justify-content-around" style="width: 60%">
+        <a href="{% url 'application:index' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;" class="text-secondary">Home</a>
+
+        <div class="btn-group">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+{#               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"#}
+               class="text-secondary a_btn " href="{% url 'application:all-kitchen' %}">Kitchen Styles</a>
+
+{#          <div class="dropdown-menu">#}
+{#              {% for item in kitchen %}#}
+{#                <a class="dropdown-item dropHover" href="{% url 'application:kitchen-view' item.pk %}">{{ item }}</a>#}
+{#            {% endfor %}#}
+{##}
+{#          </div>#}
+        </div>
+
+
+        <div class="btn-group">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class="text-secondary a_btn dropdown-toggle">WorkTops</a>
+
+          <div class="dropdown-menu">
+              {% for item in worktop %}
+                <a class="dropdown-item dropHover" href="{% url 'application:worktop-view' item.pk %}">{{ item }}</a>
+            {% endfor %}
+
+          </div>
+        </div>
+
+
+        <div class="btn-group">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class="text-secondary a_btn dropdown-toggle">Appliances</a>
+
+          <div class="dropdown-menu">
+              {% for item in appliances %}
+                <a class="dropdown-item dropHover" href="{% url 'application:appliances-list' item.pk %}">{{ item }}</a>
+            {% endfor %}
+
+          </div>
+        </div>
+
+
+        <div class="btn-group">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class="text-secondary a_btn dropdown-toggle">Services</a>
+
+          <div class="dropdown-menu">
+                <a class="dropdown-item dropHover a_btn" href="{% url 'application:installation' %}">Installation</a>
+                <a href="{% url 'application:design' %}" class="dropdown-item dropHover a_btn">Design</a>
+          </div>
+        </div>
+        <a href="{% url 'application:blog-list' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;" class="text-secondary">Blog</a>
+        <a style="font-weight: 600;text-decoration: none;cursor:pointer;" class="text-secondary">Contact us</a>
+        <a href="{% url 'application:cart' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center"><img src="{% static 'Svg/shopping-cart-solid.svg' %}" height="15px" alt=""></a>
+    </div>
+</div>
+
+<div>
+    <div class="text-center my-3 menu" style="display: none">
+        <a class="p-1 pl-2 pr-2 " onclick="mobile_click(event)"
+           style="border: 1px solid rgb(46, 154, 13);color: rgb(46, 154, 13);border-radius: 8px;
+           width: fit-content">Menu</a>
+    </div>
+    <div id="menu_div" style="display: none">
+        <div class="p-5">
+
+            <div class="text-center">
+        <a href="{% url 'application:index' %}" style="text-decoration: none;cursor:pointer;"
+           class="text-secondary d-block pb-1 mb-2 border-bottom">Home</a>
+
+        <div class="btn-group d-block pb-1 mb-2 border-bottom">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+{#               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"#}
+               class="text-secondary a_btn " href="{% url 'application:all-kitchen' %}">Kitchen Styles</a>
+
+        </div>
+
+
+        <div class="btn-group d-block pb-1 mb-2 border-bottom">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class="text-secondary a_btn dropdown-toggle">WorkTops</a>
+
+          <div class="dropdown-menu">
+              {% for item in worktop %}
+                <a class="dropdown-item dropHover" href="{% url 'application:worktop-view' item.pk %}">{{ item }}</a>
+            {% endfor %}
+
+          </div>
+        </div>
+
+
+        <div class="btn-group d-block pb-1 mb-2 border-bottom">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class="text-secondary a_btn dropdown-toggle">Appliances</a>
+
+          <div class="dropdown-menu pb-1 mb-2 border-bottom">
+              {% for item in appliances %}
+                <a class="dropdown-item dropHover" href="{% url 'application:appliances-list' item.pk %}">{{ item }}</a>
+            {% endfor %}
+
+          </div>
+        </div>
+
+
+        <div class="btn-group d-block pb-1 mb-2 border-bottom">
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class="text-secondary a_btn dropdown-toggle">Services</a>
+
+          <div class="dropdown-menu pb-1 mb-2 border-bottom">
+                <a class="dropdown-item dropHover a_btn" href="{% url 'application:installation' %}">Installation</a>
+                <a href="{% url 'application:design' %}" class="dropdown-item dropHover a_btn">Design</a>
+          </div>
+        </div>
+        <a href="{% url 'application:blog-list' %}" style="text-decoration: none;cursor:pointer;" class="text-secondary d-block pb-1 mb-2 border-bottom">Blog</a>
+        <a style="text-decoration: none;cursor:pointer;" class="text-secondary d-block pb-1 mb-2 border-bottom">Contact us</a>
+        <a href="{% url 'application:cart' %}" style="text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center d-block pb-1 mb-2 border-bottom"><img src="{% static 'Svg/shopping-cart-solid.svg' %}" height="15px" alt=""></a>
+    </div>
+
+        </div>
+    </div>
+</div>

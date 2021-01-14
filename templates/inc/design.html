@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="modal" id="hireModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Hire Our Design Service
+                </div>
+                <div class="modal-body">
+                    <p>Feeling overwhelmed why not get someone to design your kitchen. Just place an order for our design service and get your kitchen designed by professional designers.
+                    </p>
+                    <p><b>Price: £50</b></p>
+                    <p>Design will be based on the measurements provided by the customer and it is customer responsibility that the units and appliances will fit within their kitchen or desired location
+</p>
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'application:add-to-cart' 'service' '1' 1 1 'create' %}" class="btn btn-success">Go to Cart</a>
+                <a href="{% url 'application:design' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="my-5">
+        <div class="text-center">
+            <video src="{% static 'videos/design1.mp4' %}" controls height="400px"></video>
+        </div>
+        <div class="p-3 d-flex justify-content-around mt-3">
+            <div style="width: 40%" class="text-center">
+                <h4 class='' style="color: rgb(46, 154, 135)">Design </h4>
+                <h2>Overview</h2>
+                <button data-target="#hireModal" data-toggle="modal" class="btn btn-primary">Hire our design service</button>
+            </div>
+            <div style="width: 60%">
+                <p>We provide personalized kitchen designs that balance style & functionality. Find the perfect kitchen designs for you and your family. Our all Kitchen designers have experience of over 10 years. Our Kitchen Designs aired on National TV in two documentaries. We can also provide references on request.</p>
+                <p>If you are investing £3000 into a project. You make sure that the kitchen is designed by professionals and is measured accurately to save you from issues relating to wrong unit selection.</p>
+            </div>
+        </div>
+
+        <div class="row p-2 mt-5" style="width: 90%;margin: auto">
+
+
+            <div class="col-md-3 ">
+                <div class="card hoverEffect shadow" style="max-width:90%;">
+                  <div class="card-body ">
+                    <div class="d-flex justify-content-between">
+                        <h2 style="font-weight: 800" class="card-title m-0 align-self-center counter-count">436</h2>
+                          <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
+                    </div>
+                      <p style="font-weight: 500" class="text-left m-0">Satisfied Clients</p>
+                  </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="card hoverEffect shadow" style="max-width:90%;">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h2 class="card-title m-0 align-self-center counter-count" style="font-weight: 800">110</h2>
+                          <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
+                    </div>
+                      <p style="font-weight: 500" class="text-left m-0">Design Plans</p>
+                  </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="card hoverEffect shadow" style="max-width:90%;">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex">
+                            <h3 style="font-weight: 800" class="card-title m-0 align-self-center counter-count">1250</h3>
+                            <span class="align-self-center" style="font-size: x-large">+</span>
+                        </div>
+                          <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
+                    </div>
+                      <p style="font-weight: 500" class="text-left m-0 ">Combined Experience</p>
+                  </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="card hoverEffect shadow" style="max-width:90%;">
+                  <div class="card-body ">
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex">
+                            <h3 style="font-weight: 800" class="card-title m-0 align-self-center counter-count">300</h3>
+
+                            <span class="align-self-center" style="font-size: x-large">+</span>
+                        </div>
+                          <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
+                    </div>
+                      <p style="font-weight: 500" class="text-left m-0">Completed Projects</p>
+                  </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr class="mt-5"/>
+
+    <div class="row m-0 p-5">
+        <div class="col-lg-6">
+            <div style="width: 70%;margin: auto;height: 100%" class="border">
+
+            </div>
+        </div>
+        <div class="col-lg-6" >
+            <div style="width: 70%;margin: auto">
+            <div>
+                <h3 style="color: rgb(46, 154, 135)">We offer you,</h3>
+                <ul>
+                    <li>On-Site Survey</li>
+                    <li>No-Sales Pitch</li>
+                    <li>We help you find the right Kitchen to suit your home</li>
+                    <li>Laser Measurements.</li>
+                    <li>Full PDF Plans provided with measurements and cabinet details</li>
+                </ul>
+            </div>
+
+            <div class="my-5">
+                <h3 style="color: rgb(46, 154, 135)">Not only this, but also,</h3>
+                <ul>
+                    <li>We will help you order your kitchen.</li>
+                    <li>Computer Animated Design (PDF).</li>
+                    <li>Experienced, Fully Qualified & Published Designers.</li>
+                    <li>Leave the design to the experts</li>
+                    <li>We plan to bring the best out of the room.</li>
+                </ul>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row ml- mr-0 mt-4 mb-4 bg-light">
+        <div class="col-lg-7 bg-light">
+            <video height="400px" controls>
+                <source src="{% static 'videos/design2.mp4' %}" type="video/mp4">
+            </video>
+        </div>
+        <div class="col-lg-5 p-5 align-self-center">
+            <h3>Our Work</h3>
+            <p><span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci alias aperiam blanditiis dolores ex facilis illo minus modi molestiae, nemo nihil nulla obcaecati, odit quia ratione repellat repudiandae temporibus vel.</span></p>
+
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-around">
+        <div style="width: 50%;">
+            <h2>Our Story</h2>
+            <p>We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout country to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
+            </p>
+            <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the dorm room or you’re finally downsizing after all of your kids have left the nest.</p></p>
+        </div>
+        <div class="align-self-center" >
+            <a href="" class="btn btn-success btn-lg">Contact Us</a>
+        </div>
+    </div>
+
+
+    </div>
+
+
+{% endblock %}b %}

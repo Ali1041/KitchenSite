@@ -1,0 +1,54 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+    <div class="container my-4">
+        <a href="{% url 'adminPanel:index' %}" class="btn btn-secondary mb-3">Back</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Customer phone</th>
+                    <th>Kitchen Order</th>
+                    <th>Appliances Order</th>
+                    <th>Worktops Order</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list %}
+                    <tr>
+                        <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
+                        <td>{{ item.user.phone_number }}</td>
+                        {% for i in item.order.all|slice:":1" %}
+                         <td>
+                            {% if i.kitchen_order %}
+                                Yes
+                                {% else %}
+                                No
+                            {% endif %}
+                         </td>
+                         <td>
+                             {% if i.worktop %}
+                                Yes
+                                {% else %}
+                                No
+                            {% endif %}
+                         </td>
+                         <td>
+                             {% if i.appliances %}
+                                Yes
+                                {% else %}
+                                No
+                            {% endif %}
+                         </td>
+                        {% endfor %}
+                        <td><a href="{% url 'adminPanel:admin-order-detail' item.pk %}" class="btn btn-success">Details</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+{% endblock %}

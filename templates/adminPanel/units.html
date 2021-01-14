@@ -1,0 +1,40 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+    <div class="container">
+        <a class="btn btn-secondary mb-3"
+          href="{% url 'adminPanel:complete-kitchen-detail' kitchen.pk %}">Back</a>
+        <a href="{% url 'adminPanel:admin-add-units' %}" class="btn btn-success mb-3">Add units
+
+        </a>
+    </div>
+    <table class=" container table table-bordered">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Edit</th>
+            </tr>
+
+        </thead>
+        <tbody>
+        {% for item in units %}
+            <tr>
+                <td><img src="{{ item.get_photo_url }}" height="80px" width="80px" alt=""></td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.unit_type }}</td>
+                <td>{{ item.description }}</td>
+                <td>£ {{ item.price }}</td>
+                <td><a href="{% url 'adminPanel:edit-kitchen-units' item.pk %}" class="btn btn-primary">Edit</a></td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}

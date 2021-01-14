@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if qs1 or qs2 %}
+
+    <div class="container my-4">
+        {% for item in qs1 %}
+            <div class="p-2 mb-2 border-top border-bottom">
+
+                <a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}" >Name: {{ item }}</a>
+
+                <p class="m-0">Description: {{ item.description }}</p>
+            </div>
+        {% endfor %}
+        {% for item in qs2 %}
+            <div class="p-2 mb-2 border-top border-bottom">
+                <a href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">Name: {{ item }}</a>
+                <p class="m-0">Description: {{ item.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="alert alert-primary my-3 text-center" role="alert">
+            Ops!!,looks like we have nothing that matches your query
+        </div>
+    {% endif %}
+
+
+{% endblock %}

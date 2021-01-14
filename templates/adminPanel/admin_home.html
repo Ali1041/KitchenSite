@@ -1,0 +1,94 @@
+{% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+
+{% bootstrap_javascript %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://kit.fontawesome.com/359826513d.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+    <title>Admin</title>
+        <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+</head>
+
+<body>
+    <div>
+        <div>
+            {% include 'inc/navbar.html' %}
+        </div>
+
+
+
+        <div class="my-3 ">
+            <div style="width: 90%;margin: auto">
+                <i class="fas fa-bars" style="font-size: x-large;cursor: pointer" id="icon"  onclick="my_func(event)"></i>
+            </div>
+            <div class="fade-out p-5 bg-dark text-white" id="side-bar">
+                <div class="d-flex justify-content-between">
+                    <h4>Admin Panel</h4>
+                    <span class="align-self-center" style="cursor: pointer" onclick="close_func(event)">X</span>
+                </div>
+                <div>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'application:index' %}">Back to main </a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:admin-all-orders' %}">All orders</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:all-users' %}">All users</a>
+
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="">Logout</a>
+
+                </div>
+            </div>
+        </div>
+
+        {% block content %}
+            <div class="card-deck mb-5 p-5" style="width: 90%;margin: auto">
+          <div class="card shadow">
+            <div class="card-body">
+              <h5 class="card-title"><a class="a_btn" style="text-decoration: none;color: inherit" href="{% url 'adminPanel:admin-kitchen' %}">Kitchen</a></h5>
+           </div>
+          </div>
+
+          <div class="card shadow">
+            <div class="card-body">
+              <h5 class="card-title"><a class="a_btn" style="text-decoration: none;color: inherit" href="{% url 'adminPanel:admin-worktop' %}">Worktop</a></h5>
+            </div>
+          </div>
+
+
+          <div class="card shadow">
+            <div class="card-body">
+              <h5 class="card-title"><a class="a_btn" style="text-decoration: none;color: inherit" href="{% url 'adminPanel:admin-appliances' %}">Appliances</a></h5>
+            </div>
+          </div>
+
+                <div class="card shadow">
+            <div class="card-body">
+              <h5 class="card-title"><a class="a_btn" style="text-decoration: none;color: inherit" href="{% url 'adminPanel:admin-blog' %}">Blogs</a></h5>
+            </div>
+          </div>
+        </div>
+
+
+
+        {% endblock %}
+
+    </div>
+    {% include 'inc/footer.html' %}
+</body>
+
+<script>
+    const sidebar=document.getElementById('side-bar')
+    const icon = document.getElementById('icon')
+    function my_func(e){
+        sidebar.classList.remove('fade-out')
+        sidebar.classList.add('fade-in')
+    }
+    function close_func(e){
+        sidebar.classList.remove('fade-in')
+        sidebar.classList.add('fade-out')
+    }
+</script>
+</html>

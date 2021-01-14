@@ -1,0 +1,15 @@
+#side-bar{
+    height: 100vh;
+    width: 20%;
+    position: absolute;
+    top: 0;
+    transition: all 1s ease-in-out;
+    z-index: 1;
+}
+.fade-out{
+    transform: translateX(-100%);
+
+}
+.fade-in{
+    transform: translateX(0);
+}

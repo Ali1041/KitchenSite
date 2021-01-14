@@ -1,0 +1,49 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+
+    <div class="modal fade" id="modalAdd2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h5 class="modal-header">Add {{ product }}</h5>
+                <div class="modal-body">
+                    <form action="{% url 'adminPanel:add-worktop-category' product %}" method="POST">
+                        {% csrf_token %}
+                        <label for="" class="d-block">
+                            Add {{ product }} here
+                            <input type="text" class="form-control" name={{ product }} required placeholder="Add {{ product }} category">
+                        </label>
+                        <button class="btn btn-primary w-100">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="container">
+    <a class="btn btn-success mb-3" href="{% url 'adminPanel:admin-kitchen-add' %}" >Add Kitchen</a>
+    <a class="btn btn-secondary mb-3" href="{% url 'adminPanel:index' %}">Back</a>
+    <button class="btn btn-primary mb-3" data-target="#modalAdd2" data-toggle="modal">Add Kitchen category</button>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in kitchen_list %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td><a href="{% url 'adminPanel:admin-kitchen-detail' item.pk %}" class="btn btn-success">Details</a></td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

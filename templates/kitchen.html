@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+
+{% block content %}
+    <div class="my-5 container">
+        <h2 class="text-center">Kitchen: <span style="color: rgb(46, 154, 135)">{{ kitchen_view }}</span></h2>
+        <div style="width: 100%;margin: auto">
+
+
+            <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
+              <div class="carousel-inner">
+                  {% for pics in imgs %}
+                <div class="carousel-item bg-dark get" >
+                  <img class="d-block w-100" style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="First slide">
+                </div>
+                  {% endfor %}
+              <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls" role="button" data-slide="prev">
+                <div class="p-3 bg-dark" style="">
+                    <span class="carousel-control-prev-icon"  style="color: black!important;" aria-hidden="true"></span>
+                    <span class="sr-only" style="padding: 20px!important;" id="arrow_left">Previous</span>
+                </div>
+              </a>
+              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <div class="p-3 bg-dark">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </div>
+              </a>
+            </div>
+            </div>
+
+
+        </div>
+        <div class="d-flex justify-content-between">
+            <div style="width:30%" class="p-3 align-self-center" >
+                <select name="unit_type" id="" class="form-control">
+                    <option value="">Select unit type:</option>
+                    {% for item in units %}
+                        <option value="{{ item.unit_type }}">{{ item.unit_type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="align-self-center">
+                <a href="{% url 'application:add-to-cart' 'sample' 'white' kitchen_view.pk 1 'create' %}" class="btn btn-success">Order a sample</a>
+            </div>
+            <div class="align-self-center" style="width: 30%">
+                <select name="" id="select" class="form-control" onchange="change_url(event)">
+                    <option value="">Select a color</option>
+                    {% for item in kitchen_color %}
+                        <option value="{{ item.color }}">{{ item.color }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </div>
+
+        {% if user.is_authenticated %}
+        <table class="table table-striped" >
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Price(Including V.A.T)</th>
+                    <th>Add to cart</th>
+                </tr>
+            </thead>
+            <tbody id="table">
+
+            {% for item in units %}
+                <tr>
+                    <td><img src="{{ item.get_photo_url }}" width="70px" height="70px" alt=""></td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.unit_type }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>£ {{ item.price }}</td>
+                    <td><a id="url" onclick="stop(event)"  href="{% url 'application:add-to-cart' 'kitchen' item.kitchen item.pk 1 'create' %}"><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <div class="alert alert-primary" role="alert">
+                Login to see our units
+            </div>
+        {% endif %}
+        <div class="d-flex justify-content-around my-3">
+            <a href="" class="btn btn-primary">Door Guide</a>
+            <a href="" class="btn btn-primary">Tall Unit Guide</a>
+            <a href="" class="btn btn-primary">Extra Tall Unit Guide</a>
+            <a href="" class="btn btn-primary">Carcases Tech Guide</a>
+        </div>
+    </div>
+    <script>
+    const img = document.getElementsByClassName('get')
+    img[0].classList.add('active')
+    {#  href="{% url 'application:add-to-cart' 'kitchen' item.kitchen item.pk 1 'create' %}"   #}
+    function stop(e){
+        const s = document.getElementById('select')
+        console.log(s.value)
+        if (s.value===''){
+            alert('Select a color')
+            history.back()
+        }
+    }
+
+    function change_url(e){
+
+            const table = document.getElementById('table').children
+            const color = e.target.value
+
+    console.log(table)
+    for (let i=0;i<table.length;i++){
+        console.log(table[i].children[5].firstElementChild)
+        const x = table[i].children[5].firstElementChild.href
+        const y=x.split('/')
+        const base_url = 'http://127.0.0.1:8000'
+        const new_url = `${base_url}/add-to-cart/${color}/${y[5]}/${y[6]}/${y[7]}/${y[8]}/`
+        table[i].children[5].firstElementChild.setAttribute('href',new_url)
+    }
+
+
+
+
+    }
+    </script>
+{% endblock %}

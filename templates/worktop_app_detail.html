@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="modal" id="reviewModal">
+        <div class="modal-dialog">             
+            <form action="{% url 'application:review' detail.pk %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-content">
+                <h4 class="modal-header">Add Review</h4>
+                <div class="modal-body">
+                        <input type="text" hidden value="{{ product }}" name="name">
+                        <label for="" class="d-block">
+                            Your Comment
+                            <input type="text" name="comment" class="form-control">
+                        </label>
+                        <label for="" class="d-block">
+                            Rating out of 5
+                            <input type="number" min="0" max="5" name="rating" class="form-control">
+                        </label>
+                </div>
+                <div class="modal-footer">                     
+                    <button class="btn btn-success">Add Review</button>
+                    <button class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                        Cancel
+                    </button>
+                </div>
+
+            </div>             
+            </form>
+
+        </div>
+    </div>
+
+
+    <div class=" my-3" style="width: 85%;margin: auto">
+        <div class="row m-0" >
+            <div class="col-md-6">
+                <div>
+                    <img src="{{ detail.get_photo_url }}" class="img1" height="443px" width="443px" alt="">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2>{{ detail }}</h2>
+
+                <h4>£ {{ detail.price }}</h4>
+                <p>{{ detail.description }}</p>
+                    <div class="row m-0">
+                        <input type="button" onclick="operation(event)" class="btn btn-success col-md-1" value="-">
+                        <input type="number" min="1" value="1" class="form-control col-md-3 ml-1 mr-1 bottom">
+                        <input type="button" onclick="operation(event)" value="+" class="btn btn-success col-md-1">
+                    </div>
+                    <p id="p" class="m-0 p-2" style="color: green"></p>
+                    <button class="btn btn-success mt-2" onclick="add_cart(event)">Add to cart</button>
+                    <a href="{% url 'application:wishlist' product detail.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt=""></a>
+
+            </div>
+
+        </div>
+        <div class="mt-5">
+            <h3>Description</h3>
+            <p>{{ detail.description }}</p>
+        <ul>
+            <li><b>Category: </b>{{ detail.category }}</li>
+            {% ifequal product 'appliance' %}
+            <li><b>Type: </b> {{ detail.appliances_type }}</li>
+            <li><b>Brand:</b>{{ detail.brand_name }}</li>
+            {% else %}
+                <li><b>Size: </b>{{ detail.size }}</li>
+                <li><b>Color: </b>{{ detail.color }}</li>
+            {% endifequal %}
+        </ul>
+        </div>
+            <div style="width: 30%;margin: auto" id="search_in" class="d-flex justify-content-around p-3 border-top border-bottom my-3">
+
+                <span>Share</span>
+                <img src="{% static 'Svg/facebook-f-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center">
+                <img src="{% static 'Svg/twitter-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center">
+                <img src="{% static 'Svg/pinterest-p-brands.svg' %}" height="15px" alt="" style="cursor:pointer;" class="align-self-center">
+
+            </div>
+
+    
+
+    <div class="border-top border-bottom my-3 p-3 d-flex justify-content-between menu ">
+
+        <div class="d-flex">
+            <img src="{% static 'Svg/plane-solid.svg' %}" height="40px" alt="" class="align-self-center">
+            <div class="align-self-center ml-2">
+                <h3 class="m-0" style="color:rgb(46, 154, 135);">Free Shipping</h3>
+                <p class="m-0">Free shipping on orders over £300</p>
+            </div>
+        </div>
+
+
+        <div class="d-flex">
+            <img src="{% static 'Svg/dollar-sign-solid.svg' %}" class="align-self-center" height="40px" alt="">
+            <div class="align-self-center ml-2">
+                <h3 class="m-0 " style="color:rgb(46, 154, 135);">Cash On Delivery</h3>
+                <p class="m-0">The internet tend to repeat</p>
+            </div>
+        </div>
+
+
+        <div class="d-flex">
+            <img src="{% static 'Svg/recycle-solid.svg' %}" class="align-self-center" alt="" height="40px">
+            <div class="align-self-center ml-2">
+                <h3 class="m-0" style="color:rgb(46, 154, 135);">Money Safe</h3>
+                <p class="m-0">30 day money guarantee</p>
+            </div>
+        </div>
+    </div>
+
+        <div class="my-2">
+            <div class="text-center">
+                <h2>Reviews</h2>
+                <button data-target="#reviewModal" data-toggle="modal" class="btn btn-success">Add Review for this product</button>
+            </div>
+        {% if review %}
+            {% for item in review %}
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between p-2">
+                    <div>
+                        <p>{{ item.added_on }}</p>
+                        <h4>{{ item.user.username }}</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <h3>Rating</h3>
+                        <p>{{ item.rating }}/5</p>
+                    </div>
+                </div>
+                <hr/>
+                <div class="border-bottom">
+                    <p>{{ item.comment }}</p>
+                </div>
+            </div>
+            {% endfor %}
+
+        {% else %}
+        <div class="alert alert-primary text-center my-3" role="alert">
+            No reviews yet!!
+        </div>
+        {% endif %}
+        </div>
+
+    <div class="my-3">
+        <h3 class="text-center">Featured Products</h3>
+        <div class="row m-0">
+        {% for item in feature1 %}
+            <div class="card col-lg-3 p-0 ">
+                <img src="{{ item.get_photo_url }}" class="card-img-top img" height="300px" alt="">
+                <div class="card-body">
+                    <h5 class="text-center"><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
+                    <p class="text-center">£ {{ item.price }}</p>
+                </div>
+            </div>
+
+        {% endfor %}
+                {% for item in feature2 %}
+            <div class="card col-lg-3 p-0 ">
+                <img src="{{ item.get_photo_url }}" class="card-img-top img" height="300px" alt="">
+                <div class="card-body">
+                    <h5 class="text-center"><a href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
+                    <p class="text-center">£ {{ item.price }}</p>
+                </div>
+            </div>
+
+        {% endfor %}
+                </div>
+
+    </div>
+
+
+    </div>
+
+    <script>
+        function operation(e){
+            console.log(e.target.previousElementSibling)
+            if (e.target.value==='-'&& e.target.nextElementSibling.value!==1){
+                const x=parseInt(e.target.nextElementSibling.value)
+                e.target.nextElementSibling.value = x-1
+            }
+            else if(e.target.value==='+'){
+                const x=parseInt(e.target.previousElementSibling.value)
+                e.target.previousElementSibling.value = x+1
+
+            }
+        }
+
+        function add_cart(e){
+            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            const product = `{{ product }}`
+            const item_name =`{{ detail }}`
+            const process = 'create'
+            const item_id = `{{ detail.pk }}`
+
+            const qty = e.target.previousElementSibling.previousElementSibling.children[1].value
+            fetch(`${base_url}/${product}/${item_name}/${item_id}/${qty}/${process}/`)
+            .then((res)=>{
+                console.log(res)
+                return res.json()
+            })
+            .then((result)=>{
+                console.log(result)
+                const p = document.getElementById('p')
+                p.innerHTML = 'Added to cart!!!'
+                setTimeout(()=>{
+                    p.innerHTML = '';
+                },3000)
+            })
+        }
+    </script>
+
+
+{% endblock %}

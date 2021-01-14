@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-4">
+        <form action="{% url 'application:signup' %}" method="POST"  >
+            {% csrf_token %}
+            <h3 class="text-center" style="color: rgb(46, 154, 135)">Register here!</h3>
+            <label for="" class="d-block">
+                Username
+                <input type="text" required name="username" class="form-control" placeholder="Username">
+            </label>
+            <label for="" class="d-block">
+                Email
+                <input type="email" required name="email" class="form-control" placeholder="Email">
+            </label>
+            <label for="" class="d-block">
+                Password
+                <input type="password" name="password" required min="8" class="form-control" placeholder="Password">
+            </label>
+            <label for="" class="d-block">
+                Confirm Password
+                <input type="password" name="re_password" required min="8" class="form-control" placeholder="Confirm Password">
+            </label>
+            <button class="w-100 btn btn-success">Signup</button>
+            <small>Already have an account?<a href="{% url 'application:login' %}">Login here</a></small>
+        </form>
+    </div>
+
+
+{% endblock %}

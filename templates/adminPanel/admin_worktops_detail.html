@@ -1,0 +1,39 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+    <h2 class="text-center">{{ product }}: <span style="color:rgb(46, 154, 135)">{{ detail }}</span></h2>
+
+
+    <div class="text-center mb-3">
+        <button onclick="history.back()" class="btn btn-secondary">Back</button>
+    </div>
+
+
+    <div class="d-flex justify-content-between p-3" style="width: 80%;margin: auto;">
+
+        <div class="align-self-center">
+
+            <p>Description: <b>{{ detail.description }}</b></p>
+
+            {% ifequal product 'Worktop' %}
+                <p>Color: <b>{{ detail.color }}</b></p>
+
+                <p>Size: <b>{{ detail.size }}</b></p>
+            {% else %}
+                <p>Type: <b>{{ detail.appliances_type }}</b></p>
+                <p>Brand name: <b>{{ detail.brand_name }}</b></p>
+
+            {% endifequal %}
+            <p>Price: <b>£{{ detail.price }}</b></p>
+
+        </div>
+
+         <img src="{{ detail.get_photo_url }}" height="600px" width="70%" alt="">
+
+
+    </div>
+
+
+
+
+{% endblock %}

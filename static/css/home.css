@@ -1,0 +1,110 @@
+.hoverEffect{
+    transition:all 0.3s ease-in-out;
+}
+.hoverEffect:hover{
+    cursor: pointer;
+    background-color: rgb(46, 154, 135);
+    color: white;
+    border:none;
+}
+.my_c{
+    color:rgb(46, 154, 135)!important;
+}
+p{
+    font-size: 1em;
+}
+/*h1,h2,h3,h4,h5{*/
+/*    font-weight: 800;*/
+/*}*/
+.by-ajax{
+    height: 300px;opacity: 0.7
+}
+.date2{
+    transition: all 1s ease-in-out!important;
+}
+.date:hover .date2{
+    transform: translateY(-60%);
+}
+.dropdown-item:hover{
+    background-color: rgb(46, 154, 135)!important;
+    color:white!important;
+}
+/*body{
+    background-color: blue;
+}*/
+@media only screen and (min-width: 100px) and (max-width: 768px){
+    body{
+        /*font-size: 1.5rem;*/
+        width: 100vw;
+    }
+
+    #our_info{
+        display: none!important;
+    }
+    #display_b{
+        display: block!important;
+        width: 100%!important;
+    }
+    #top-bar{
+        width: 100% !important;
+        margin-bottom: 15px;
+        /*display: block!important;*/
+    }
+    .a_btn{
+        font-weight: normal!important;
+    }
+    #search_in{
+        width: 100% !important;
+    }
+    #second_bar{
+        display: none!important;
+    }
+    #menu_div{
+        transition: all 2s ease-in-out;
+    }
+    .img{
+        height: 350px!important;
+    }
+    .menu{
+        display: block!important;
+    }
+    .counter{
+        width: 120% !important;
+    }
+    .complete-line{
+        width: 90%!important;
+        margin: auto;
+        text-align: left!important;
+    }
+    #container_remove{
+        width: 100% !important;
+        padding: 0;
+    }
+    #video{
+        /*height: 100px!important;*/
+        width: 310px!important;
+    }
+    #blog{
+        max-width: 100% !important;
+    }
+    #footer{
+        width: 100% !important;
+        padding: 2px!important;
+    }
+    .img1{
+        height: 350px!important;
+        width: 100%!important;
+    }
+    .bottom{
+        margin: 8px 0!important;
+    }
+    #more{
+        width: 100%!important;
+    }
+    .table-responsive1 {
+     display: block!important;
+    width: 100% !important;
+    overflow-x: auto!important;
+    -webkit-overflow-scrolling: touch;
+}
+}

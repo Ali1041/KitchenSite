@@ -1,0 +1,68 @@
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+{% bootstrap_javascript %}
+<div style="background-color: rgb(218, 237, 234);max-height: fit-content;min-height: 100vh" class="p-3">
+    <div style="width: 50%;margin: auto">
+        <form action="">
+            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+                <h2>Contact form</h2>
+                <p>We consider our customer's feedback and queries very important. Contact us through following form regarding feedback or any questions</p>
+            </div>
+
+            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+            <label for="" class="d-block" style="font-size: 20px">
+                Name <span style="color: red">*</span>
+                <input type="text" class="form-control" style="border-top: none!important;border-left: none!important;border-right:none!important;"></label>
+            </div>
+
+            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+            <label for="" class="d-block">
+                Email Address<span style="color: red">*</span>
+                <input type="text" class="form-control"></label>
+            </div>
+
+            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+            <label for="" class="d-block">
+                Phone Number
+                <input type="text" class="form-control"></label>
+            </div>
+
+            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+            <label for="" class="d-block">
+                Order Number(If applicable)
+                <input type="text" class="form-control"></label>
+            </div>
+
+            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+            <label for="" class="d-block">
+                Reason for contacting us<span style="color: red">*</span>
+                <div>
+                    <input type="checkbox" class="my-2"><label class="pl-2">Order & Support Queries</label>
+
+                </div>
+                <div>
+                    <input type="checkbox" class=""><label class="pl-2">Installed Projects</label>
+
+                </div>
+
+                <div>
+                    <input type="checkbox" class=" my-2"><label class="pl-2">Other</label>
+
+                </div>
+                <div>
+                    <input type="checkbox" class=""><label class="pl-2">Feedback</label>
+
+                </div>
+            </label>
+            </div>
+
+            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+            <label for="" class="d-block">
+                Detail
+                <input type="text" class="form-control"></label>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>

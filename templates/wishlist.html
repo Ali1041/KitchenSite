@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container my-3" id="container_remove">
+    <h3 class="my-3">My Wishlist</h3>
+        <table class="table table-striped table-responsive1" >
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Price(£)</th>
+                    <th id="more">Cart</th>
+                    <th>Option</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in wishlist %}
+                    <tr>
+                        {% if item.worktop %}
+                        <td>{{ item.worktop }}</td>
+                        <td>{{ item.worktop.description }}</td>
+                        <td>{{ item.worktop.price }}</td>
+                        <td><a onclick="the_cart(event,{{ item.worktop.pk }},'create','worktop')"
+                        class="btn btn-success">
+                            Add to cart
+                        </a></td>
+                        <td><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">Detail</a></td>
+
+
+                        {% elif item.appliances %}
+                        <td>{{ item.appliances }}</td>
+                        <td>{{ item.appliances.description }}</td>
+                        <td>{{ item.appliances.price }}</td>
+                        <td>
+                            <a onclick="the_cart(event,{{ item.appliances.pk }},'create','appliance')"
+                               class="btn btn-success">
+                                Add to cart
+                            </a>
+                        </td>
+                            <td><a href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">Detail</a></td>
+
+                        {% endif %}
+
+{#                        <td ><p class="m-0" style="width: fit-content;color: red;cursor: pointer">x</p></td>#}
+
+
+{#                        {% elif item.service %}#}
+{#                        <td>{{ item.service }}</td>#}
+{#                        <td>Designing service</td>#}
+{#                        <td>£ 50</td>#}
+{##}
+{#                        <td>X</td>#}
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        function the_cart(e,pk,process,pro){
+            console.log(pk,process,pro)
+            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
+
+            .then((res)=>{
+                return res.json()
+            })
+            .then((result)=>{
+                console.log(result)
+                const p =document.getElementById('info')
+                p.style.color = 'red'
+                p.innerHTML = 'Removed from cart!!!'
+                setTimeout(()=>{
+                    p.innerHTML = ''
+                    location.reload()
+                },3000)
+            })
+        }
+
+    </script>
+
+{% endblock %}

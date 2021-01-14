@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container my-3">
+        <div style="width: 65%;margin: auto" class="my-3">
+            <img src="{{ detail.get_photo_url }}" height="500px" alt="">
+        </div>
+        <div>
+            <h4 class="text-center mb-2">{{ detail.title }}</h4>
+            <small>Uploaded at: {{ detail.timestamp }}</small>
+            <hr/>
+            <p>{{ detail.text|safe }}</p>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

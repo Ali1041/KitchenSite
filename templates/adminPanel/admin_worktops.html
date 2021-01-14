@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="modal fade" id="modalAdd">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h5 class="modal-header">Add {{ product }}</h5>
+                <div class="modal-body">
+                    <form action="{% url 'adminPanel:add-worktop-category' product %}" method="POST">
+                        {% csrf_token %}
+                        <label for="" class="d-block">
+                            Add {{ product }} here
+                            <input type="text" class="form-control" name={{ product }} required placeholder="Add {{ product }} category">
+                        </label>
+                        <button class="btn btn-primary w-100">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container mb-3 text-left">
+        <a href="{% url 'adminPanel:index' %}" class="btn btn-secondary mb-3">Back</a>
+        <a href="{% url 'adminPanel:add-worktop' product %}" class="btn btn-success mb-3">Add {{ product }}</a>
+        <button class="btn btn-primary mb-3" data-target="#modalAdd" data-toggle="modal">Add {{ product }} category</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Options</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            {% for item in category %}
+                <tr>
+                    <td>{{ item }}</td>
+
+                    {% ifequal product 'Worktop' %}
+
+                    <td><a href="{% url 'adminPanel:admin-worktop-list' item.pk %}" class="btn btn-success">Details</a>
+                    {% else %}
+                        <td><a href="{% url 'adminPanel:admin-appliances-list' item.pk %}" class="btn btn-success">Details</a>
+
+
+                    {% endifequal %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        </div>
+
+{% endblock %}

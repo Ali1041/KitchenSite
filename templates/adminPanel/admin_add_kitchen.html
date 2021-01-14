@@ -1,0 +1,19 @@
+{% extends 'adminPanel/admin_home.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-3">
+        <form action="{% url 'adminPanel:admin-kitchen-add' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4 class="text-center">Add Kitchen</h4>
+            {% bootstrap_form form %}
+            {% bootstrap_form door %}
+            {% bootstrap_form cabnets %}
+            <label for="" class="d-block">
+                Upload kitchen image
+                <input type="file" name="img" >
+            </label>
+            <button class="btn btn-success w-100" >Add</button>
+        </form>
+    </div>
+
+{% endblock %}

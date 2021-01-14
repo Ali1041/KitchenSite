@@ -1,0 +1,100 @@
+{% extends 'adminPanel/admin_home.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<div class="modal fade" tabindex="-1" role="dialog" id="modalC">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add unit category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="{% url 'adminPanel:add-unit-category' %}" method="POST">
+              {% csrf_token %}
+              <label for="" class="d-block">
+                  Add category
+                  <input type="text" required name="category" placeholder="Add category" class="form-control">
+              </label>
+              <button class="btn btn-success w-100">Add</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <div class="text-center">
+        <button data-target="#modalC" data-toggle="modal" class="btn btn-primary">Add unit category</button>
+    </div>
+    {% if not name %}
+    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-3">
+        <form action="{% url 'adminPanel:admin-add-units' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4 class="text-center">Add Units</h4>
+
+{#            <label for="">Unit Type</label>#}
+{#            <select name="type" id="" class="form-control mb-2">#}
+{#                <option value="">Select unit type</option>#}
+{#                {% for item in types %}#}
+{#                      <option value="{{ item.name }}">{{ item.name}}</option>#}
+{##}
+{#                {% endfor %}#}
+{#            </select>#}
+            {% bootstrap_form form %}
+            <button class="btn btn-success w-100 mb-2" >Add</button>
+            <a href="{% url 'adminPanel:units' 12 %}"  class="btn btn-secondary w-100">Back</a>
+        </form>
+    </div>
+    {% else %}
+    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-3">
+        <form action="{% url 'adminPanel:edit-kitchen-units' item.pk %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4 class="text-center">Add Units</h4>
+
+            <label for="">Unit Type</label>
+            <select name="type" id="" class="form-control mb-2">
+                <option value="{{ s_type.pk }}">{{ s_type.name}}</option>
+                {% for item in types %}
+                      <option value="{{ type.pk }}">{{ type.name}}</option>
+                {% endfor %}
+            </select>
+
+            <label for="" class="d-block">
+                Name
+                <input type="text" required name="name" class="form-control" value="{{ item.name }}">
+            </label>
+
+            <label for="" class="d-block">
+                Description
+                <input type="text" required name="description" class="form-control" value="{{ item.description }}">
+            </label>
+
+            <label for="" class="d-block">
+                Price
+                <input type="text" required name="price" class="form-control" value="{{ item.price }}">
+            </label>
+
+            <label for="">Kitchen</label>
+            <select name="kitchen" id="" class="form-control mb-2">
+                <option value="{{ s_kitchen.pk }}">{{ s_kitchen}}</option>
+                {% for item in types %}
+                      <option value="{{ kitchen.pk }}">{{ kitchen}}</option>
+                {% endfor %}
+            </select>
+
+            <label for="" class="d-block">
+                Upload Image
+                <input type="file" name="img" value="{{ item.img }}">
+            </label>
+
+            <button class="btn btn-success w-100 mb-2" >Add</button>
+            <a href="{% url 'adminPanel:units' item.pk %}"  class="btn btn-secondary w-100">Back</a>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}
