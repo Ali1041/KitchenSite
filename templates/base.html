@@ -38,13 +38,13 @@
         <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
           <div class="carousel-inner">
             <div class="carousel-item active bg-dark">
-              <img class="d-block w-100 img" style="opacity:0.7;height: 700px" src="{% static 'imgs/Compressed_Cambridge_White_Main.jpg' %}" alt="First slide">
+              <img class="d-block w-100 img1" style="opacity:0.7;height: 700px" src="{% static 'imgs/main3.jpg' %}" alt="First slide">
             </div>
             <div class="carousel-item bg-dark">
-              <img class="d-block w-100 img" style="opacity:0.7;height: 700px" src="{% static 'imgs/Compressed_Cartmel-Oak.jpg' %}" alt="Second slide">
+              <img class="d-block w-100 img1" style="opacity:0.7;height: 700px" src="{% static 'imgs/main2.jpg' %}" alt="Second slide">
             </div>
             <div class="carousel-item bg-dark">
-              <img class="d-block w-100 img" style="height: 700px;opacity: 0.7" src="{% static 'imgs/Compressed_Cartmel_Indigo_Main_RGB_WEB.jpg' %}" alt="Third slide">
+              <img class="d-block w-100 img1" style="height: 700px;opacity: 0.7" src="{% static 'imgs/main1.jpg' %}" alt="Third slide">
             </div>
           </div>
           <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -205,13 +205,13 @@
 
 
             <div class="carousel-item active bg-dark" id="carosel">
-              <img class="d-block w-100 " style="opacity:0.7;height: 400px" loading="lazy" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cambridge_Super-White_Main.jpg" alt="First slide">
+              <img class="d-block w-100 " id="k_img" style="opacity:0.7;height: 400px" loading="lazy" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cambridge_Super-White_Main.jpg" alt="First slide">
             </div>
             <div class="carousel-item bg-dark">
-              <img class="d-block w-100 " loading="lazy" style="opacity:0.7;height: 400px" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel_Indigo_Cameo_RGB_WEB.jpg" alt="Second slide">
+              <img class="d-block w-100 " id="k_img" loading="lazy" style="opacity:0.7;height: 400px" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel_Indigo_Cameo_RGB_WEB.jpg" alt="Second slide">
             </div>
             <div class="carousel-item bg-dark">
-              <img class="d-block w-100 " loading="lazy" style="height: 400px;opacity: 0.7" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel-Oak.jpg" alt="Third slide">
+              <img class="d-block w-100 " id="k_img" loading="lazy" style="height: 400px;opacity: 0.7" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel-Oak.jpg" alt="Third slide">
             </div>
           </div>
           <a class="carousel-control-prev"   href="#carouselExampleControls1" role="button" data-slide="prev">
@@ -320,12 +320,11 @@
 
                     }
                     img.setAttribute('class','d-block w-100 by-ajax')
+                        img.setAttribute('id','k_img')
                     img.style.height = 400+'px'
                     img.style.opacity = 0.7
 
                     div.append(img)
-                    console.log(div)
-                    console.log(carosel)
                     toDelete.append(div)
                 })
 

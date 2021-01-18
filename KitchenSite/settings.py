@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'django_filters',
     'ckeditor',
+    'openpyxl',
     'ckeditor_uploader',
     'jquery'
 ]

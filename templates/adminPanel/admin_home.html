@@ -70,7 +70,13 @@
             </div>
           </div>
         </div>
+        <div>
+            <h5 class="text-center"><a href="{% url 'adminPanel:approve' %}">Approve comments</a></h5>
+        </div>
 
+        <div class="text-center my-3">
+            <a href="{% url 'adminPanel:bulk' %}" class="btn btn-success">Add bulk data</a>
+        </div>
 
 
         {% endblock %}

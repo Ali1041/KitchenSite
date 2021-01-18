@@ -3,14 +3,14 @@
 {% block content %}
     <div class="container">
         {% for item in list %}
-            <div class="p-3 d-flex justify-content-between border-top border-bottom my-3">
+            <div class="p-3 d-flex justify-content-between border-bottom my-3 menu" id="container_remove">
                 <div>
                     <h4><a style="color: rgb(46, 154, 135)" href="{% url 'application:blog-detail' item.pk %}">{{ item.title }}</a></h4>
                     <p>{{ item.text|safe|truncatewords_html:30 }}</p>
                     <small>{{ item.timestamp }}</small>
                 </div>
                 <div>
-                    <img src="{{ item.get_photo_url }}" height="200px" width="300px" alt="{{ item }} image">
+                    <img src="{{ item.get_photo_url }}" class="img1" height="200px" width="300px" alt="{{ item }} image">
                 </div>
             </div>
 

@@ -19,3 +19,8 @@ class AppliancesFilters(django_filters.FilterSet):
             'appliances_type':['iexact'],
             'price':['gte','lte']
         }
+
+class UnitFilter(django_filters.FilterSet):
+    class Meta:
+        model = Units
+        fields = {'unit_type__name':['icontains']}

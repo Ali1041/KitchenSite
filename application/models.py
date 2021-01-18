@@ -106,7 +106,7 @@ class UnitType(models.Model):
 class Units(models.Model):
     name = models.CharField(max_length=100)
     unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE)
-    description = models.TextField()
+    description = models.TextField(null=True,blank=True)
     price = models.FloatField()
     kitchen = models.ForeignKey(KitchenCategory, on_delete=models.CASCADE, related_name='kitchen_units')
     img = models.ImageField(upload_to='base_units')
@@ -119,6 +119,8 @@ class Units(models.Model):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
 
+    class Meta:
+        ordering = ['-pk']
 
 class Worktop_category(models.Model):
     WORKTOP = [
@@ -151,6 +153,8 @@ class WorkTop(models.Model):
         if self.worktop_img and hasattr(self.worktop_img, 'url'):
             return self.worktop_img.url
 
+    class Meta:
+        ordering = ['pk']
 
 class Category_Applianes(models.Model):
     name = models.CharField(max_length=128)
@@ -170,6 +174,7 @@ class Appliances(models.Model):
     description = models.TextField(blank=True, null=True)
     img = models.ImageField(upload_to='Appliance', default='none')
     price = models.FloatField()
+    appliance_category = models.CharField(max_length=128)
 
     def __str__(self):
         return self.name
@@ -177,7 +182,8 @@ class Appliances(models.Model):
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
-
+    class Meta:
+        ordering = ['pk']
 
 class Combining(models.Model):
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='complete_kitchen')
@@ -277,6 +283,11 @@ class Review(models.Model):
     worktop = models.ForeignKey(WorkTop, on_delete=models.CASCADE, blank=True, null=True)
     appliances = models.ForeignKey(Appliances, on_delete=models.CASCADE, blank=True, null=True)
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, blank=True, null=True)
+    approval_choices = [
+        ('Pending','Pending'),
+        ('Approved','Approved')
+    ]
+    approval = models.CharField(max_length=15,choices=approval_choices,default='Pending')
     rating = models.FloatField()
     comment = models.TextField()
 

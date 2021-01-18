@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-4">
+    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-4" id="search_in">
         <form action="{% url 'application:signup' %}" method="POST"  >
             {% csrf_token %}
             <h3 class="text-center" style="color: rgb(46, 154, 135)">Register here!</h3>

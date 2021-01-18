@@ -27,15 +27,15 @@
 
     <div class="my-5">
         <div class="text-center">
-            <video src="{% static 'videos/design1.mp4' %}" controls height="400px"></video>
+            <video src="{% static 'videos/design1.mp4' %}" id="video" controls height="400px"></video>
         </div>
-        <div class="p-3 d-flex justify-content-around mt-3">
-            <div style="width: 40%" class="text-center">
+        <div class="p-3 d-flex justify-content-around mt-3 menu" id="contain">
+            <div style="width: 40%" class="text-center" id="search_in">
                 <h4 class='' style="color: rgb(46, 154, 135)">Design </h4>
                 <h2>Overview</h2>
                 <button data-target="#hireModal" data-toggle="modal" class="btn btn-primary">Hire our design service</button>
             </div>
-            <div style="width: 60%">
+            <div style="width: 60%" id="search_in" class="my-2">
                 <p>We provide personalized kitchen designs that balance style & functionality. Find the perfect kitchen designs for you and your family. Our all Kitchen designers have experience of over 10 years. Our Kitchen Designs aired on National TV in two documentaries. We can also provide references on request.</p>
                 <p>If you are investing £3000 into a project. You make sure that the kitchen is designed by professionals and is measured accurately to save you from issues relating to wrong unit selection.</p>
             </div>
@@ -44,7 +44,7 @@
         <div class="row p-2 mt-5" style="width: 90%;margin: auto">
 
 
-            <div class="col-md-3 ">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body ">
                     <div class="d-flex justify-content-between">
@@ -57,7 +57,7 @@
             </div>
 
 
-            <div class="col-md-3">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -71,7 +71,7 @@
             </div>
 
 
-            <div class="col-md-3">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -88,7 +88,7 @@
             </div>
 
 
-            <div class="col-md-3">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body ">
                     <div class="d-flex justify-content-between">
@@ -108,14 +108,14 @@
 
         <hr class="mt-5"/>
 
-    <div class="row m-0 p-5">
+    <div class="row m-0 p-5" id="container_remove">
         <div class="col-lg-6">
-            <div style="width: 70%;margin: auto;height: 100%" class="border">
-
+            <div style="width: 70%;margin: auto;height: 100%" id="search_in">
+                <img src="{% static 'imgs/design.jpg' %}" class="img1" height="450px" width="500px" alt="">
             </div>
         </div>
-        <div class="col-lg-6" >
-            <div style="width: 70%;margin: auto">
+        <div class="col-lg-6 my-2" >
+            <div style="width: 70%;margin: auto" id="search_in">
             <div>
                 <h3 style="color: rgb(46, 154, 135)">We offer you,</h3>
                 <ul>
@@ -142,8 +142,8 @@
     </div>
 
     <div class="row ml- mr-0 mt-4 mb-4 bg-light">
-        <div class="col-lg-7 bg-light">
-            <video height="400px" controls>
+        <div class="col-lg-7 bg-light text-center">
+            <video height="400px" id="video" controls>
                 <source src="{% static 'videos/design2.mp4' %}" type="video/mp4">
             </video>
         </div>
@@ -154,15 +154,17 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-around">
-        <div style="width: 50%;">
+
+
+    <div class="d-flex justify-content-around menu" id="contain">
+        <div style="width: 50%;" id="search_in">
             <h2>Our Story</h2>
             <p>We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout country to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
             </p>
             <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the dorm room or you’re finally downsizing after all of your kids have left the nest.</p></p>
         </div>
         <div class="align-self-center" >
-            <a href="" class="btn btn-success btn-lg">Contact Us</a>
+            <a href="{% url 'application:installation_contact' %}" class="btn btn-success btn-lg">Contact Us</a>
         </div>
     </div>
 

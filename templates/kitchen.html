@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+{% bootstrap_javascript %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
 
 {% block content %}
-    <div class="my-5 container">
+    <div class="my-5 container" id="container_remove">
         <h2 class="text-center">Kitchen: <span style="color: rgb(46, 154, 135)">{{ kitchen_view }}</span></h2>
         <div style="width: 100%;margin: auto">
 
@@ -11,7 +15,7 @@
               <div class="carousel-inner">
                   {% for pics in imgs %}
                 <div class="carousel-item bg-dark get" >
-                  <img class="d-block w-100" style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="First slide">
+                  <img class="d-block w-100 img1"  style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="First slide">
                 </div>
                   {% endfor %}
               <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -28,22 +32,26 @@
               </a>
             </div>
             </div>
-
+            <div class="my-2">
+                <p>{{ kitchen_color.first.description }}</p>
+            </div>
 
         </div>
-        <div class="d-flex justify-content-between">
-            <div style="width:30%" class="p-3 align-self-center" >
-                <select name="unit_type" id="" class="form-control">
-                    <option value="">Select unit type:</option>
-                    {% for item in units %}
-                        <option value="{{ item.unit_type }}">{{ item.unit_type }}</option>
-                    {% endfor %}
-                </select>
+
+        <div class="d-flex justify-content-between menu">
+
+            <div style="width:30%" id="search_in" class="p-3 align-self-center" >
+                <form action="{% url 'application:kitchen-view' kitchen_view.pk %}" id="filter" class="text-center" >
+                    {% bootstrap_form search.form %}
+                    <button class="btn btn-success">Apply filter</button>
+                    <a href="{% url 'application:kitchen-view' kitchen_view.pk %}" class="btn btn-secondary">Remove filter</a>
+                </form>
             </div>
-            <div class="align-self-center">
+
+            <div class="align-self-start text-center p-3">
                 <a href="{% url 'application:add-to-cart' 'sample' 'white' kitchen_view.pk 1 'create' %}" class="btn btn-success">Order a sample</a>
             </div>
-            <div class="align-self-center" style="width: 30%">
+            <div class=" p-3 align-self-start" id="search_in" style="width: 30%">
                 <select name="" id="select" class="form-control" onchange="change_url(event)">
                     <option value="">Select a color</option>
                     {% for item in kitchen_color %}
@@ -53,9 +61,26 @@
             </div>
 
         </div>
-
+        {% if units %}
         {% if user.is_authenticated %}
-        <table class="table table-striped" >
+            <div class="container">
+                <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+            </div>
+        <table class="table table-striped table-responsive1" >
             <thead>
                 <tr>
                     <th>Image</th>
@@ -86,23 +111,34 @@
                 Login to see our units
             </div>
         {% endif %}
-        <div class="d-flex justify-content-around my-3">
-            <a href="" class="btn btn-primary">Door Guide</a>
-            <a href="" class="btn btn-primary">Tall Unit Guide</a>
-            <a href="" class="btn btn-primary">Extra Tall Unit Guide</a>
-            <a href="" class="btn btn-primary">Carcases Tech Guide</a>
+        <div class="d-flex justify-content-around my-3 menu p-2">
+            <a href="" class="btn btn-primary menu bottom">Door Guide</a>
+            <a href="" class="btn btn-primary menu bottom">Tall Unit Guide</a>
+            <a href="" class="btn btn-primary menu bottom">Extra Tall Unit Guide</a>
+            <a href="" class="btn btn-primary menu bottom">Carcases Tech Guide</a>
         </div>
+        {% else %}
+        <div class="alert alert-primary" role="alert">
+            No units found!!
+
+        </div>
+    {% endif %}
     </div>
     <script>
     const img = document.getElementsByClassName('get')
     img[0].classList.add('active')
+    const form = document.getElementById('filter')
+    console.log(form.children[0].children[0])
+    form.children[0].children[0].remove()
+    form.children[0].children[0].setAttribute('placeholder','Unit Type....')
     {#  href="{% url 'application:add-to-cart' 'kitchen' item.kitchen item.pk 1 'create' %}"   #}
+
     function stop(e){
         const s = document.getElementById('select')
         console.log(s.value)
         if (s.value===''){
             alert('Select a color')
-            history.back()
+
         }
     }
 
@@ -113,7 +149,6 @@
 
     console.log(table)
     for (let i=0;i<table.length;i++){
-        console.log(table[i].children[5].firstElementChild)
         const x = table[i].children[5].firstElementChild.href
         const y=x.split('/')
         const base_url = 'http://127.0.0.1:8000'

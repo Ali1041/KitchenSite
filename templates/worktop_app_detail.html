@@ -46,9 +46,9 @@
                 <h4>£ {{ detail.price }}</h4>
                 <p>{{ detail.description }}</p>
                     <div class="row m-0">
-                        <input type="button" onclick="operation(event)" class="btn btn-success col-md-1" value="-">
-                        <input type="number" min="1" value="1" class="form-control col-md-3 ml-1 mr-1 bottom">
-                        <input type="button" onclick="operation(event)" value="+" class="btn btn-success col-md-1">
+                        <input type="button" onclick="operation(event)" class="btn btn-success col-lg-1" value="-">
+                        <input type="number" min="1" value="1" class="form-control col-lg-3 ml-1 mr-1 bottom">
+                        <input type="button" onclick="operation(event)" value="+" class="btn btn-success col-lg-1">
                     </div>
                     <p id="p" class="m-0 p-2" style="color: green"></p>
                     <button class="btn btn-success mt-2" onclick="add_cart(event)">Add to cart</button>
@@ -84,27 +84,30 @@
 
     <div class="border-top border-bottom my-3 p-3 d-flex justify-content-between menu ">
 
-        <div class="d-flex">
-            <img src="{% static 'Svg/plane-solid.svg' %}" height="40px" alt="" class="align-self-center">
-            <div class="align-self-center ml-2">
+        <div class="d-flex menu">
+            <div  class="align-self-center text-center"><img src="{% static 'Svg/plane-solid.svg' %}" height="40px" alt="">
+</div>
+            <div class="align-self-center ml-2 text-center">
                 <h3 class="m-0" style="color:rgb(46, 154, 135);">Free Shipping</h3>
                 <p class="m-0">Free shipping on orders over £300</p>
             </div>
         </div>
 
 
-        <div class="d-flex">
-            <img src="{% static 'Svg/dollar-sign-solid.svg' %}" class="align-self-center" height="40px" alt="">
-            <div class="align-self-center ml-2">
+        <div class="d-flex menu">
+            <div  class="align-self-center text-center"><img src="{% static 'Svg/dollar-sign-solid.svg' %}" class="align-self-center" height="40px" alt=""></div>
+
+            <div class="align-self-center ml-2 text-center">
                 <h3 class="m-0 " style="color:rgb(46, 154, 135);">Cash On Delivery</h3>
                 <p class="m-0">The internet tend to repeat</p>
             </div>
         </div>
 
 
-        <div class="d-flex">
-            <img src="{% static 'Svg/recycle-solid.svg' %}" class="align-self-center" alt="" height="40px">
-            <div class="align-self-center ml-2">
+        <div class="d-flex menu">
+            <div  class="align-self-center text-center"><img src="{% static 'Svg/recycle-solid.svg' %}" class="align-self-center" alt="" height="40px"></div>
+
+            <div class="align-self-center ml-2 text-center">
                 <h3 class="m-0" style="color:rgb(46, 154, 135);">Money Safe</h3>
                 <p class="m-0">30 day money guarantee</p>
             </div>

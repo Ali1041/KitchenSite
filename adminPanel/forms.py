@@ -1,5 +1,6 @@
 from django import forms
 from application.models import *
+from .models import *
 
 
 class WorktopForm(forms.ModelForm):
@@ -29,24 +30,34 @@ class ImagesForm(forms.ModelForm):
 class DoorsForm(forms.ModelForm):
     class Meta:
         model = Doors
-        exclude = ('kitchen', )
+        exclude = ('kitchen',)
+
     def save(self, commit=False):
         return super(DoorsForm, self).save(commit)
+
 
 class CabnetsForm(forms.ModelForm):
     class Meta:
         model = Cabnets
-        exclude = ('kitchen', )
+        exclude = ('kitchen',)
 
     def save(self, commit=False):
         return super(CabnetsForm, self).save(commit)
+
 
 class AddUnitsForm(forms.ModelForm):
     class Meta:
         model = Units
         fields = '__all__'
 
+
 class BlogForm(forms.ModelForm):
     class Meta:
         model = Blogs
-        exclude = ['timestamp',]
+        exclude = ['timestamp', ]
+
+
+class FileForm(forms.ModelForm):
+    class Meta:
+        model = UploadFile
+        fields = '__all__'

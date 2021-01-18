@@ -67,15 +67,18 @@ class AllKitchenView(generic.ListView):
 # view for kitchen display
 class KitchenView(generic.ListView):
     model = Units
+    paginate_by = 10
     template_name = 'kitchen.html'
     context_object_name = 'units'
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(KitchenView, self).get_context_data(*args, **kwargs)
-        ctx['kitchen'] = KitchenCategory.objects.all()
+        ctx['types'] = UnitType.objects.all()
         ctx['worktop'] = Worktop_category.objects.all()
         ctx['appliances'] = Category_Applianes.objects.all()
         ctx['kitchen_view'] = KitchenCategory.objects.get(pk=self.kwargs['pk'])
+        filters = UnitFilter(self.request.GET, queryset = Units.objects.select_related('kitchen').filter(kitchen=ctx['kitchen_view']))
+        ctx['search'] = filters
         ctx['kitchen_color'] = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=ctx['kitchen_view'])
         ctx['imgs'] = Images.objects.select_related('kitchen').filter(kitchen=ctx['kitchen_view'])
         return ctx
@@ -83,6 +86,9 @@ class KitchenView(generic.ListView):
     def get_queryset(self):
         kitchen_view = KitchenCategory.objects.get(pk=self.kwargs['pk'])
         units = Units.objects.select_related('kitchen').filter(kitchen=kitchen_view)
+        filters = UnitFilter(self.request.GET, queryset=Units.objects.select_related('kitchen').filter(kitchen=kitchen_view))
+        if len(self.request.GET) != 0:
+            units = filters.qs
         return units
 
 
@@ -91,6 +97,7 @@ class WorktopListView(generic.ListView):
     model = WorkTop
     template_name = 'worktop.html'
     context_object_name = 'list'
+    paginate_by = 10
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(WorktopListView, self).get_context_data(*args, **kwargs)
@@ -130,10 +137,10 @@ class WorktopDetailView(generic.DetailView):
         ctx['feature2'] = [three,four]
         if self.kwargs['name'] == 'worktop':
             ctx['product'] = 'worktop'
-            ctx['review'] = Review.objects.select_related('worktop').filter(worktop_id=self.kwargs['pk'])
+            ctx['review'] = Review.objects.select_related('worktop').filter(worktop_id=self.kwargs['pk'],approval='Approved')
         elif self.kwargs['name'] == 'appliance':
             ctx['product'] = 'appliance'
-            ctx['review'] = Review.objects.select_related('appliances').filter(appliances_id=self.kwargs['pk'])
+            ctx['review'] = Review.objects.select_related('appliances').filter(appliances_id=self.kwargs['pk'],approval='Approved')
         return ctx
 
     def get_queryset(self):
@@ -146,6 +153,7 @@ class WorktopDetailView(generic.DetailView):
 
 
 class AppliancesListView(generic.ListView):
+    paginate_by = 10
     model = Appliances
     template_name = 'worktop.html'
     context_object_name = 'list'
@@ -217,8 +225,12 @@ def addcart(request, **kwargs):
             # kitchen cart
             color = kwargs['product']
             name = kwargs['name']
-            kitchen = Kitchen.objects.select_related('kitchen_type').get(
-                kitchen_type=KitchenCategory.objects.get(name=name), color=color)
+            try:
+                kitchen = Kitchen.objects.select_related('kitchen_type').get(
+                    kitchen_type=KitchenCategory.objects.get(name=name), color=color)
+            except:
+                cat = KitchenCategory.objects.get(name__iexact=kwargs['name'])
+                return redirect(reverse_lazy('application:kitchen-view',kwargs={'pk':cat.pk}))
             unit = Units.objects.select_related('kitchen').get(pk=kwargs['pk'])
 
             try:
@@ -231,7 +243,7 @@ def addcart(request, **kwargs):
                 pre_order = Combining.objects.create(kitchen=kitchen, user=request.user)
                 pre_order.units.add(unit)
                 pre_order.save()
-            return redirect(reverse_lazy('application:choose', kwargs={'pk': pre_order.pk}))
+            return redirect(reverse_lazy('application:choose', kwargs={'pk': pre_order.pk,'name':'cart'}))
 
 
     elif kwargs['process'] == 'update':
@@ -293,9 +305,12 @@ def cart(request):
                     price += i.price
             else:
                 price += 4.99
-
+    # if price<300:
+    #     price+=30
     ctx = {'cart': cart, 'kitchen': kitchen_styles, 'appliances': appliances, 'worktop': worktop, 'total': price}
-
+    for i in cart:
+        if i.worktop:
+            ctx['size'] ='size'
     return render(request, 'cart.html', ctx)
 
 
@@ -363,16 +378,16 @@ def add_review(request, **kwargs):
         if request.POST['name'] == 'appliance':
             appliance = Appliances.objects.select_related('category').get(pk=kwargs['pk'])
             review = Review.objects.create(
-                user=request.user, rating=request.POST['rating'], comment=request.POST['comment'], appliances=appliance)
+                user=request.user, rating=request.POST['rating'], comment=request.POST['comment'], appliances=appliance,approval='Pending')
             return redirect(reverse_lazy('application:appliances-detail-view', kwargs={'pk': kwargs['pk']}))
 
         # worktop review addition
         elif request.POST['name'] == 'worktop':
             worktop = WorkTop.objects.select_related('category').get(pk=kwargs['pk'])
             Review.objects.create(
-                user=request.user, rating=request.POST['rating'], comment=request.POST['comment'], worktop=worktop
+                user=request.user, rating=request.POST['rating'], comment=request.POST['comment'], worktop=worktop,approval='Pending'
             )
-            return redirect(reverse_lazy('application:worktop-detail-view', kwargs={'pk': kwargs['pk']}))
+            return redirect(reverse_lazy('application:worktop-detail-view', kwargs={'name':'worktop','pk': kwargs['pk']}))
 
 
 def search(request, **kwargs):
@@ -391,29 +406,30 @@ def search(request, **kwargs):
 
 def choose(request, **kwargs):
     if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data,kwargs)
         intermediate_model = Combining.objects.select_related('kitchen', 'door', 'cabnet').get(user=request.user,
                                                                                                pk=kwargs['pk'])
-        doors = Doors.objects.get(kitchen=intermediate_model.kitchen, door_color=request.POST['door'])
-        cabnet = Cabnets.objects.get(kitchen=intermediate_model.kitchen, cabnet_color=request.POST['cabnet'])
+        doors = Doors.objects.get(kitchen=intermediate_model.kitchen, door_color=data['door_color'])
+        cabnet = Cabnets.objects.get(kitchen=intermediate_model.kitchen, cabnet_color=data['cabnet_color'])
 
         intermediate_model.door = doors
         intermediate_model.cabnet = cabnet
         intermediate_model.save()
         Cart.objects.create(kitchen_order=intermediate_model, user=request.user)
-        if request.POST['cart'] == 'cart':
-            return redirect('application:cart')
+        if kwargs['name'] == 'cart':
+            return JsonResponse({'url':'url'})
         else:
-            return redirect('application:index')
+            return JsonResponse({'url':'url'})
 
     if request.method == 'GET':
-        kitchen_styles = KitchenCategory.objects.all()
         worktop = Worktop_category.objects.all()
         appliances = Category_Applianes.objects.all()
         intermediate_model = Combining.objects.select_related('kitchen', 'door', 'cabnet').get(user=request.user,
                                                                                                pk=kwargs['pk'])
         doors = Doors.objects.filter(kitchen=intermediate_model.kitchen)
         cabnet = Cabnets.objects.filter(kitchen=intermediate_model.kitchen)
-        ctx = {'kitchen': kitchen_styles, 'appliances': appliances, 'worktop': worktop, 'door': doors,
+        ctx = { 'appliances': appliances, 'worktop': worktop, 'door': doors,
                'cabnets': cabnet, 'intermediate_model': intermediate_model}
 
 
@@ -514,3 +530,10 @@ def cook(request):
     ctx = {'appliances': appliances, 'worktop': worktop}
 
     return render(request, 'Cookies Policy3 (42).html',ctx)
+
+
+def install_contact(request):
+    worktop = Worktop_category.objects.all()
+    appliances = Category_Applianes.objects.all()
+    ctx = {'appliances': appliances, 'worktop': worktop}
+    return render(request,'installation_contact.html',ctx)

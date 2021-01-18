@@ -6,7 +6,6 @@
     <h2 class="text-center">Color: <span style="color: rgb(46, 154, 135)">{{ kitchen_detail.color }}</span></h2>
 
     <div class="text-center">
-         <a href="" class="btn btn-success mb-3">Edit</a>
         <a href="{% url 'adminPanel:kitchen-units-detail' kitchen_detail.pk %}" class="btn btn-primary mb-3">See available units</a>
         <a href="{% url 'adminPanel:admin-kitchen' %}" class="btn btn-secondary mb-3">Back</a>
     </div>

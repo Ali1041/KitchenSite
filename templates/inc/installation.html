@@ -2,12 +2,12 @@
 {% load static %}
 {% block content %}
     <div class="my-4">
-        <div class="p-3 d-flex justify-content-around mt-3">
-            <div style="width: 40%" class="text-center">
+        <div class="p-3 d-flex justify-content-around mt-3 menu" id="container_remove">
+            <div style="width: 40%" class="text-center" id="search_in">
                 <h4 class='' style="color: rgb(46, 154, 135)">Installation </h4>
                 <h2>Overview</h2>
             </div>
-            <div style="width: 60%">
+            <div style="width: 60%" id="contain">
                 <p>We know how discomforting it can be for a home owner when we are installing kitchens in an occupied house. Our team of experienced fitters would do their best to minimize this discomfort and hasten the process so that you can enjoy the quiet in your house once more. The materials we used during the installation and packaging processes are removed from. This leaves your dream multifunctional kitchen glaring at you and ready to be used..</p>
             </div>
         </div>
@@ -15,7 +15,7 @@
         <div class="row p-2 mt-5" style="width: 90%;margin: auto">
 
 
-            <div class="col-md-3 ">
+            <div class="col-md-3 my-2 ">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body ">
                     <div class="d-flex justify-content-between">
@@ -28,7 +28,7 @@
             </div>
 
 
-            <div class="col-md-3">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -42,7 +42,7 @@
             </div>
 
 
-            <div class="col-md-3">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -59,7 +59,7 @@
             </div>
 
 
-            <div class="col-md-3">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body ">
                     <div class="d-flex justify-content-between">
@@ -79,15 +79,15 @@
 
         <hr class="mt-5"/>
 
-    <div class="row m-0 p-5">
+    <div class="row m-0 p-5" id="container_remove">
         <div class="col-md-6">
-            <div style="width: 70%;margin: auto;height: 100%" class="border">
-
+            <div style="width: 70%;margin: auto;height: 100%" id="search_in">
+                <img src="{% static 'imgs/instalation.jpg' %}" height="450px" class="img1" width="450px" alt="">
             </div>
         </div>
         <div class="col-md-6" >
-            <div style="width: 70%;margin: auto">
-            <div>
+            <div style="width: 70%;margin: auto" id="search_in">
+            <div class="my-2">
                 <h3 style="color: rgb(46, 154, 135)">This is how it begins</h3>
                 <p>We can handle your project from start to finish including planning, design, installation and minor building works that we may encounter.</p>
             </div>
@@ -104,8 +104,8 @@
     </div>
 
     <div class="row ml- mr-0 mt-4 mb-4 bg-light">
-        <div class="col-md-7 bg-light">
-            <video height="400px" controls>
+        <div class="col-md-7 bg-light text-center">
+            <video height="400px" id="video" controls>
                 <source src="{% static 'videos/installation1.mp4' %}" type="video/mp4">
             </video>
         </div>
@@ -116,15 +116,15 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-around">
-        <div style="width: 50%;">
+    <div class="d-flex justify-content-around menu">
+        <div style="width: 50%;" id="contain">
             <h2>Our Story</h2>
             <p>We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout country to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
             </p>
             <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the dorm room or you’re finally downsizing after all of your kids have left the nest.</p></p>
         </div>
-        <div class="align-self-center" >
-            <a href="" class="btn btn-success btn-lg">Contact Us</a>
+        <div class="align-self-center" id="contain">
+            <a href="{% url 'application:installation_contact' %}" class="btn btn-success btn-lg">Contact Us</a>
         </div>
     </div>
 
@@ -136,8 +136,8 @@
         </div>
 
 
-        <div class="col-md-7">
-            <video height="400px" controls>
+        <div class="col-md-7 text-center">
+            <video height="400px" id="video" controls>
                 <source src="{% static 'videos/installation2.mp4' %}" type="video/mp4">
             </video>
         </div>

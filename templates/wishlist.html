@@ -17,8 +17,8 @@
                 {% for item in wishlist %}
                     <tr>
                         {% if item.worktop %}
-                        <td>{{ item.worktop }}</td>
-                        <td>{{ item.worktop.description }}</td>
+                        <td>{{ item.worktop|truncatewords:3 }}</td>
+                        <td>{{ item.worktop.description|truncatewords:3 }}</td>
                         <td>{{ item.worktop.price }}</td>
                         <td><a onclick="the_cart(event,{{ item.worktop.pk }},'create','worktop')"
                         class="btn btn-success">
@@ -28,8 +28,8 @@
 
 
                         {% elif item.appliances %}
-                        <td>{{ item.appliances }}</td>
-                        <td>{{ item.appliances.description }}</td>
+                        <td>{{ item.appliances|truncatewords:3 }}</td>
+                        <td>{{ item.appliances.description|truncatewords:3 }}</td>
                         <td>{{ item.appliances.price }}</td>
                         <td>
                             <a onclick="the_cart(event,{{ item.appliances.pk }},'create','appliance')"

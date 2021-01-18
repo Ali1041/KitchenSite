@@ -36,20 +36,12 @@
         <form action="{% url 'adminPanel:admin-add-units' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <h4 class="text-center">Add Units</h4>
-
-{#            <label for="">Unit Type</label>#}
-{#            <select name="type" id="" class="form-control mb-2">#}
-{#                <option value="">Select unit type</option>#}
-{#                {% for item in types %}#}
-{#                      <option value="{{ item.name }}">{{ item.name}}</option>#}
-{##}
-{#                {% endfor %}#}
-{#            </select>#}
             {% bootstrap_form form %}
             <button class="btn btn-success w-100 mb-2" >Add</button>
-            <a href="{% url 'adminPanel:units' 12 %}"  class="btn btn-secondary w-100">Back</a>
+            <a onclick="history.back()"  class="btn btn-secondary w-100">Back</a>
         </form>
     </div>
+
     {% else %}
     <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-3">
         <form action="{% url 'adminPanel:edit-kitchen-units' item.pk %}" method="POST" enctype="multipart/form-data">
@@ -93,7 +85,7 @@
             </label>
 
             <button class="btn btn-success w-100 mb-2" >Add</button>
-            <a href="{% url 'adminPanel:units' item.pk %}"  class="btn btn-secondary w-100">Back</a>
+            <a href="{% url 'adminPanel:units' item.kitchen.pk %}"  class="btn btn-secondary w-100">Back</a>
         </form>
     </div>
     {% endif %}

@@ -2,8 +2,8 @@
 
 {% block content %}
 
-    <div class="p-5 border my-4" style="width: 30%;margin: auto">
-        <form action="{% url 'application:choose' intermediate_model.pk %}" method="POST">
+    <div class="p-5 border my-4" id="search_in" style="width: 30%;margin: auto">
+        <form action="{% url 'application:choose' intermediate_model.pk 'cart' %}" method="POST">
             {% csrf_token %}
             <h3 class="text-center">Choose colors</h3>
             <select name="door" id="" class="form-control">
@@ -19,10 +19,80 @@
                     <option value="{{ item.cabnet_color }}">{{ item.cabnet_color }}</option>
                 {% endfor %}
             </select>
-            <button class="btn btn-success w-100"><input type="text" hidden name="cart" value="cart">Go to cart</button>
-            <button class="btn btn-info mt-2 w-100"><input type="text" hidden name="cart1" value="browse">Continue browsing</button>
+            <a class="btn btn-success w-100" onclick="choose(event)">Go to cart</a>
+            <a class="btn btn-info mt-2 w-100" onclick="choose(event)">Continue browsing</a>
         </form>
     </div>
 
+    <script>
+        function choose(e){
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+            const pk = `{{ intermediate_model.pk }}`
+            const base_url = 'http://127.0.0.1:8000'
+
+            if (e.target.innerHTML==='Go to cart'){
+                const cabnet_color = e.target.previousElementSibling.value
+                const door_color = e.target.previousElementSibling.previousElementSibling.value
+                fetch(`${base_url}/doors/cabnets/${pk}/cart/`,{
+                    method:'POST',
+                    body:JSON.stringify({cabnet_color,door_color}),
+                    headers:{
+                        'Content-Type':'application/json',
+                        'X-CSRFTOKEN':csrftoken
+
+                    }
+                })
+
+                .then((res)=>{
+                    console.log('here')
+                    return res.json()
+                })
+                .then((result)=>{
+                    console.log('here2',result)
+                    location.replace(`${base_url}/cart/`)
+                })
+            }
+
+
+            else{
+                console.log(e.target.previousElementSibling.previousElementSibling.value)
+                const cabnet_color = e.target.previousElementSibling.previousElementSibling.value
+                const door_color = e.target.previousElementSibling.previousElementSibling.previousElementSibling.value
+                fetch(`${base_url}/doors/cabnets/${pk}/browse/`,{
+                    method:'POST',
+                    body:JSON.stringify({cabnet_color,door_color}),
+                    headers:{
+                        'Content-Type':'application/json',
+                        'X-CSRFTOKEN':csrftoken
+
+                    }
+                })
+
+                .then((res)=>{
+                    return res.json()
+                })
+                .then((result)=>{
+                    location.replace(`${base_url}/all-kitchen/`)
+                })
+            }
+            }
+
+
+    </script>
 
 {% endblock %}

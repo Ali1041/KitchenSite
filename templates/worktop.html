@@ -15,14 +15,30 @@
 
         </div>
 
+        <div class="container text-center my-2">
+                <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
 
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+            </div>
         {% for item in list %}
             <div class="border border-rounded d-flex mb-5 menu pb-3 " id="search_in" style="width: 60%;margin: auto">
-                <div style="width: fit-content;">
+                <div style="width: fit-content;" id="contain">
                     <img src="{{ item.get_photo_url }}" class="img1" height="245px" width="367px"     alt="">
                 </div>
 
-                <div class="align-self-center ml-5">
+                <div class="align-self-center ml-5" id="contain">
                     <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}" style="text-decoration: none;color: inherit" >{{ item }}</a></h5>
                     <h4>£ {{ item.price }}</h4>
                     <p>{{ item.description }}</p>
@@ -41,7 +57,7 @@
 
             <div class="bg-light p-2 mb-3">
             <form method="GET" id="remove_form" style="width: 80%;margin: auto"
-                  class="d-flex justify-content-around my-2" action="{% url 'application:appliances-list' list.first.category.pk %}">
+                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:appliances-list' list.first.category.pk %}">
                 {{ search.form }}
                 <button class="btn btn-success align-self-center">Apply Filter</button>
                 <a href="{% url 'application:appliances-list' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
@@ -49,16 +65,33 @@
 
         </div>
 
+                    <div class="container">
+                <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+            </div>
         {% for item in list %}
-            <div class="border border-rounded d-flex mb-5 menu" style="width: 60%;margin: auto">
-                <div style="width: fit-content;">
-                    <img src="{{ item.get_photo_url }}" class="img" height="245px" width="367px"     alt="">
+            <div class="border border-rounded d-flex mb-5 menu" id="search_in" style="width: 60%;margin: auto">
+                <div style="width: fit-content;" id="contain">
+                    <img src="{{ item.get_photo_url }}" id="k_img" height="245px" width="367px"     alt="">
                 </div>
 
-                <div class="align-self-center ml-5">
+                <div class="align-self-center ml-5" id="contain">
                     <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}" >{{ item }}</a></h5>
                     <h4>£ {{ item.price }}</h4>
-                    <p>{{ item.description }}</p>
+                    <p>{{ item.description|truncatewords:15 }}</p>
                     <p>Type: {{ item.appliances_type }}</p>
                     <p>Brand: {{ item.brand_name }}</p>
 {#                    <input type="number" class="" style="width: 40%;display: inline" >#}
