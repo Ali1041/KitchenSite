@@ -9,8 +9,8 @@ import openpyxl
 from openpyxl_image_loader import SheetImageLoader
 from io import BytesIO
 from django.core.files import File
-
-
+from django.core.files.storage import default_storage
+import os
 # Create your views here.
 
 def index(request):
@@ -43,7 +43,7 @@ class KitchenDetailview(generic.ListView):
 
 # kitchen add
 def kitchenadd(request):
-    ctx = {'form': KitchenForm, 'door': DoorsForm, 'cabnets': CabnetsForm}
+    ctx = {'form': KitchenForm}
     if request.method == 'POST':
         files = request.FILES.get('img')
         form = KitchenForm(request.POST or None, request.FILES or None)
@@ -52,21 +52,21 @@ def kitchenadd(request):
             x = form.cleaned_data
 
             form.save(commit=True)
-            kitchen = Kitchen.objects.select_related('kitchen_type').get(kitchen_type=x['kitchen_type'],
-                                                                         color=x['color'], description=x['description'])
-
-            # doors
-            door = Doors.objects.create(kitchen=kitchen, door_color=request.POST['door_color'])
-            door.door_img = request.FILES.get('door_img')
-            door.save()
-
-            # cabnets
-            cabnets = Cabnets.objects.create(kitchen=kitchen, cabnet_color=request.POST['cabnet_color'])
-            cabnets.cabnet_img = request.FILES.get('cabnet_img')
-            cabnets.save()
-            img = Images.objects.create(kitchen=KitchenCategory.objects.get(name=x['kitchen_type']))
-            img.img = files
-            img.save()
+            # kitchen = Kitchen.objects.select_related('kitchen_type').get(kitchen_type=x['kitchen_type'],
+            #                                                              color=x['color'], description=x['description'])
+            #
+            # # doors
+            # door = Doors.objects.create(kitchen=kitchen, door_color=request.POST['door_color'])
+            # door.door_img = request.FILES.get('door_img')
+            # door.save()
+            #
+            # # cabnets
+            # cabnets = Cabnets.objects.create(kitchen=kitchen, cabnet_color=request.POST['cabnet_color'])
+            # cabnets.cabnet_img = request.FILES.get('cabnet_img')
+            # cabnets.save()
+            # img = Images.objects.create(kitchen=KitchenCategory.objects.get(name=x['kitchen_type']))
+            # img.img = files
+            # img.save()
             return redirect('adminPanel:admin-kitchen')
 
     return render(request, 'adminPanel/admin_add_kitchen.html', ctx)
@@ -81,11 +81,11 @@ class CompleteKitchenDetail(generic.DetailView):
     def get_context_data(self, **kwargs):
         ctx = super(CompleteKitchenDetail, self).get_context_data(**kwargs)
         kitchen = Kitchen.objects.select_related('kitchen_type').get(pk=self.kwargs['pk'])
-        doors = Doors.objects.select_related('kitchen').get(kitchen=kitchen)
-        cabnets = Cabnets.objects.select_related('kitchen').get(kitchen=kitchen)
-        ctx['doors'] = doors
-        ctx['cabnets'] = cabnets
-        ctx['imgs'] = Images.objects.select_related('kitchen').filter(kitchen=kitchen.kitchen_type)
+        # doors = Doors.objects.select_related('kitchen').get(kitchen=kitchen)
+        # cabnets = Cabnets.objects.select_related('kitchen').get(kitchen=kitchen)
+        # ctx['doors'] = doors
+        # ctx['cabnets'] = cabnets
+        # ctx['imgs'] = Images.objects.select_related('kitchen').filter(kitchen=kitchen.kitchen_type)
         # print(ctx['imgs'].img)
         return ctx
 
@@ -412,7 +412,7 @@ def bulk_add(request):
 
 def file_reading(request, **kwargs):
     file = UploadFile.objects.first()
-    x = openpyxl.load_workbook(file.file.path)
+    x = openpyxl.load_workbook(default_storage.open(file.file.name))
     if kwargs['name'] == 'appliance':
         worksheet = x[kwargs['category']]
         cat = Category_Applianes.objects.get(name=kwargs['category'])

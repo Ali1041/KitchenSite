@@ -3,6 +3,8 @@
 {% bootstrap_css %}
 {% bootstrap_jquery %}
 {% bootstrap_javascript %}
+{% load custom_tag %}
+
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
 
 {% block content %}
@@ -13,7 +15,7 @@
 
             <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
               <div class="carousel-inner">
-                  {% for pics in imgs %}
+                  {% for pics in kitchen_color %}
                 <div class="carousel-item bg-dark get" >
                   <img class="d-block w-100 img1"  style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="First slide">
                 </div>
@@ -32,7 +34,9 @@
               </a>
             </div>
             </div>
-            <div class="my-2">
+
+
+            <div class="container my-2">
                 <p>{{ kitchen_color.first.description }}</p>
             </div>
 
@@ -42,7 +46,12 @@
 
             <div style="width:30%" id="search_in" class="p-3 align-self-center" >
                 <form action="{% url 'application:kitchen-view' kitchen_view.pk %}" id="filter" class="text-center" >
-                    {% bootstrap_form search.form %}
+                    <select name="unit_type" id="" class="form-control  mb-2">
+                        <option value="" >Select a unit</option>
+                        {% for item in search %}
+                            <option value="{{ item.pk }}">{{ item }}</option>
+                        {% endfor %}
+                    </select>
                     <button class="btn btn-success">Apply filter</button>
                     <a href="{% url 'application:kitchen-view' kitchen_view.pk %}" class="btn btn-secondary">Remove filter</a>
                 </form>
@@ -66,8 +75,8 @@
             <div class="container">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -75,8 +84,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>
@@ -88,6 +97,7 @@
                     <th>Type</th>
                     <th>Description</th>
                     <th>Price(Including V.A.T)</th>
+                    <th>Qty</th>
                     <th>Add to cart</th>
                 </tr>
             </thead>
@@ -95,12 +105,14 @@
 
             {% for item in units %}
                 <tr>
-                    <td><img src="{{ item.get_photo_url }}" width="70px" height="70px" alt=""></td>
+                    <td><img src="{{ item.get_photo_url }}" loading="lazy" width="70px" height="70px" alt=""></td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.unit_type }}</td>
                     <td>{{ item.description }}</td>
                     <td>£ {{ item.price }}</td>
-                    <td><a id="url" onclick="stop(event)"  href="{% url 'application:add-to-cart' 'kitchen' item.kitchen item.pk 1 'create' %}"><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
+                    <td><input onchange="qty(event)" type="number" value="1" class="form-control input" style="width: 60%;" min="1"></td>
+                    <td><a id="url" style="color: rgb(46, 154, 135)"
+                           onclick="stop(event)"  href="{% url 'application:add-to-cart' 'kitchen' item.kitchen item.pk 1 'create' %}"><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
 
                 </tr>
             {% endfor %}
@@ -112,10 +124,10 @@
             </div>
         {% endif %}
         <div class="d-flex justify-content-around my-3 menu p-2">
-            <a href="" class="btn btn-primary menu bottom">Door Guide</a>
-            <a href="" class="btn btn-primary menu bottom">Tall Unit Guide</a>
-            <a href="" class="btn btn-primary menu bottom">Extra Tall Unit Guide</a>
-            <a href="" class="btn btn-primary menu bottom">Carcases Tech Guide</a>
+            <a href="{{ kitchen_color.first.doors_guide }}" class="btn btn-success menu bottom">Door Guide</a>
+            <a href="{{ kitchen_color.first.tall_unit_guide }}" class="btn btn-success menu bottom">Tall Unit Guide</a>
+            <a href="{{ kitchen_color.first.x_tall_unit_guide }}" class="btn btn-success menu bottom">Extra Tall Unit Guide</a>
+            <a href="{{ kitchen_color.first.carcases_tech_guide }}" class="btn btn-success menu bottom">Carcases Tech Guide</a>
         </div>
         {% else %}
         <div class="alert alert-primary" role="alert">
@@ -127,15 +139,10 @@
     <script>
     const img = document.getElementsByClassName('get')
     img[0].classList.add('active')
-    const form = document.getElementById('filter')
-    console.log(form.children[0].children[0])
-    form.children[0].children[0].remove()
-    form.children[0].children[0].setAttribute('placeholder','Unit Type....')
-    {#  href="{% url 'application:add-to-cart' 'kitchen' item.kitchen item.pk 1 'create' %}"   #}
+
 
     function stop(e){
         const s = document.getElementById('select')
-        console.log(s.value)
         if (s.value===''){
             alert('Select a color')
 
@@ -146,19 +153,23 @@
 
             const table = document.getElementById('table').children
             const color = e.target.value
-
-    console.log(table)
     for (let i=0;i<table.length;i++){
-        const x = table[i].children[5].firstElementChild.href
+        const x = table[i].children[6].firstElementChild.href
+        const qty = table[i].children[5].firstElementChild.value
         const y=x.split('/')
         const base_url = 'http://127.0.0.1:8000'
-        const new_url = `${base_url}/add-to-cart/${color}/${y[5]}/${y[6]}/${y[7]}/${y[8]}/`
-        table[i].children[5].firstElementChild.setAttribute('href',new_url)
+        const new_url = `${base_url}/add-to-cart/${color}/${y[5]}/${y[6]}/${qty}/${y[8]}/`
+        table[i].children[6].firstElementChild.setAttribute('href',new_url)
     }
 
-
-
-
+    }
+        function qty(e){
+        const qty = e.target.value
+        const href = e.target.parentElement.nextElementSibling.firstElementChild.href
+        const split_href = href.split('/')
+        const new_url = `${split_href[0]}//${split_href[2]}/${split_href[3]}/${split_href[4]}/${split_href[5]}/${split_href[6]}/${qty}/${split_href[8]}/`
+        console.log(new_url)
+        e.target.parentElement.nextElementSibling.firstElementChild.href = new_url
     }
     </script>
 {% endblock %}

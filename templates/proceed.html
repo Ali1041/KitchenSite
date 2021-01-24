@@ -5,19 +5,14 @@
     <div class="p-5 border my-4" id="search_in" style="width: 30%;margin: auto">
         <form action="{% url 'application:choose' intermediate_model.pk 'cart' %}" method="POST">
             {% csrf_token %}
-            <h3 class="text-center">Choose colors</h3>
+            <h3 class="text-center">Door & cabnet color</h3>
             <select name="door" id="" class="form-control">
-                <option value="">Select a door color</option>
-                {% for item in door %}
-                    <option value="{{ item.door_color }}">{{ item.door_color }}</option>
-                {% endfor %}
+{#                <option value="">Select a door color</option>#}
+                    <option value="{{ intermediate_model.kitchen.door_color }}">{{ intermediate_model.kitchen.door_color }}</option>
             </select>
 
             <select name="cabnet" id="" class="form-control my-3">
-                <option value="">Select a cabnet color</option>
-                {% for item in cabnets %}
-                    <option value="{{ item.cabnet_color }}">{{ item.cabnet_color }}</option>
-                {% endfor %}
+                    <option value="{{ intermediate_model.kitchen.cabnet }}">{{ intermediate_model.kitchen.cabnet }}</option>
             </select>
             <a class="btn btn-success w-100" onclick="choose(event)">Go to cart</a>
             <a class="btn btn-info mt-2 w-100" onclick="choose(event)">Continue browsing</a>

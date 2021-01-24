@@ -3,28 +3,31 @@
 {% block content %}
     {% if cart %}
     <div class='container my-4' id="container_remove">
-    <p id="info"></p>
-        <table class="table table-striped table-responsive">
+
+{#  worktop cart table  #}
+    {% if worktop_cart %}
+        <h3>Worktop Cart</h3>
+        <p id="info_worktop"></p>
+
+        <table class="table table-striped table-responsive1">
             <thead>
                 <tr>
                     <th>Image</th>
                     <th>Product</th>
                     <th>Description</th>
-{#                    {% if size %}#}
-{#                        <th>Size</th>#}
-{#                    {% endif %}#}
+                    <th>Size</th>
                     <th>Quantity</th>
                     <th>Price(£)</th>
                     <th class="text-center">Option</th>
                 </tr>
             </thead>
             <tbody>
-                {% for item in cart %}
+                {% for item in worktop_cart %}
                     <tr>
-                        {% if item.worktop %}
                         <td><img src="{{ item.worktop.get_photo_url }}" height="30px" alt=""></td>
                         <td>{{ item.worktop }}</td>
                         <td>{{ item.worktop.description|truncatewords:3 }}</td>
+                        <td>{{ item.worktop.size }}</td>
                         <td style="width: 20%" id="search_in">
                             <input type="number" onchange="changing(event,`{{ item.worktop.pk }}`,'worktop','update')"
                                    id="search_in"
@@ -36,8 +39,31 @@
                         <td class="text-center"><a class="m-0 text-center" style="text-decoration: none;width: fit-content;color: red;cursor: pointer"
                         onclick="remove_cart(event,{{ item.worktop.pk }},'delete','worktop')
                                        ">x</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 
-                        {% elif item.appliances %}
+{#  appliance cart table  #}
+    {% if appliances_cart %}
+        <h3>Appliances Cart</h3>
+        <p id="info_app"></p>
+
+        <table class="table table-striped table-responsive1">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price(£)</th>
+                    <th class="text-center">Option</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in appliances_cart %}
+                    <tr>
                         <td><img src="{{ item.appliances.get_photo_url }}" height="30px" alt=""></td>
                         <td>{{ item.appliances|truncatewords:4 }}</td>
                         <td>{{ item.appliances.description|truncatewords:3 }}</td>
@@ -52,55 +78,104 @@
                         onclick="remove_cart(event,{{ item.appliances.pk }},'delete','appliance')"
                                 class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a></td>
 
-
-                        {% elif item.service %}
-                        <td>{{ item.service }}</td>
-                        <td>Designing service</td>
-                            <td>1</td>
-                        <td>50</td>
-
-                        <td><a
-                        onclick="remove_cart(event,1,'delete','service')"
-                                class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a></td>
-                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+
+    {% endif %}
+
+
+
+{#  kitchen cart table  #}
     {% for item in cart %}
         {% if item.kitchen_order %}
-            <div class="container my-2">
+            <p id="info_kitchen"></p>
+            <div class=" my-2">
                 <div class="card shadow p-3 border-rounded">
                 <div class="card-title d-flex justify-content-between">
-                    <h5 class="m-0">Kitchen: {{ item.kitchen_order.kitchen }}</h5>
+                    <h3 class="m-0">{{ item.kitchen_order.kitchen }}</h3>
                     <a onclick="remove_cart(event,{{ item.kitchen_order.pk }},'delete',`{{ item.kitchen_order.kitchen.color }}`)" style="color: white;text-decoration: none" class="btn btn-danger">X</a>
                 </div>
                     <div class="card-body">
+                    <div class="text-center my-2">
+                        <img src="{{ item.kitchen_order.kitchen.get_photo_url }}" id="k_img" height="300px" alt="">
+
+                    </div>
                     {% if item.kitchen_order.units.all %}
-                        <p class="m-0">Units purchased are:</p>
-                        <ul>
-                            {% for i in item.kitchen_order.units.all %}
-                            <li>{{ i }} -- {{ i.unit_type }} -- {{ i.sku }} -- £ {{ i.price }}</li>
-                            {% endfor %}
-                        </ul>
+                        <h5 >Units purchased are:</h5>
+                        <p id="unit_info"></p>
+                                <table class="table table-striped table-responsive1">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>Unit type</th>
+                                            <th>SKU</th>
+                                            <th>Price</th>
+                                            <th>Qty</th>
+                                            <th class="text-center">Option</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in item.kitchen_order.units_intermediate_set.all %}
+                                            <tr>
+                                                <td><img src="{{ i.unit.get_photo_url }}" height="45px" width="40px" alt=""></td>
+                                                <td>{{ i.unit }}</td>
+                                                <td>{{ i.unit.unit_type }}</td>
+                                                <td>{{ i.unit.sku }}</td>
+                                                <td>{{ i.unit.price }}</td>
+                                                <td>
+                                                    <input onchange="unit_change(event,{{ i.pk }},'change')" style="width: 60%"
+                                                            type="number" value="{{ i.qty }}" class="form-control input">
+                                                </td>
+                                                <td><p style="cursor: pointer;color: red" class="text-center" onclick="unit_change(event,{{ i.pk }},'delete')"
+                                                >x</p></td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
                         {% else %}
                             <h5>No units</h5>
                         {% endif %}
-                        <p class="m-0"><b>Door color:</b> {{ item.kitchen_order.door.door_color }}</p>
-                        <p><b>Cabnet color:</b> {{ item.kitchen_order.cabnet.cabnet_color }}</p>
-                        <p>All our cabnets come with doors unless specified</p>
+                        <p class="m-0"><b>Door color:</b> {{ item.kitchen_order.kitchen.door_color }}</p>
+                        <p><b>Cabnet color:</b> {{ item.kitchen_order.kitchen.cabnet }}</p>
+                        <p>All our cabnets come with doors unless specified.Doors come undrilled and we can drill the side you require i.e left or right handed, but you have to specify this later.</p>
+                        <p>Doors will be provided with cabinets</p>
+                        <p>Handles will also be provided as per the images.</p>
                     </div>
                 </div>
             <div>
         {% endif %}
 
 
-        </div>
-    </div>
 
     {% endfor %}
+        {% if service %}
+            <p id="info_service"></p>
+    <div class="card shadow p-3 border-rounded">
+        <div class="card-title d-flex justify-content-between m-0">
+            <h5 class="m-0">Service</h5>
+            <a onclick="remove_cart(event,1,'delete','service')"
+                                class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a>
+        </div>
+        <div class="card-body">
+            <p>{{ item.service }}</p>
+            <p>Designing service</p>
+            <p>Price: <b>£ 50</b></p>
+        </div>
+
+    </div>
+            {% endif %}
+
+    </div>
+        </div>
     <div class="container my-2">
     <h3>Grand total(including VAT): £ {{ total }}</h3>
+                <small class="d-block">Note:For orders below £ 300, £ 30 are delivery charges.</small>
+
         <a href="" class="btn btn-success">Proceed to checkout</a>
     </div>
     </div>
@@ -110,17 +185,63 @@
         </div>
     {% endif %}
     <script>
-        function remove_cart(e,pk,process,pro){
-            console.log(pk,process,pro)
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
-            fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
+        function unit_change(e,pk,status){
+             const p =document.getElementById('unit_info')
+            let qty = 1
+            if (status==='change'){
+                qty = e.target.value
 
+            }
+
+            const base_url = 'http://127.0.0.1:8000'
+            fetch(`${base_url}/unit-change/${pk}/${status}/${qty}/`)
             .then((res)=>{
                 return res.json()
             })
             .then((result)=>{
-                console.log(result)
-                const p =document.getElementById('info')
+                if (status==='change'){
+                    p.innerHTML = 'Updated!!'
+                    p.style.color = 'green'
+                }
+                else if (status==='delete'){
+                    p.innerHTML = 'Removed!!'
+                    p.style.color = 'red'
+                }
+
+                setTimeout(()=>{
+                    p.innerHTML = ''
+                    location.reload()
+                },1500)
+            })
+        }
+
+
+        function remove_cart(e,pk,process,pro){
+            console.log(pro)
+            const base_url = 'http://127.0.0.1:8000/add-to-cart';
+            let p='';
+
+            fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
+            .then((res)=>{
+                return res.json()
+            })
+            .then((result)=>{
+                if (pro==='worktop'){
+                 p =document.getElementById('info_worktop')
+
+                }
+                else if (pro==='appliance'){
+                 p =document.getElementById('info_app')
+
+                }
+                else if (pro==='service'){
+                 p =document.getElementById('info_service')
+
+                }
+                else{
+                 p =document.getElementById('info_kitchen')
+
+                }
                 p.style.color = 'red'
                 p.innerHTML = 'Removed from cart!!!'
                 setTimeout(()=>{
@@ -131,16 +252,31 @@
         }
 
         function changing(e,pk,name,status){
-            console.log(e.target.value,pk,name,status)
             const qty = e.target.value
             const base_url = 'http://127.0.0.1:8000/add-to-cart'
-            const p =document.getElementById('info')
-
+            let p=''
             fetch(`${base_url}/${name}/any/${pk}/${qty}/${status}`)
             .then((res)=>{
                 return
             })
             .then((result)=>{
+                if (name==='worktop'){
+                p =document.getElementById('info_worktop')
+                    console.log('here')
+
+                }
+                else if (name==='appliance'){
+                 p =document.getElementById('info_app')
+
+                }
+                else if (name==='service'){
+                 p =document.getElementById('info_service')
+
+                }
+                else if(name==='kitchen'){
+                 p =document.getElementById('info_kitchen')
+
+                }
                 p.innerHTML = 'Updated!!';
                 p.style.color = 'green'
                 setTimeout(()=>{

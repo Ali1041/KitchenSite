@@ -18,6 +18,7 @@ urlpatterns = [
     # kitchen
     path('all-kitchen/', AllKitchenView.as_view(), name='all-kitchen'),
     path('kitchen-view/<int:pk>/', KitchenView.as_view(), name='kitchen-view'),
+    path('unit-change/<int:pk>/<str:name>/<int:qty>/',unit_change,name='unit-change'),
 
     # worktop
     path('worktop/<int:pk>/', WorktopListView.as_view(), name='worktop-view'),

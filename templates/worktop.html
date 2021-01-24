@@ -1,14 +1,34 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap4 %}
+{% load custom_tag %}
 {% block content %}
-
+    {% if list %}
     <div class="my-3">
     {% ifequal product 'worktop' %}
+{#   filter form of worktop     #}
+        {% if stone %}
+            <div class="container">
+                <h3>Stone Worktops</h3>
+                <p>We can supply all stone worktops Marble, Granite, Quartz and Onyx. We supply branded and unbranded both stone worktops. But we will only provide a price if you buy a kitchen with design and installation from us</p>
+
+            </div>
+        {% else %}
         <div class="bg-light p-2 mb-3">
-            <form method="GET" id="remove_form" style="width: 80%;margin: auto"
+            <form method="GET" id="remove_form" onsubmit="" style="width: 80%;margin: auto"
                   class="d-flex justify-content-around my-2 menu" action="{% url 'application:worktop-view' list.first.category.pk %}">
-                {{ search.form }}
+                <select name="name__iexact" id="name__iexact" class="form-control" style="width: 17%">
+                    <option value="">Select Name</option>
+                    {% for i in select %}
+                        <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+{#                {{ search.form }}#}
+                <label class="align-self-center">Min value: £ <span id="output_min">100</span></label>
+                <input type="range" name="price__gte" id="price_lt" value="100" oninput="change(event)" step="any" max="500" min="100">
+                <label for="" class="align-self-center">Max Value: £ <span id="output_max">500</span></label>
+                <input type="range" name="price__lte" id="price_gt" value="500" step="any" max="500" min="100" oninput="change(event)">
+
                 <button class="btn btn-success align-self-center">Apply Filter</button>
                 <a href="{% url 'application:worktop-view' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
             </form>
@@ -18,8 +38,8 @@
         <div class="container text-center my-2">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -27,22 +47,26 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>
+
+{#   Wokrtop list     #}
         {% for item in list %}
             <div class="border border-rounded d-flex mb-5 menu pb-3 " id="search_in" style="width: 60%;margin: auto">
                 <div style="width: fit-content;" id="contain">
-                    <img src="{{ item.get_photo_url }}" class="img1" height="245px" width="367px"     alt="">
+                    <img src="{{ item.get_photo_url }}" loading="lazy" class="img1" height="245px" width="367px"     alt="">
                 </div>
 
                 <div class="align-self-center ml-5" id="contain">
-                    <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}" style="text-decoration: none;color: inherit" >{{ item }}</a></h5>
+                    <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}" style="color:rgb(46, 154, 135)" >{{ item }}</a></h5>
                     <h4>£ {{ item.price }}</h4>
                     <p>{{ item.description }}</p>
-                    <p>Dimension/Size: {{ item.size }}</p>
+                    <p class="m-0">Dimension/Size: {{ item.size }}</p>
+                    <p class="m-0" style="color: green;font-weight: 700" id="add{{ item.pk }}"></p>
+
 {#                    <input type="number" class="" style="width: 40%;display: inline" >#}
                     <a onclick="add_cart_1(event,{{ item.pk }},'create','worktop')"
                        class="btn btn-success">Add to cart</a>
@@ -51,25 +75,42 @@
             </div>
 
         {% endfor %}
-    {% else %}
+
+        {% endif %}
+
+{#   Appliances part     #}
+
+    {% else  %}
 
         {% if list %}
 
+{#    Filter form of appliances        #}
             <div class="bg-light p-2 mb-3">
             <form method="GET" id="remove_form" style="width: 80%;margin: auto"
                   class="d-flex justify-content-around my-2 menu" action="{% url 'application:appliances-list' list.first.category.pk %}">
-                {{ search.form }}
+{#                {{ search.form }}#}
+                <select name="name__iexact" id="" class="form-control" style="width: 17%">
+                    <option value="">Select Name</option>
+                    {% for item in select %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+                <label class="align-self-center">Min value: £ <span id="output_min">100</span></label>
+                <input type="range" name="price__gte" id="price_lt" value="100" oninput="change(event)" step="any" max="500" min="100">
+                <label for="" class="align-self-center">Max Value: £ <span id="output_max">500</span></label>
+                <input type="range" name="price__lte" id="price_gt" value="500" step="any" max="500" min="100" oninput="change(event)">
+
                 <button class="btn btn-success align-self-center">Apply Filter</button>
                 <a href="{% url 'application:appliances-list' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
             </form>
 
         </div>
 
-                    <div class="container">
+        <div class="container text-center my-2">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -77,24 +118,28 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>
+
         {% for item in list %}
+
             <div class="border border-rounded d-flex mb-5 menu" id="search_in" style="width: 60%;margin: auto">
                 <div style="width: fit-content;" id="contain">
-                    <img src="{{ item.get_photo_url }}" id="k_img" height="245px" width="367px"     alt="">
+                    <img src="{{ item.get_photo_url }}" loading="lazy" id="k_img" height="245px"      alt="">
                 </div>
 
                 <div class="align-self-center ml-5" id="contain">
-                    <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}" >{{ item }}</a></h5>
+                    <h5 style="color: rgb(46, 154, 135)"><a style="color: rgb(46, 154, 135)" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}" >{{ item }}</a></h5>
                     <h4>£ {{ item.price }}</h4>
                     <p>{{ item.description|truncatewords:15 }}</p>
                     <p>Type: {{ item.appliances_type }}</p>
                     <p>Brand: {{ item.brand_name }}</p>
 {#                    <input type="number" class="" style="width: 40%;display: inline" >#}
+                    <p class="m-0" style="color: green;font-weight: 700" id="add{{ item.pk }}"></p>
+
                     <a onclick="add_cart_1(event,{{ item.pk }},'create','appliance')"
                        class="btn btn-success">Add to cart</a>
                     <a href="{% url 'application:wishlist' 'appliance' item.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt=""></a>
@@ -111,45 +156,39 @@
         {% endif %}
     {% endifequal %}
     </div>
-
+    {% else %}
+        <div class="alert alert-primary text-center" role="alert">
+            We have noting that matches your filters!!!
+        </div>
+    {% endif %}
     <script>
-            const product = `{{ product }}`;
-            let q = 0
-            if (product==='worktop'){
-                q = 2
-            }
-            else{
-                q=3
-            }
-            const form = document.getElementById('remove_form').children
-            for (let i=0;i<=q;i++){
-            if (form[0]||i%2){
-                const place = form[i].innerHTML
-                form[i].remove()
-                form[i].setAttribute('class','form-control mr-2 my-2')
-                form[i].setAttribute('placeholder',place)
-                if (window.innerWidth<768){
-                    form[i].style.width = 100+'%'
-                }
-            else {
+        const out_max = document.getElementById('output_max')
+        const out_min = document.getElementById('output_min')
+        function change(e){
+            e.target.previousElementSibling.firstElementChild.innerHTML = parseInt(e.target.value)
 
-
-                    form[i].style.width = 17 + '%';
-                }
-            }
-
-       }
+        }
 
             function add_cart_1(e,pk,process,pro){
-            console.log(pk,process,pro)
             const base_url = 'http://127.0.0.1:8000/add-to-cart'
             fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
 
             .then((res)=>{
-                return res.json()
+                return res.url
             })
             .then((result)=>{
-                return
+                const check = result.split('/')
+                if (check[3]==='login'){
+                    location.replace(result)
+                }
+                else{
+                const p = document.getElementById(`add${pk}`)
+                p.innerHTML = 'Added to cart!!'
+                setTimeout(()=>{
+                    p.innerHTML = ''
+                },1500)
+                }
+
             })
         }
 

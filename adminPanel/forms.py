@@ -20,29 +20,29 @@ class KitchenForm(forms.ModelForm):
         model = Kitchen
         fields = '__all__'
 
-
-class ImagesForm(forms.ModelForm):
-    class Meta:
-        model = Images
-        exclude = ['kitchen', ]
-
-
-class DoorsForm(forms.ModelForm):
-    class Meta:
-        model = Doors
-        exclude = ('kitchen',)
-
-    def save(self, commit=False):
-        return super(DoorsForm, self).save(commit)
-
-
-class CabnetsForm(forms.ModelForm):
-    class Meta:
-        model = Cabnets
-        exclude = ('kitchen',)
-
-    def save(self, commit=False):
-        return super(CabnetsForm, self).save(commit)
+#
+# class ImagesForm(forms.ModelForm):
+#     class Meta:
+#         model = Images
+#         exclude = ['kitchen', ]
+#
+#
+# class DoorsForm(forms.ModelForm):
+#     class Meta:
+#         model = Doors
+#         exclude = ('kitchen',)
+#
+#     def save(self, commit=False):
+#         return super(DoorsForm, self).save(commit)
+#
+#
+# class CabnetsForm(forms.ModelForm):
+#     class Meta:
+#         model = Cabnets
+#         exclude = ('kitchen',)
+#
+#     def save(self, commit=False):
+#         return super(CabnetsForm, self).save(commit)
 
 
 class AddUnitsForm(forms.ModelForm):

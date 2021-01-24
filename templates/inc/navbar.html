@@ -1,8 +1,5 @@
 {% load static %}
 
-{#<head>#}
-{#<link rel="stylesheet" href="{% static 'css/navbar.css' %}">#}
-{#</head>#}
 <div class="p-3 bg-light">
     <div class="d-flex">
 
@@ -43,7 +40,8 @@
                     {% csrf_token %}
                 <input type="text" name="search" placeholder="Search..." class="form-control">
                 <button class="btn btn-success">
-                    <img style="position: relative;left: -7%" src="{% static 'Svg/search-solid.svg' %}" height="20px" class="align-self-center" alt=""></button>
+
+{#                    <img style="position: relative;left: -7%" src="{% static 'Svg/search-solid.svg' %}" height="20px" class="align-self-center" alt=""></button>#}
                 </form>
             </div>
 

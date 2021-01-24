@@ -10,30 +10,9 @@
         <a href="{% url 'adminPanel:admin-kitchen' %}" class="btn btn-secondary mb-3">Back</a>
     </div>
     
-        <div style="width: 100%;margin: auto" class="my-3">
+        <div style="width: 100%;margin: auto" class="my-3 text-center">
 
-
-            <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
-              <div class="carousel-inner">
-                  {% for pics in imgs %}
-                <div class="carousel-item bg-dark get" >
-                  <img class="d-block w-100" style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="First slide">
-                </div>
-                  {% endfor %}
-              <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls" role="button" data-slide="prev">
-                <div class="p-3 bg-dark" style="">
-                    <span class="carousel-control-prev-icon"  style="color: black!important;" aria-hidden="true"></span>
-                    <span class="sr-only" style="padding: 20px!important;" id="arrow_left">Previous</span>
-                </div>
-              </a>
-              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                <div class="p-3 bg-dark">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </div>
-              </a>
-            </div>
-            </div>
+            <img src="{{ kitchen_detail.get_photo_url }}" height="500px" alt="">
 
 
         </div>
@@ -43,13 +22,13 @@
         <div class="card shadow p-3">
             <h5 class="card-title">Cabnet Colors</h5>
             <ul>
-                <li>{{ cabnets.cabnet_color }}</li>
+                <li>{{ kitchen_detail.cabnet }}</li>
             </ul>
         </div>
         <div class="card shadow p-3">
             <h5>Door colors</h5>
             <ul>
-               <li>{{ cabnets.cabnet_color }}</li>
+               <li>{{ kitchen_detail.door_color }}</li>
             </ul>
         </div>
     </div>
@@ -62,3 +41,27 @@
     </script>
 
 {% endblock %}
+
+
+
+{#            <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">#}
+{#              <div class="carousel-inner">#}
+{#                  {% for pics in imgs %}#}
+{#                <div class="carousel-item bg-dark get" >#}
+{#                  <img class="d-block w-100" style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="First slide">#}
+{#                </div>#}
+{#                  {% endfor %}#}
+{#              <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls" role="button" data-slide="prev">#}
+{#                <div class="p-3 bg-dark" style="">#}
+{#                    <span class="carousel-control-prev-icon"  style="color: black!important;" aria-hidden="true"></span>#}
+{#                    <span class="sr-only" style="padding: 20px!important;" id="arrow_left">Previous</span>#}
+{#                </div>#}
+{#              </a>#}
+{#              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">#}
+{#                <div class="p-3 bg-dark">#}
+{#                    <span class="carousel-control-next-icon" aria-hidden="true"></span>#}
+{#                    <span class="sr-only">Next</span>#}
+{#                </div>#}
+{#              </a>#}
+{#            </div>#}
+{#            </div>#}

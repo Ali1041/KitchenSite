@@ -42,47 +42,49 @@ class Kitchen(models.Model):
     tall_unit_guide = models.URLField(blank=True, null=True)
     x_tall_unit_guide = models.URLField(blank=True, null=True)
     carcases_tech_guide = models.URLField(blank=True, null=True)
+    door_color = models.CharField(max_length=128,blank=True, null=True)
+    cabnet = models.CharField(max_length=128,blank=True, null=True)
+    img = models.ImageField(upload_to='kitchen', null=True, blank=True)
 
     def __str__(self):
         return f'{self.kitchen_type.name} {self.color}'
 
-
-class Doors(models.Model):
-    kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_door')
-    door_color = models.CharField(max_length=128)
-    door_img = models.ImageField(upload_to='doors')
-
-    def __str__(self):
-        return self.kitchen.kitchen_type.name + ' door'
-
-    def get_photo_url(self):
-        if self.door_img and hasattr(self.door_img, 'url'):
-            return self.door_img.url
-
-
-class Cabnets(models.Model):
-    kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_cabnets')
-    cabnet_color = models.CharField(max_length=128)
-    cabnet_img = models.ImageField(upload_to='cabnets')
-
-    def __str__(self):
-        return self.kitchen.kitchen_type.name + ' cabnets'
-
-    def get_photo_url(self):
-        if self.cabnet_img and hasattr(self.cabnet_img, 'url'):
-            return self.cabnet_img.url
-
-
-class Images(models.Model):
-    kitchen = models.ForeignKey(KitchenCategory, on_delete=models.CASCADE, related_name='kitchen_image')
-    img = models.ImageField(upload_to='kitchen', null=True, blank=True)
-
-    def __str__(self):
-        return self.kitchen.name + ' picture'
-
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
+
+# class Doors(models.Model):
+#     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_door')
+#     door_img = models.ImageField(upload_to='doors')
+#
+#     def __str__(self):
+#         return self.kitchen.kitchen_type.name + ' door'
+#
+#     def get_photo_url(self):
+#         if self.door_img and hasattr(self.door_img, 'url'):
+#             return self.door_img.url
+
+
+# class Cabnets(models.Model):
+#     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_cabnets')
+#     door_color = models.CharField(max_length=128)
+#     cabnet_img = models.ImageField(upload_to='cabnets')
+#
+#     def __str__(self):
+#         return self.kitchen.kitchen_type.name + ' cabnets'
+#
+#     def get_photo_url(self):
+#         if self.cabnet_img and hasattr(self.cabnet_img, 'url'):
+#             return self.cabnet_img.url
+
+
+# class Images(models.Model):
+#     kitchen = models.ForeignKey(KitchenCategory, on_delete=models.CASCADE, related_name='kitchen_image')
+#
+#     def __str__(self):
+#         return self.kitchen.name + ' picture'
+#
+
 
 
 class UnitType(models.Model):
@@ -106,7 +108,7 @@ class UnitType(models.Model):
 class Units(models.Model):
     name = models.CharField(max_length=100)
     unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE)
-    description = models.TextField(null=True,blank=True)
+    description = models.TextField(null=True, blank=True)
     price = models.FloatField()
     kitchen = models.ForeignKey(KitchenCategory, on_delete=models.CASCADE, related_name='kitchen_units')
     img = models.ImageField(upload_to='base_units')
@@ -121,6 +123,7 @@ class Units(models.Model):
 
     class Meta:
         ordering = ['-pk']
+
 
 class Worktop_category(models.Model):
     WORKTOP = [
@@ -156,6 +159,7 @@ class WorkTop(models.Model):
     class Meta:
         ordering = ['pk']
 
+
 class Category_Applianes(models.Model):
     name = models.CharField(max_length=128)
 
@@ -182,17 +186,32 @@ class Appliances(models.Model):
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
+
     class Meta:
         ordering = ['pk']
 
+
+
+
+
 class Combining(models.Model):
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='complete_kitchen')
-    units = models.ManyToManyField(Units)
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
-    door = models.ForeignKey(Doors,on_delete=models.CASCADE,blank=True,null=True)
-    cabnet = models.ForeignKey(Cabnets,on_delete=models.CASCADE,blank=True,null=True)
+    units = models.ManyToManyField(Units, through='Units_intermediate')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # door = models.ForeignKey(Doors, on_delete=models.CASCADE, blank=True, null=True)
+    # cabnet = models.ForeignKey(Cabnets, on_delete=models.CASCADE, blank=True, null=True)
+
     def __str__(self):
         return self.kitchen.kitchen_type.name + 'purchased'
+
+class Units_intermediate(models.Model):
+    unit = models.ForeignKey(Units, on_delete=models.CASCADE, related_name='units_qty')
+    combine = models.ForeignKey(Combining,on_delete=models.CASCADE)
+    qty = models.IntegerField()
+
+    def __str__(self):
+        return  str(self.qty)
+
 
 
 class Services(models.Model):
@@ -219,7 +238,6 @@ class Cart(models.Model):
             return self.appliances.name
         else:
             return self.service.name
-
 
 
 class CompleteOrder(models.Model):
@@ -284,18 +302,32 @@ class Review(models.Model):
     appliances = models.ForeignKey(Appliances, on_delete=models.CASCADE, blank=True, null=True)
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, blank=True, null=True)
     approval_choices = [
-        ('Pending','Pending'),
-        ('Approved','Approved')
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved')
     ]
-    approval = models.CharField(max_length=15,choices=approval_choices,default='Pending')
+    approval = models.CharField(max_length=15, choices=approval_choices, default='Pending')
     rating = models.FloatField()
     comment = models.TextField()
 
     def __str__(self):
         return f'{self.user.username} review'
 
+
 class Newsletter(models.Model):
     email = models.EmailField(unique=True)
 
     def __str__(self):
         return self.email
+
+class ContactUs(models.Model):
+    name = models.CharField(max_length=128)
+    email = models.EmailField()
+    site_address = models.TextField()
+    phone = models.IntegerField()
+    room_ready = models.BooleanField(default=False)
+    remove_old_kitchen = models.BooleanField(default=False)
+    require_things = models.BooleanField(default=False)
+    your_budgets = models.CharField(max_length=100)
+    detail = models.TextField()
+    def __str__(self):
+        return self.name

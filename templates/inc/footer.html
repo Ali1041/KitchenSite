@@ -15,23 +15,21 @@
     </div>
     <hr class="bg-white"/>
     <div class="d-flex justify-content-around menu">
-        <div class="pt-2">
+        <div class="">
             <p><i class="fas fa-map-marker-alt"></i><span class="p-2">International House, Mosley Street, Manchester M2 3HZ</span></p>
             <p><i class="fas fa-phone-alt align-self-center"></i><span class="m-0 p-2 my-5">08002118289</span></p>
             <p><i class="fas fa-envelope align-self-center"></i><span class="m-0 p-2">customer.service@tkckitchens.co.uk</span></p>
         </div>
         <div class="align-self-baseline">
-            <h2>Information</h2>
             <p>
                 <a style="text-decoration: none;color: inherit" href="{% url 'application:terms' %}" class="a_btn mb-2">Terms & conditions</a>
 </p>
-            <p><a style="text-decoration: none;color: inherit" href="{% url 'application:shippping' %}" class="a_btn mb-2">Shiping and Delivery policy</a></p>
+            <p><a style="text-decoration: none;color: inherit" href="{% url 'application:shippping' %}" class="a_btn mb-2">Shipping and Delivery policy</a></p>
             <p><a class="a_btn" href="{% url 'application:contact' %}" style="text-decoration: none;color: inherit">Customer Service</a>
 </p>
             <p><a href="{% url 'application:FAQ' %}" class="a_btn" style="color: inherit;text-decoration: none">FAQs</a></p>
         </div>
         <div class="">
-            <h2>Quick Link</h2>
             <p><a href="{% url 'application:return-policy' %}" class="a_btn" style="color: inherit;text-decoration: none">Return & Refund policy</a></p>
             <p><a href="{% url 'application:canel' %}" class="a_btn" style="color: inherit;text-decoration: none">Cancellation policy</a></p>
             <p><a href="{% url 'application:GDPR' %}" class="a_btn" style="color: inherit;text-decoration: none">GDPR policy</a></p>
@@ -40,7 +38,6 @@
             <p><a href="{% url 'application:disclaimer' %}" class="a_btn" style="color: inherit;text-decoration: none">Disclaimer policy</a></p>
         </div>
         <div class="">
-            <h2>Social</h2>
             <p><i class="fab fa-facebook-f"></i><span class="pl-2">Facebook</span></p>
             <p><i class="fab fa-pinterest-p"></i><span class="pl-2">Pinterest</span></p>
             <p><i class="fab fa-instagram"></i><span class="pl-2">Instagram</span></p>
@@ -54,7 +51,6 @@
         function subscribe(e){
             e.preventDefault()
             const email=e.target.previousElementSibling.value
-            const p = document.getElementById('sub')
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         function validateEmail(email) {
               const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -75,10 +71,8 @@
                 return
             })
             .then((result)=>{
-                p.innerHTML = 'Subscribed!!!'
-                setTimeout(()=>{
-                    p.innerHTML = ''
-                },3000)
+                alert('Subscribed successfully')
+                e.target.previousElementSibling.value = ''
             })
         }
         else{

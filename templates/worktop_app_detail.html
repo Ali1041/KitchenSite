@@ -58,8 +58,7 @@
 
         </div>
         <div class="mt-5">
-            <h3>Description</h3>
-            <p>{{ detail.description }}</p>
+            <h3>Specifications</h3>
         <ul>
             <li><b>Category: </b>{{ detail.category }}</li>
             {% ifequal product 'appliance' %}
@@ -152,9 +151,9 @@
         <div class="row m-0">
         {% for item in feature1 %}
             <div class="card col-lg-3 p-0 ">
-                <img src="{{ item.get_photo_url }}" class="card-img-top img" height="300px" alt="">
+                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price }}</p>
                 </div>
             </div>
@@ -162,9 +161,9 @@
         {% endfor %}
                 {% for item in feature2 %}
             <div class="card col-lg-3 p-0 ">
-                <img src="{{ item.get_photo_url }}" class="card-img-top img" height="300px" alt="">
+                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price }}</p>
                 </div>
             </div>
@@ -179,7 +178,6 @@
 
     <script>
         function operation(e){
-            console.log(e.target.previousElementSibling)
             if (e.target.value==='-'&& e.target.nextElementSibling.value!==1){
                 const x=parseInt(e.target.nextElementSibling.value)
                 e.target.nextElementSibling.value = x-1
@@ -201,16 +199,23 @@
             const qty = e.target.previousElementSibling.previousElementSibling.children[1].value
             fetch(`${base_url}/${product}/${item_name}/${item_id}/${qty}/${process}/`)
             .then((res)=>{
-                console.log(res)
-                return res.json()
+                return res.url
             })
             .then((result)=>{
                 console.log(result)
-                const p = document.getElementById('p')
-                p.innerHTML = 'Added to cart!!!'
-                setTimeout(()=>{
-                    p.innerHTML = '';
-                },3000)
+                const check = result.split('/')
+                if (check[3]==='login'){
+                    location.replace(result)
+                }
+                else {
+
+
+                    const p = document.getElementById('p')
+                    p.innerHTML = 'Added to cart!!!'
+                    setTimeout(() => {
+                        p.innerHTML = '';
+                    }, 3000)
+                }
             })
         }
     </script>

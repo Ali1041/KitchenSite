@@ -7,6 +7,11 @@
     color: white;
     border:none;
 }
+/*.btn-success{*/
+/*    color: #fff;*/
+/*    background-color: rgb(46, 154, 135) !important;*/
+/*    border-color: rgb(46, 154, 135)!important;*/
+/*}*/
 .my_c{
     color:rgb(46, 154, 135)!important;
 }
@@ -32,11 +37,13 @@ p{
 /*body{
     background-color: blue;
 }*/
+
 @media only screen and (min-width: 100px) and (max-width: 768px){
     body{
         /*font-size: 1.5rem;*/
         width: 100vw;
     }
+
 
     #our_info{
         display: none!important;
@@ -114,6 +121,38 @@ p{
     }
     #k_img{
         height: 250px!important;
+        width: 100%!important;
+    }
+    .input{
+        width: 160%!important;
+    }
+    .animating{
+        animation: show 1s ease-in-out;
+        transition: all ease-in-out;
+    }
+    .remove-animating{
+        animation: remove 1s ease-in-out;
+        transition: all ease-in-out;
+    }
+    @keyframes remove {
+        0%{
+            height: 60%;
+        }
+        100%{
+            height: 3%;
+        }
+    }
+    @keyframes show {
+        0%{
+            height: 3%;
+        }
+        100%{
+            height: 60%;
+        }
+    }
+}
+@media only screen and (min-width: 767px) and (max-width: 1007px) {
+        .input{
         width: 100%!important;
     }
 }
