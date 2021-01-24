@@ -1,23 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <div>
         <h3 class="text-center">Our catalogue of kitchens</h3>
         <div class="row m-0 ">
             {% for item in list %}
-                <div class="col-lg-4 my-4">
-                    <div class="card  p-0" style="height: 588px">
-                        <img src="{{ item.get_photo_url }}" height="278px" class="card-img-top" alt="">
-                        <div class="card-body">
-                            <h4 style="color:rgb(46, 154, 135);">{{ item.kitchen_type }}</h4>
-                            <p>{{ item.description }}</p>
-                            <a style="color: rgb(46, 154, 135)" href="{% url 'application:kitchen-view' item.kitchen_type.pk %}">View {{ item.kitchen_type }}</a>
-                        </div>
+                <div class="col-lg-6 my-4">
+                    <div class="card p-0" style="height: fit-content" >
+                        <div id="carouselExampleControls3" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for i in item %}
+                                    {% ifequal forloop.counter0 0 %}
+                                    <div class="carousel-item active" >
+                                    {% else %}
+                                        <div class="carousel-item" >
+
+                                    {% endifequal %}
+                                        <img style="height: 400px;width: 100%" id="k_img" src="{{ i.get_photo_url }}" alt="First slide">
+                                    </div>
+                                {% endfor %}
+
+                              </div>
+                              <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls3" role="button" data-slide="prev">
+                                <div class="p-3 bg-dark" style="">
+                                    <span class="carousel-control-prev-icon"  style="color: black!important;" aria-hidden="true"></span>
+                                    <span class="sr-only" style="padding: 20px!important;" id="arrow_left">Previous</span>
+                                </div>
+                              </a>
+                              <a class="carousel-control-next" href="#carouselExampleControls3" role="button" data-slide="next">
+                                <div class="p-3 bg-dark">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </div>
+                              </a>
                     </div>
 
+{#                        <img src="{{ item.get_photo_url }}" height="278px" alt="">#}
+                        <div class="card-body">
+                            <h4 style="color:rgb(46, 154, 135);">{{ item.first.kitchen_type }}</h4>
+                            <p>{{ item.first.description }}</p>
+                            <p class="m-0">Available Colors:</p>
+                            <ul>
+                                {% for i in item %}
+                                    <li>{{ i.color }}</li>
+                                {% endfor %}
+                            </ul>
+                            <a style="color: rgb(46, 154, 135)" href="{% url 'application:kitchen-view' item.first.kitchen_type.pk %}">View {{ item.first.kitchen_type }}</a>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     </div>
 
 {% endblock %}
+{#{% block script %}#}
+{#<script>#}
+{#    const img = document.getElementsByClassName('get')#}
+{#    for (let i=0;i<=img.length;i++){#}
+{#        console.log(img[i])#}
+{#        img[0].classList.add('active')#}
+{#    }#}
+{##}
+{#</script>#}
+{#{% endblock %}#}

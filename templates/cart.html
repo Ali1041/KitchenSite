@@ -179,6 +179,33 @@
         <a href="" class="btn btn-success">Proceed to checkout</a>
     </div>
     </div>
+        <div class="container my-3">
+        <h5 class="text-center">Do not forget about top brand appliances and high-quality worktops</h5>
+        <div class="row m-0">
+        {% for item in feature1 %}
+            <div class="card col-lg-3 p-0 ">
+                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
+                <div class="card-body">
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
+                    <p class="text-center">£ {{ item.price }}</p>
+                </div>
+            </div>
+
+        {% endfor %}
+                {% for item in feature2 %}
+            <div class="card col-lg-3 p-0 ">
+                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
+                <div class="card-body">
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
+                    <p class="text-center">£ {{ item.price }}</p>
+                </div>
+            </div>
+
+        {% endfor %}
+                </div>
+
+    </div>
+
     {% else %}
         <div class="alert alert-primary text-center my-3" role="alert">
             No item in the cart. <a href="{% url 'application:index' %}">Start adding now!!</a>

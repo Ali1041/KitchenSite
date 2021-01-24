@@ -302,14 +302,14 @@
           <div class="carousel-inner" id="deleteId">
 
 
-            <div class="carousel-item active bg-dark" id="carosel">
-              <img class="d-block w-100 " id="k_img" style="opacity:0.7;height: 400px" loading="lazy" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cambridge_Super-White_Main.jpg" alt="First slide">
+            <div class="carousel-item active" id="carosel">
+              <img class="d-block w-100 " id="k_img" style="height: 400px" loading="lazy" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cambridge_Super-White_Main.jpg" alt="First slide">
             </div>
-            <div class="carousel-item bg-dark">
-              <img class="d-block w-100 " id="k_img" loading="lazy" style="opacity:0.7;height: 400px" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel_Indigo_Cameo_RGB_WEB.jpg" alt="Second slide">
+            <div class="carousel-item">
+              <img class="d-block w-100 " id="k_img" loading="lazy" style="height: 400px" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel_Indigo_Cameo_RGB_WEB.jpg" alt="Second slide">
             </div>
-            <div class="carousel-item bg-dark">
-              <img class="d-block w-100 " id="k_img" loading="lazy" style="height: 400px;opacity: 0.7" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel-Oak.jpg" alt="Third slide">
+            <div class="carousel-item">
+              <img class="d-block w-100 " id="k_img" loading="lazy" style="height: 400px" src="https://tkc-static.s3.eu-west-2.amazonaws.com/media/Cartmel-Oak.jpg" alt="Third slide">
             </div>
           </div>
           <a class="carousel-control-prev"   href="#carouselExampleControls1" role="button" data-slide="prev">
@@ -440,9 +440,6 @@
         const varData = new FormData()
         varData.append('value',e.target.previousElementSibling.value)
         console.log(e.target.previousElementSibling.value)
-        const x = {{ STATIC_URL }}
-        console.log(x)
-
         fetch(base_url,{
             method:'POST',
             body:JSON.stringify({'search':e.target.previousElementSibling.value}),
@@ -466,7 +463,6 @@
             })
             .then((result)=>{
                 const parseResult = JSON.parse(result)
-                console.log(parseResult)
                 parseResult.forEach((item)=>{
                     url.push('https://tkckitchens.s3.amazonaws.com/media/'+item.fields.img)
 
@@ -482,17 +478,16 @@
                         const img = document.createElement('img')
                         img.src=item
                         if (index===0){
-                        div.setAttribute('class','carousel-item bg-dark active')
+                        div.setAttribute('class','carousel-item active')
 
                         }
                         else{
-                        div.setAttribute('class','carousel-item bg-dark')
+                        div.setAttribute('class','carousel-item')
 
                         }
-                        img.setAttribute('class','d-block w-100 by-ajax')
+                        img.setAttribute('class','d-block w-100')
                             img.setAttribute('id','k_img')
                         img.style.height = 400+'px'
-                        img.style.opacity = 0.7
 
                         div.append(img)
                         toDelete.append(div)

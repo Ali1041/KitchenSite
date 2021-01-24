@@ -69,10 +69,16 @@ class AllKitchenView(generic.ListView):
         return ctx
 
     def get_queryset(self):
-        kitchens = Kitchen.objects.select_related('kitchen_type').all()
-        single_category = kitchens.annotate(count=Count('kitchen_type')).order_by()
-        print(single_category)
-        return single_category
+        kitchens = KitchenCategory.objects.all()
+        list_of_kitchen = []
+
+        for item in kitchens:
+            x=Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=item)
+            if x:
+                list_of_kitchen.append(x)
+        # remove_duplicate = list(set(list_of_kitchen))
+        # print(remove_duplicate)
+        return list_of_kitchen
 
 
 # view for kitchen display
@@ -98,7 +104,6 @@ class KitchenView(generic.ListView):
         filters = UnitFilter(self.request.GET,
                              queryset=Units.objects.select_related('kitchen').filter(kitchen=kitchen_view))
         if len(self.request.GET) != 0:
-            print('here')
             units = filters.qs
         return units
 
@@ -197,7 +202,6 @@ class AppliancesListView(generic.ListView):
             num_of_appliances_in_category = category_based_appliances.values('name').annotate(
                 count=Count('name')).order_by()
             select_list = []
-            print(num_of_appliances_in_category)
             for item in num_of_appliances_in_category:
                 select_list.append(item['name'])
             ctx['select'] = select_list
@@ -355,8 +359,14 @@ def cart(request):
             price += 4.99
     if price < 300:
         price += 30
-    print(service)
     ctx = {'cart': cart,'service':service ,'worktop_cart': worktop_cart,'appliances_cart' :appliances_cart,'appliances': appliances, 'worktop': worktop, 'total': price}
+    one = list(WorkTop.objects.all())
+    random_sample = random.sample(one, 2)
+    three = list(Appliances.objects.all())
+    random_sample_2 = random.sample(three, 2)
+    ctx['feature1'] = random_sample
+    ctx['feature2'] = random_sample_2
+
     # for i in cart:
     #     if i.worktop:
     #         ctx['size'] ='size'
