@@ -1,0 +1,18 @@
+{% extends 'adminPanel/admin_home.html' %}
+{% block content %}
+        <div class="card p-3 shadow my-2" style="width: 60%;margin: auto">
+            <h5 class="card-title text-center" style="color: rgb(46, 154, 135)">Customer Info</h5>
+            <div class="card-body row m-0">
+                <p class="col-md-4">Name: <b>{{ detail.name }}</b></p>
+                <p class="col-md-4">Phone: <b>{{ detail.phone }}</b></p>
+                <p class="col-md-4">Email: <b>{{ detail.email }}</b></p>
+                <p class="col-md-4">Room ready: <b>{{ detail.room_ready }}</b></p>
+                <p class="col-md-4">Remove old kitchen: <b>{{ detail.remove_old_kitchen }}</b></p>
+                <p class="col-md-4">Require Plumbing etc: <b>{{ detail.require_things }}</b></p>
+                <p class="col-md-4">Budgets: <b>{{ detail.your_budgets }}</b></p>
+                <p class="col-md-8">Site Address: <b>{{ detail.site_address }}</b></p>
+            </div>
+        </div>
+
+
+{% endblock %}

@@ -53,5 +53,9 @@ urlpatterns = [
     path('bulk-read/<str:name>/<str:category>/',file_reading,name='reading'),
 
     path('approve/',approve,name='approve'),
-    path('approve/<str:name>/<int:pk>/',approving_admin,name='approved')
+    path('approve/<str:name>/<int:pk>/',approving_admin,name='approved'),
+
+    # contact us
+    path('contact-list/',ContactUsList.as_view(),name='contact_list'),
+    path('contact-list-detail/<int:pk>/',ContactUsDetail.as_view(),name='detail-contact'),
 ]

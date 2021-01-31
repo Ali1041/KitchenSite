@@ -16,7 +16,7 @@ import random
 from .forms import *
 import klarnacheckout
 import requests
-import base64
+# import base64
 from django.core.mail import send_mail
 
 # Create your views here.
@@ -136,7 +136,8 @@ class KitchenView(generic.ListView):
         ctx['kitchen_view'] = KitchenCategory.objects.get(pk=self.kwargs['pk'])
         ctx['search'] = UnitType.objects.all()
         ctx['cart_count'] = cart_count(self.request)
-
+        if 'vero' in ctx['kitchen_view'].name:
+            ctx['form']='form'
         ctx['kitchen_color'] = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=ctx['kitchen_view'])
         # ctx['imgs'] = Images.objects.select_related('kitchen').filter(kitchen=ctx['kitchen_view'])
         return ctx
@@ -632,8 +633,7 @@ def Gdp(request):
 def FAQ(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    ctx['cart_count'] = cart_count(request)
+    ctx = {'appliances': appliances, 'worktop': worktop, 'cart_count': cart_count(request)}
 
     return render(request, 'FAQ.html', ctx)
 
@@ -641,8 +641,7 @@ def FAQ(request):
 def Return(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    ctx['cart_count'] = cart_count(request)
+    ctx = {'appliances': appliances, 'worktop': worktop, 'cart_count': cart_count(request)}
 
     return render(request, 'Return and Refund Policy (2) (6).html', ctx)
 
@@ -680,6 +679,12 @@ def install_contact(request):
             require_things=request.POST['ee'],
             your_budgets=request.POST['price'],
 
+        )
+        send_mail(
+            'New Query!!',
+            'A customer has submitted the contact us form. Go to the site and check out ASAP.',
+            None,
+            ['hiphop.ali1041@gmail.com']
         )
         return redirect('application:index')
 

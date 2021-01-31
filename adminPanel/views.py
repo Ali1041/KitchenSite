@@ -11,6 +11,8 @@ from io import BytesIO
 from django.core.files import File
 from django.core.files.storage import default_storage
 import os
+
+
 # Create your views here.
 
 def index(request):
@@ -121,11 +123,11 @@ def addUnits(request, **kwargs):
         if not kwargs:
             form = AddUnitsForm(request.POST or None, request.FILES or None)
             if form.is_valid():
-
                 x = form.cleaned_data
 
                 form.save(commit=True)
-                return redirect(reverse_lazy('adminPanel:units',kwargs={'pk':KitchenCategory.objects.get(name=x['kitchen']).pk}))
+                return redirect(
+                    reverse_lazy('adminPanel:units', kwargs={'pk': KitchenCategory.objects.get(name=x['kitchen']).pk}))
         else:
             unit = Units.objects.get(pk=kwargs['pk'])
             img = unit.img
@@ -500,12 +502,13 @@ def file_reading(request, **kwargs):
 
 
 def approve(request):
-    ctx={'comments':Review.objects.select_related('appliances','worktop').filter(approval = 'Pending')}
-    return render(request,'adminPanel/comments.html',ctx)
+    ctx = {'comments': Review.objects.select_related('appliances', 'worktop').filter(approval='Pending')}
+    return render(request, 'adminPanel/comments.html', ctx)
 
-def approving_admin(request,**kwargs):
+
+def approving_admin(request, **kwargs):
     if kwargs['name'] == 'worktop':
-        review = Review.objects.select_related('worktop','appliances').get(pk=kwargs['pk'])
+        review = Review.objects.select_related('worktop', 'appliances').get(pk=kwargs['pk'])
         review.approval = 'Approved'
         review.save()
     else:
@@ -513,3 +516,15 @@ def approving_admin(request,**kwargs):
         review.approval = 'Approved'
         review.save()
     return redirect('adminPanel:approve')
+
+
+class ContactUsList(generic.ListView):
+    model = ContactUs
+    template_name = 'adminPanel/admin_contact_us_table.html'
+    context_object_name = 'list'
+
+
+class ContactUsDetail(generic.DetailView):
+    model = ContactUs
+    template_name = 'adminPanel/admin_panel_contact_detail.html'
+    context_object_name = 'detail'
