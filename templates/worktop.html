@@ -17,7 +17,7 @@
         <div class="bg-light p-2 mb-3">
             <form method="GET" id="remove_form" onsubmit="" style="width: 80%;margin: auto"
                   class="d-flex justify-content-around my-2 menu" action="{% url 'application:worktop-view' list.first.category.pk %}">
-                <select name="name__iexact" id="name__iexact" class="form-control" style="width: 17%">
+                <select name="name__iexact" id="search_in" class="form-control" style="width: 17%">
                     <option value="">Select Name</option>
                     {% for i in select %}
                         <option value="{{ i }}">{{ i }}</option>
@@ -25,9 +25,9 @@
                 </select>
 {#                {{ search.form }}#}
                 <label class="align-self-center">Min value: £ <span id="output_min">100</span></label>
-                <input type="range" name="price__gte" id="price_lt" value="100" oninput="change(event)" step="any" max="500" min="100">
+                <input type="range" name="price__gte" id="search_in" class="menu bottom" value="100" oninput="change(event)" step="any" max="500" min="100">
                 <label for="" class="align-self-center">Max Value: £ <span id="output_max">500</span></label>
-                <input type="range" name="price__lte" id="price_gt" value="500" step="any" max="500" min="100" oninput="change(event)">
+                <input type="range" name="price__lte" id="search_in" class="menu bottom" value="500" step="any" max="500" min="100" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
                 <a href="{% url 'application:worktop-view' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
@@ -62,7 +62,7 @@
 
                 <div class="align-self-center ml-5" id="contain">
                     <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}" style="color:rgb(46, 154, 135)" >{{ item }}</a></h5>
-                    <h4>£ {{ item.price }}</h4>
+                    <h4>£ {{ item.price|floatformat:"0" }}</h4>
                     <p>{{ item.description }}</p>
                     <p class="m-0">Dimension/Size: {{ item.size }}</p>
                     <p class="m-0" style="color: green;font-weight: 700" id="add{{ item.pk }}"></p>
@@ -71,6 +71,7 @@
                     <a onclick="add_cart_1(event,{{ item.pk }},'create','worktop')"
                        class="btn btn-success">Add to cart</a>
                     <a href="{% url 'application:wishlist' 'worktop' item.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt=""></a>
+                    <a onclick="add_cart_1(event,{{ item.pk }},'create','worktop')" class="btn btn-secondary my-1">Order sample</a>
                 </div>
             </div>
 
@@ -89,16 +90,16 @@
             <form method="GET" id="remove_form" style="width: 80%;margin: auto"
                   class="d-flex justify-content-around my-2 menu" action="{% url 'application:appliances-list' list.first.category.pk %}">
 {#                {{ search.form }}#}
-                <select name="name__iexact" id="" class="form-control" style="width: 17%">
-                    <option value="">Select Name</option>
+                <select name="appliance_category__iexact" id="search_in" class="form-control bottom" style="width: 17%">
+                    <option value="">Select a category</option>
                     {% for item in select %}
                         <option value="{{ item }}">{{ item }}</option>
                     {% endfor %}
                 </select>
                 <label class="align-self-center">Min value: £ <span id="output_min">100</span></label>
-                <input type="range" name="price__gte" id="price_lt" value="100" oninput="change(event)" step="any" max="500" min="100">
+                <input type="range" name="price__gte" id="search_in" class="menu bottom" value="100" oninput="change(event)" step="any" max="500" min="100">
                 <label for="" class="align-self-center">Max Value: £ <span id="output_max">500</span></label>
-                <input type="range" name="price__lte" id="price_gt" value="500" step="any" max="500" min="100" oninput="change(event)">
+                <input type="range" name="price__lte" class="menu bottom" id="search_in" value="500" step="any" max="500" min="100" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
                 <a href="{% url 'application:appliances-list' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
@@ -133,7 +134,7 @@
 
                 <div class="align-self-center ml-5" id="contain">
                     <h5 style="color: rgb(46, 154, 135)"><a style="color: rgb(46, 154, 135)" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}" >{{ item }}</a></h5>
-                    <h4>£ {{ item.price }}</h4>
+                    <h4>£ {{ item.price|floatformat:"0" }}</h4>
                     <p>{{ item.description|truncatewords:15 }}</p>
                     <p>Type: {{ item.appliances_type }}</p>
                     <p>Brand: {{ item.brand_name }}</p>
@@ -161,6 +162,9 @@
             We have noting that matches your filters!!!
         </div>
     {% endif %}
+
+{% endblock %}
+{% block script %}
     <script>
         const out_max = document.getElementById('output_max')
         const out_min = document.getElementById('output_min')
@@ -171,7 +175,11 @@
 
             function add_cart_1(e,pk,process,pro){
             const base_url = 'http://127.0.0.1:8000/add-to-cart'
-            fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
+            let url = `${base_url}/${pro}/appliance/${pk}/1/${process}/`
+            if (e.target.innerText==='Order sample'){
+                url = `${base_url}/${pro}/sample/${pk}/1/${process}/`
+            }
+            fetch(url)
 
             .then((res)=>{
                 return res.url

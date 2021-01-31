@@ -9,15 +9,15 @@
 
 {% block content %}
     <div class="my-5 container" id="container_remove">
-        <h2 class="text-center">Kitchen: <span style="color: rgb(46, 154, 135)">{{ kitchen_view }}</span></h2>
+        <h2 class="text-center"><span style="color: rgb(46, 154, 135)">{{ kitchen_view }}</span></h2>
         <div style="width: 100%;margin: auto">
 
 
             <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
-              <div class="carousel-inner">
+              <div class="carousel-inner" id="slider_get">
                   {% for pics in kitchen_color %}
                 <div class="carousel-item bg-dark get" >
-                  <img class="d-block w-100 img1"  style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="First slide">
+                  <img class="d-block w-100" id="k_img"  style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="{{ pics.color }}">
                 </div>
                   {% endfor %}
               <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -61,8 +61,9 @@
                 <a href="{% url 'application:add-to-cart' 'sample' 'white' kitchen_view.pk 1 'create' %}" class="btn btn-success">Order a sample</a>
             </div>
             <div class=" p-3 align-self-start" id="search_in" style="width: 30%">
+{#                <label for="">Kitchen Color</label>#}
                 <select name="" id="select" class="form-control" onchange="change_url(event)">
-                    <option value="">Select a color</option>
+                    <option value="">Select Kitchen color</option>
                     {% for item in kitchen_color %}
                         <option value="{{ item.color }}">{{ item.color }}</option>
                     {% endfor %}
@@ -110,17 +111,17 @@
                     <td>{{ item.unit_type }}</td>
                     <td>{{ item.description }}</td>
                     <td>£ {{ item.price }}</td>
-                    <td><input onchange="qty(event)" type="number" value="1" class="form-control input" style="width: 60%;" min="1"></td>
-                    <td><a id="url" style="color: rgb(46, 154, 135)"
-                           onclick="stop(event)"  href="{% url 'application:add-to-cart' 'kitchen' item.kitchen item.pk 1 'create' %}"><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
+                    <td><input type="number" value="1" class="form-control input" style="width: 60%;" min="1"></td>
+                    <td><a id="url" style="color: rgb(46, 154, 135);cursor: pointer"
+                           onclick="stop(event,'kitchen',`{{ item.kitchen }}`,`{{ item.pk }}`,'create')" ><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
 
                 </tr>
             {% endfor %}
             </tbody>
         </table>
         {% else %}
-            <div class="alert alert-primary" role="alert">
-                Login to see our units
+            <div class="alert alert-primary text-center p-2 my-1" role="alert">
+                Login or register to view our prices and latest offers. <a href="{% url 'application:login' %}">Login here</a>
             </div>
         {% endif %}
         <div class="d-flex justify-content-around my-3 menu p-2">
@@ -136,40 +137,60 @@
         </div>
     {% endif %}
     </div>
+
+    <div id="cart" style="
+    transition: all 0.3s ease-in-out;display: block;position: fixed;left: 45%;bottom: -8%;
+    background-color: forestgreen;border-radius: 8px"
+         class="text-white p-2">
+        Added to cart!!
+    </div>
+
+{% endblock %}
+{% block script %}
     <script>
     const img = document.getElementsByClassName('get')
     img[0].classList.add('active')
+    const slider = document.getElementById('slider_get').children
+    const div = document.getElementById('cart')
 
-
-    function stop(e){
+    function stop(e,status,kit,pk,pro){
         const s = document.getElementById('select')
         if (s.value===''){
             alert('Select a color')
-
+        }
+        else{
+            const qty = e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value
+            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            let url = `${base_url}/${s.value}/${kit}/${pk}/${qty}/${pro}/`
+            fetch(url)
+            .then((res)=>{
+                return res.json()
+            })
+            .then((result)=>{
+                div.style.bottom = 10+'%'
+                setTimeout(()=>{
+                    div.style.bottom = -10+'%'
+                },1500)
+                return result
+            })
         }
     }
 
     function change_url(e){
 
-            const table = document.getElementById('table').children
-            const color = e.target.value
-    for (let i=0;i<table.length;i++){
-        const x = table[i].children[6].firstElementChild.href
-        const qty = table[i].children[5].firstElementChild.value
-        const y=x.split('/')
-        const base_url = 'http://127.0.0.1:8000'
-        const new_url = `${base_url}/add-to-cart/${color}/${y[5]}/${y[6]}/${qty}/${y[8]}/`
-        table[i].children[6].firstElementChild.setAttribute('href',new_url)
+        const color = e.target.value
+    for (let i=0;i<slider.length-2;i++){
+        if (slider[i].firstElementChild.alt===color){
+            slider[i].classList.add('active')
+        }
+        else{
+            slider[i].classList.remove('active')
+        }
     }
 
     }
-        function qty(e){
-        const qty = e.target.value
-        const href = e.target.parentElement.nextElementSibling.firstElementChild.href
-        const split_href = href.split('/')
-        const new_url = `${split_href[0]}//${split_href[2]}/${split_href[3]}/${split_href[4]}/${split_href[5]}/${split_href[6]}/${qty}/${split_href[8]}/`
-        console.log(new_url)
-        e.target.parentElement.nextElementSibling.firstElementChild.href = new_url
-    }
+
+
     </script>
+
 {% endblock %}

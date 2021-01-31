@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="my-3">
+    <div class="text-center">
+        <a class="btn btn-secondary" href="{% url 'application:index' %}">Back to home</a>
+    </div>
+    {{ html|safe }}
+</div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

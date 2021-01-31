@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .models import *
+from django.contrib.auth import authenticate, login as log
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.http import JsonResponse
@@ -12,9 +13,13 @@ from django.db.models import Q
 from itertools import chain
 from django.db.models import Count
 import random
+from .forms import *
+import klarnacheckout
+import requests
+import base64
+from django.core.mail import send_mail
 
 # Create your views here.
-
 User = get_user_model()
 
 
@@ -26,32 +31,66 @@ def signup(request):
         if pas1 != pas2:
             messages.warning(request, 'Password do not match')
             return redirect('application:signup')
-        user = User.objects.create(username=request.POST['username'], email=request.POST['email'])
+        already_exist = User.objects.filter(email=request.POST['email'])
+        if already_exist:
+            messages.warning(request, 'This email is already registered. Try again with a different one.')
+            return redirect('application:signup')
+        try:
+            user = User.objects.create(username=request.POST['username'], email=request.POST['email'])
+        except:
+            msg = messages.warning(request, 'This username is taken. Enter a different one,')
+            return render(request, 'signup.html', {'messages': messages})
         user.set_password(pas1)
         user.save()
-        msg = messages.success(request, 'You have registered successfully!!!Login now.')
+        send_mail(
+            'Registered Successfully!!',
+            'Congratulations, you have registered successfully. Login now to see exclusive deals.',
+            None,
+            [user.email],
+            fail_silently=True
+        )
+        msg = messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
     return render(request, 'signup.html')
 
 
+def login(request):
+    redirect_to = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        # raise ValueError('sad')
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        if user is not None:
+            log(request, user)
+            if redirect_to and request.POST['url'] != 'http://127.0.0.1:8000/signup/' and request.POST[
+                'url'] != 'http://127.0.0.1:8000/login/':
+                return redirect(request.POST['url'])
+            else:
+                return redirect('application:index')
+    return render(request, 'registration/login.html', {'url': redirect_to})
+
+
+def cart_count(request):
+    if request.user.is_authenticated:
+        return Cart.objects.select_related('user').filter(user=request.user,checkedout=False)
+
+
 def index(request):
-    kitchen_styles = KitchenCategory.objects.all()
+    user_cart = cart_count(request)
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
-    ctx = {'blogs': Blogs.objects.all()[:3], 'kitchen': kitchen_styles, 'appliances': appliances, 'worktop': worktop}
+    ctx = {'blogs': Blogs.objects.all()[:3], 'cart_count': user_cart, 'appliances': appliances, 'worktop': worktop}
 
     return render(request, 'base.html', ctx)
 
 
 # Ajax request to get photos for main page carousel
 def img_urls(request, **kwargs):
-    if kwargs['name']=='View all':
+    if kwargs['name'] == 'View all':
         kitchens = Kitchen.objects.select_related('kitchen_type').all()
         imgs = kitchens.annotate(count=Count('kitchen_type')).order_by()
     else:
         kitchen_type = KitchenCategory.objects.get(name=kwargs['name'])
         imgs = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=kitchen_type)
-        print(imgs)
     serialize_imgs = serialize('json', imgs)
     return JsonResponse(serialize_imgs, safe=False)
 
@@ -66,6 +105,8 @@ class AllKitchenView(generic.ListView):
         ctx = super(AllKitchenView, self).get_context_data(*args, **kwargs)
         ctx['worktop'] = Worktop_category.objects.all()
         ctx['appliances'] = Category_Applianes.objects.all()
+        ctx['cart_count'] = cart_count(self.request)
+
         return ctx
 
     def get_queryset(self):
@@ -73,7 +114,7 @@ class AllKitchenView(generic.ListView):
         list_of_kitchen = []
 
         for item in kitchens:
-            x=Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=item)
+            x = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=item)
             if x:
                 list_of_kitchen.append(x)
         # remove_duplicate = list(set(list_of_kitchen))
@@ -94,6 +135,8 @@ class KitchenView(generic.ListView):
         ctx['appliances'] = Category_Applianes.objects.all()
         ctx['kitchen_view'] = KitchenCategory.objects.get(pk=self.kwargs['pk'])
         ctx['search'] = UnitType.objects.all()
+        ctx['cart_count'] = cart_count(self.request)
+
         ctx['kitchen_color'] = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=ctx['kitchen_view'])
         # ctx['imgs'] = Images.objects.select_related('kitchen').filter(kitchen=ctx['kitchen_view'])
         return ctx
@@ -124,13 +167,15 @@ class WorktopListView(generic.ListView):
         if len(self.request.GET) != 0:
             qs = filters.qs
         if category.worktop_type == 'Stone Worktops':
-            qs = ['stone','stone']
+            qs = ['stone', 'stone']
         return qs
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(WorktopListView, self).get_context_data(*args, **kwargs)
         ctx['worktop'] = Worktop_category.objects.all()
         ctx['appliances'] = Category_Applianes.objects.all()
+        ctx['cart_count'] = cart_count(self.request)
+
         try:
             category_based_worktop = WorkTop.objects.select_related('category').filter(
                 category=self.get_queryset().first().category)
@@ -150,6 +195,13 @@ class WorktopListView(generic.ListView):
         ctx['product'] = 'worktop'
         return ctx
 
+# random queryset
+def random_queryset():
+    one = list(WorkTop.objects.all())
+    random_sample = random.sample(one, 2)
+    three = list(Appliances.objects.all())
+    random_sample_2 = random.sample(three, 2)
+    return random_sample,random_sample_2
 
 # worktop detail
 class WorktopDetailView(generic.DetailView):
@@ -161,12 +213,9 @@ class WorktopDetailView(generic.DetailView):
         ctx = super(WorktopDetailView, self).get_context_data(**kwargs)
         ctx['worktop'] = Worktop_category.objects.all()
         ctx['appliances'] = Category_Applianes.objects.all()
-        one = list(WorkTop.objects.all())
-        random_sample = random.sample(one, 2)
-        three = list(Appliances.objects.all())
-        random_sample_2 = random.sample(three, 2)
-        ctx['feature1'] = random_sample
-        ctx['feature2'] = random_sample_2
+        ctx['cart_count'] = cart_count(self.request)
+        ctx['feature1'] = random_queryset()[0]
+        ctx['feature2'] = random_queryset()[1]
         if self.kwargs['name'] == 'worktop':
             ctx['product'] = 'worktop'
             ctx['review'] = Review.objects.select_related('worktop').filter(worktop_id=self.kwargs['pk'],
@@ -196,14 +245,16 @@ class AppliancesListView(generic.ListView):
         ctx = super(AppliancesListView, self).get_context_data(*args, **kwargs)
         ctx['worktop'] = Worktop_category.objects.all()
         ctx['appliances'] = Category_Applianes.objects.all()
+        ctx['cart_count'] = cart_count(self.request)
+
         try:
             category_based_appliances = Appliances.objects.select_related('category').filter(
                 category=self.get_queryset().first().category)
-            num_of_appliances_in_category = category_based_appliances.values('name').annotate(
-                count=Count('name')).order_by()
+            num_of_appliances_in_category = category_based_appliances.values('appliance_category').annotate(
+                count=Count('appliance_category')).order_by()
             select_list = []
             for item in num_of_appliances_in_category:
-                select_list.append(item['name'])
+                select_list.append(item['appliance_category'])
             ctx['select'] = select_list
         except:
             pass
@@ -226,11 +277,14 @@ def addcart(request, **kwargs):
         return redirect('application:login')
     if kwargs['process'] == 'create':
         if kwargs['product'] == 'worktop':
-
-            # worktop cart
             worktop = WorkTop.objects.select_related('category').get(pk=kwargs['pk'])
+
+            if kwargs['name'] == 'sample':
+                my_cart = Cart.objects.create(user=request.user, worktop=worktop, qty=1, sample_worktop='Yes')
+                return JsonResponse({'added': 'added'})
+            # worktop cart
             try:
-                my_cart = Cart.objects.get(user=request.user, worktop=worktop)
+                my_cart = Cart.objects.get(user=request.user, worktop=worktop,checkedout=False)
                 x = my_cart.qty
                 my_cart.qty = x + kwargs['qty']
                 my_cart.save()
@@ -241,10 +295,15 @@ def addcart(request, **kwargs):
             # return redirect(rev)
 
         elif kwargs['product'] == 'appliance':
-
-            # appliance cart
             appliance = Appliances.objects.select_related('category').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.create(user=request.user, appliances=appliance, qty=kwargs['qty'])
+            try:
+                my_cart = Cart.objects.get(user=request.user, appliances=appliance,checkedout=False)
+                x = my_cart.qty
+                my_cart.qty = x + kwargs['qty']
+                my_cart.save()
+            except:
+                # appliance cart
+                my_cart = Cart.objects.create(user=request.user, appliances=appliance, qty=kwargs['qty'])
             return JsonResponse({'add': 'added'})
 
             # return redirect('application:worktop-detail-view', kwargs={'pk': appliance.pk})
@@ -252,7 +311,6 @@ def addcart(request, **kwargs):
         elif kwargs['product'] == 'service':
             service = Services.objects.get_or_create(name='Service')
             my_cart = Cart.objects.create(user=request.user, service=service[0])
-            print(my_cart)
             return redirect('application:cart')
 
         elif kwargs['product'] == 'sample':
@@ -278,32 +336,37 @@ def addcart(request, **kwargs):
                 return redirect(reverse_lazy('application:kitchen-view', kwargs={'pk': cat.pk}))
             unit = Units.objects.select_related('kitchen').get(pk=kwargs['pk'])
 
-            try:
-                pre_order = Combining.objects.select_related('kitchen').get(user=request.user, kitchen=kitchen)
-                pre_order = pre_order
-                unit_inter = Units_intermediate.objects.create(unit=unit, qty=qty, combine=pre_order)
-                pre_order.save()
-                unit_inter.save()
-                return redirect('application:cart')
-            except:
+            pre_order = Combining.objects.select_related('kitchen').filter(user=request.user, kitchen=kitchen)
+            if pre_order:
+                already_exist = Units_intermediate.objects.select_related('unit', 'combine').filter(unit_id=unit.pk)
+                if already_exist:
+                    already_exist[0].qty = qty + already_exist[0].qty
+                    already_exist[0].save()
+                else:
+                    print('inside else')
+                    unit_inter = Units_intermediate.objects.create(unit=unit, qty=qty, combine=pre_order[0])
+                    pre_order[0].save()
+                    unit_inter.save()
+            else:
                 pre_order = Combining.objects.create(kitchen=kitchen, user=request.user)
                 unit_inter = Units_intermediate.objects.create(unit=unit, combine=pre_order, qty=qty)
                 pre_order.save()
                 unit_inter.save()
-            return redirect(reverse_lazy('application:choose', kwargs={'pk': pre_order.pk, 'name': 'cart'}))
+                Cart.objects.create(kitchen_order=pre_order, user=request.user)
+            return JsonResponse({'added': 'added'})
 
 
     elif kwargs['process'] == 'update':
         if kwargs['product'] == 'appliance':
             appliance = Appliances.objects.select_related('category').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.select_related('user', 'appliances').get(user=request.user, appliances=appliance)
+            my_cart = Cart.objects.select_related('user', 'appliances').get(user=request.user,checkedout=False, appliances=appliance)
             my_cart.qty = kwargs['qty']
             my_cart.save()
             return JsonResponse({'update': 'update'})
 
         elif kwargs['product'] == 'worktop':
             worktop = WorkTop.objects.select_related('category').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.select_related('worktop', 'user').get(user=request.user, worktop=worktop)
+            my_cart = Cart.objects.select_related('worktop', 'user').get(user=request.user, worktop=worktop,checkedout=False)
             my_cart.qty = kwargs['qty']
             my_cart.save()
             return JsonResponse({'update': 'update'})
@@ -311,13 +374,13 @@ def addcart(request, **kwargs):
     elif kwargs['process'] == 'delete':
         if kwargs['product'] == 'worktop':
             worktop = WorkTop.objects.select_related('category').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.filter(worktop_id=worktop.pk)
+            my_cart = Cart.objects.filter(worktop_id=worktop.pk,checkedout=False)
             my_cart.delete()
             return JsonResponse({'removed': 'removed'})
 
         elif kwargs['product'] == 'appliance':
             appliance = Appliances.objects.select_related('category').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.filter(appliances_id=appliance.pk)
+            my_cart = Cart.objects.filter(appliances_id=appliance.pk,checkedout=False)
             my_cart.delete()
             return JsonResponse({'removed': 'removed'})
 
@@ -338,46 +401,55 @@ def cart(request):
         return redirect('application:login')
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
-    cart = Cart.objects.select_related('kitchen_order', 'appliances', 'worktop', 'user').filter(user=request.user)
+    cart = Cart.objects.select_related('kitchen_order', 'appliances', 'worktop', 'user').filter(user=request.user,checkedout=False)
     price = 0
     worktop_cart = []
     appliances_cart = []
-    service=''
+    for_check1 = True
+    for_check2 = True
+    sample_price = 0
+    service = ''
     for item in cart:
         if item.worktop:
-            price += item.worktop.price * item.qty
+
+            if item.sample_worktop == 'Yes':
+                for_check1 = False
+                sample_price += 5
+            else:
+                price += item.worktop.price * item.qty
             worktop_cart.append(item)
         if item.appliances:
             price += item.appliances.price * item.qty
             appliances_cart.append(item)
         if item.kitchen_order:
-            if item.kitchen_order.units_intermediate_set:
+            if item.kitchen_order.units_intermediate_set.all():
                 for i in item.kitchen_order.units_intermediate_set.all():
                     price += i.unit.price * i.qty
+            else:
+                sample_price += 4.99
         if item.service:
             service = 'service'
-            price += 4.99
-    if price < 300:
+            sample_price += 50
+            for_check2 = False
+    if price < 300 and price != 0:
         price += 30
-    ctx = {'cart': cart,'service':service ,'worktop_cart': worktop_cart,'appliances_cart' :appliances_cart,'appliances': appliances, 'worktop': worktop, 'total': price}
-    one = list(WorkTop.objects.all())
-    random_sample = random.sample(one, 2)
-    three = list(Appliances.objects.all())
-    random_sample_2 = random.sample(three, 2)
-    ctx['feature1'] = random_sample
-    ctx['feature2'] = random_sample_2
+    price = price + sample_price
+    ctx = {'cart': cart, 'service': service, 'worktop_cart': worktop_cart, 'appliances_cart': appliances_cart,
+           'appliances': appliances, 'worktop': worktop, 'total': price, 'feature1': random_queryset()[0],
+           'feature2': random_queryset()[1], 'cart_count': cart_count(request)}
 
-    # for i in cart:
-    #     if i.worktop:
-    #         ctx['size'] ='size'
     return render(request, 'cart.html', ctx)
 
 
 # contact form page
 def contact(request):
+    worktop = Worktop_category.objects.all()
+    appliances = Category_Applianes.objects.all()
     if request.method == 'POST':
         return redirect('application:index')
-    return render(request, 'contact_us.html')
+    ctx = {'appliances': appliances, 'worktop': worktop, 'cart_count': cart_count(request)}
+
+    return render(request, 'contact_us.html',ctx)
 
 
 # installation page
@@ -385,6 +457,7 @@ def installation(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
 
     return render(request, 'inc/installation.html', ctx)
 
@@ -394,6 +467,7 @@ def design(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
 
     return render(request, 'inc/design.html', ctx)
 
@@ -423,6 +497,7 @@ def wishlist(request, **kwargs):
         my_wishlist = WishList.objects.select_related('worktop', 'kitchen', 'unit', 'appliances').filter(
             user=request.user)
         ctx = {'wishlist': my_wishlist, 'appliances': appliances, 'worktop': worktop}
+        ctx['cart_count'] = cart_count(request)
 
         return render(request, 'wishlist.html', ctx)
 
@@ -436,7 +511,8 @@ def add_review(request, **kwargs):
             review = Review.objects.create(
                 user=request.user, rating=request.POST['rating'], comment=request.POST['comment'], appliances=appliance,
                 approval='Pending')
-            return redirect(reverse_lazy('application:appliances-detail-view', kwargs={'pk': kwargs['pk']}))
+            return redirect(
+                reverse_lazy('application:appliances-detail-view', kwargs={'name': 'appliance', 'pk': appliance.pk}))
 
         # worktop review addition
         elif request.POST['name'] == 'worktop':
@@ -458,39 +534,9 @@ def search(request, **kwargs):
         qs1 = WorkTop.objects.filter(Q(name__icontains=data) | Q(description__icontains=data))
         qs2 = Appliances.objects.filter(Q(name__icontains=data) | Q(description__icontains=data))
         ctx = {'qs1': qs1, 'qs2': qs2, 'appliances': appliances, 'worktop': worktop}
+        ctx['cart_count'] = cart_count(request)
 
         return render(request, 'search.html', ctx)
-
-
-def choose(request, **kwargs):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        intermediate_model = Combining.objects.select_related('kitchen').get(user=request.user,
-                                                                                               pk=kwargs['pk'])
-        # doors = Doors.objects.select_related('kitchen').get(kitchen=intermediate_model.kitchen,
-        #                                                     door_color=data['door_color'])
-        # cabnet = Cabnets.objects.select_related('kitchen').get(kitchen=intermediate_model.kitchen,
-        #                                                        cabnet_color=data['cabnet_color'])
-        #
-        # intermediate_model.door = doors
-        # intermediate_model.cabnet = cabnet
-        intermediate_model.save()
-        Cart.objects.create(kitchen_order=intermediate_model, user=request.user)
-        if kwargs['name'] == 'cart':
-            return JsonResponse({'url': 'url'})
-        else:
-            return JsonResponse({'url': 'url'})
-
-    if request.method == 'GET':
-        worktop = Worktop_category.objects.all()
-        appliances = Category_Applianes.objects.all()
-        intermediate_model = Combining.objects.select_related('kitchen').get(user=request.user,
-                                                                                               pk=kwargs['pk'])
-        # doors = Doors.objects.filter(kitchen=intermediate_model.kitchen)
-        # cabnet = Cabnets.objects.filter(kitchen=intermediate_model.kitchen)
-        ctx = {'appliances': appliances, 'worktop': worktop, 'intermediate_model': intermediate_model}
-
-    return render(request, 'proceed.html', ctx)
 
 
 class BlogList(generic.ListView):
@@ -502,6 +548,8 @@ class BlogList(generic.ListView):
         ctx = super(BlogList, self).get_context_data(**kwargs)
         ctx['worktop'] = Worktop_category.objects.all()
         ctx['appliances'] = Category_Applianes.objects.all()
+        ctx['cart_count'] = cart_count(self.request)
+
         return ctx
 
 
@@ -514,14 +562,25 @@ class BlogDetail(generic.DetailView):
         ctx = super(BlogDetail, self).get_context_data(**kwargs)
         ctx['worktop'] = Worktop_category.objects.all()
         ctx['appliances'] = Category_Applianes.objects.all()
+        ctx['cart_count'] = cart_count(self.request)
+
         return ctx
 
 
 def newsletter(request):
     if request.body:
         data = json.loads(request.body)
-
+        already_exist = Newsletter.objects.filter(email=data['email'])
+        if already_exist:
+            return JsonResponse({'added': 'not added'})
         Newsletter.objects.create(email=data['email'])
+        send_mail(
+            'Subscribed Successfully!!',
+            'Congratulations, you have subscribed to our newsletter.',
+            None,
+            [data['email']],
+            fail_silently=True
+        )
         return JsonResponse({'added': 'added'})
 
 
@@ -529,6 +588,8 @@ def terms(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'TERMS OF SERVICE 5 (40).html', ctx)
 
 
@@ -536,6 +597,8 @@ def disclaimer(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'Disclaimer1 (37).html', ctx)
 
 
@@ -543,6 +606,8 @@ def cancel(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'CANCELLATION POLICY (16).html', ctx)
 
 
@@ -550,6 +615,8 @@ def intellectual(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'Intellectual Property Notification (8).html', ctx)
 
 
@@ -557,6 +624,8 @@ def Gdp(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'GDPR Privacy Policy2 (44).html', ctx)
 
 
@@ -564,6 +633,8 @@ def FAQ(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'FAQ.html', ctx)
 
 
@@ -571,6 +642,8 @@ def Return(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'Return and Refund Policy (2) (6).html', ctx)
 
 
@@ -578,6 +651,8 @@ def ship(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
+
     return render(request, 'Shipping and Delivery Policy 1 (22).html', ctx)
 
 
@@ -585,6 +660,7 @@ def cook(request):
     worktop = Worktop_category.objects.all()
     appliances = Category_Applianes.objects.all()
     ctx = {'appliances': appliances, 'worktop': worktop}
+    ctx['cart_count'] = cart_count(request)
 
     return render(request, 'Cookies Policy3 (42).html', ctx)
 
@@ -595,8 +671,8 @@ def install_contact(request):
     if request.method == 'POST':
         ContactUs.objects.create(
             name=request.POST['name'],
-            email = request.POST['email'],
-            phone = request.POST['phone'],
+            email=request.POST['email'],
+            phone=request.POST['phone'],
             site_address=request.POST['address'],
             detail=request.POST['detail'],
             room_ready=request.POST['measure'],
@@ -607,19 +683,293 @@ def install_contact(request):
         )
         return redirect('application:index')
 
+    ctx = {'appliances': appliances, 'worktop': worktop, 'cart_count': cart_count(request)}
 
-    ctx = {'appliances': appliances, 'worktop': worktop}
     return render(request, 'installation_contact.html', ctx)
 
 
-def unit_change(request,**kwargs):
+def unit_change(request, **kwargs):
     if kwargs['name'] == 'change':
-        unit_intermediate = Units_intermediate.objects.select_related('unit','combine').get(pk=kwargs['pk'])
+        unit_intermediate = Units_intermediate.objects.select_related('unit', 'combine').get(pk=kwargs['pk'])
         unit_intermediate.qty = kwargs['qty']
         unit_intermediate.save()
-    elif kwargs['name']  == 'delete':
-        unit_intermediate = Units_intermediate.objects.select_related('unit','combine').get(pk=kwargs['pk'])
+    elif kwargs['name'] == 'delete':
+        unit_intermediate = Units_intermediate.objects.select_related('unit', 'combine').get(pk=kwargs['pk'])
         unit_intermediate.delete()
 
-    return JsonResponse({'changed':'changed'})
+    return JsonResponse({'changed': 'changed'})
 
+
+# checkout view
+def checkout(request):
+    worktop = Worktop_category.objects.all()
+    appliances = Category_Applianes.objects.all()
+    form = UserInfoForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+            info = UserInfo.objects.create(
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                email_address=data['email_address'],
+                phone_number=data['phone_number'],
+                street_address=data['street_address'],
+                city=data['city'],
+                region=data['region'],
+                postcode=data['postcode'],
+                country=data['country'],
+            )
+            request.session['user_info_pk'] = info.pk
+            return redirect('application:create-order')
+    ctx = {'form': form,'appliances': appliances, 'worktop': worktop,'cart_count':cart_count(request)}
+    return render(request, 'checkout.html', ctx)
+
+
+def create_order_klarna(request, **kwargs):
+    worktop = Worktop_category.objects.all()
+    appliances = Category_Applianes.objects.all()
+    base_url = 'https://api.playground.klarna.com'
+    url = base_url + '/checkout/v3/orders'
+
+    my_items = Cart.objects.select_related('kitchen_order', 'worktop', 'appliances', 'user').filter(user=request.user)
+    raw_data = {
+        "purchase_country": "GB",
+        "purchase_currency": "GBP",
+        "locale": "en-GB",
+        "order_amount": 0,
+        "order_tax_amount": 0,
+        "order_lines": [
+
+        ],
+        "merchant_urls": {
+            "terms": "https://www.example.com/terms.html",
+            "checkout": "https://www.example.com/checkout.html?order_id={checkout.order.id}",
+            "confirmation": "http://127.0.0.1:8000/order-confirmed/",
+            "push": "http://127.0.0.1:8000/push-email/",
+        },
+    }
+
+    price = 0
+    sample_price = 0
+    cal_total_tax = 0
+    for item in my_items:
+        if item.worktop:
+            if item.sample_worktop == 'Yes':
+                sample_price += 5
+                # total amount
+                f_price = 5 * 100
+
+                # total tax
+                this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
+
+                # added tax to total tax
+                cal_total_tax += this_item_tax
+                item_dict = {
+                    "type": "physical",
+                    "reference": "19-402-USA",
+                    "name": f'{item.worktop.name} Sample',
+                    "quantity": item.qty,
+                    "quantity_unit": "pcs",
+                    "unit_price": f_price,
+                    "tax_rate": 2000,
+                    "total_amount": f_price,
+                    "total_discount_amount": 0,
+                    "total_tax_amount": this_item_tax
+                }
+                raw_data['order_lines'].append(item_dict)
+            else:
+                # total amount
+                f_price = int(item.worktop.price * item.qty * 100)
+
+                # total tax
+                this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
+
+                # added tax to total tax
+                cal_total_tax += this_item_tax
+                price += item.worktop.price * item.qty
+                item_dict = {
+                    "type": "physical",
+                    "reference": "19-402-USA",
+                    "name": f'{item.worktop.name}',
+                    "quantity": item.qty,
+                    "quantity_unit": "pcs",
+                    "unit_price": int(item.worktop.price * 100),
+                    "tax_rate": 2000,
+                    "total_amount": f_price,
+                    "total_discount_amount": 0,
+                    "total_tax_amount": this_item_tax
+                }
+                raw_data['order_lines'].append(item_dict)
+        if item.appliances:
+            price += item.appliances.price * item.qty
+
+            # total amount
+            f_price = int(item.appliances.price * item.qty * 100)
+
+            # total tax
+            this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
+
+            # added tax to total tax
+            cal_total_tax += this_item_tax
+            item_dict = {
+                "type": "physical",
+                "reference": "19-402-USA",
+                "name": f'{item.appliances.name}',
+                "quantity": item.qty,
+                "quantity_unit": "pcs",
+                "unit_price": int(item.appliances.price * 100),
+                "tax_rate": 2000,
+                "total_amount": f_price,
+                "total_discount_amount": 0,
+                "total_tax_amount": this_item_tax
+            }
+            raw_data['order_lines'].append(item_dict)
+        if item.kitchen_order:
+            if item.kitchen_order.units_intermediate_set.all():
+                for i in item.kitchen_order.units_intermediate_set.all():
+                    # total amount
+                    f_price = int(int(i.unit.price + (i.unit.price * 20 / 100)) * i.qty * 100)
+                    # separate_tax = f_price*20/100
+                    # print(separate_tax)
+                    #
+                    # f_price = int(f_price+separate_tax)
+                    # total tax
+                    this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
+
+                    # tax cal
+                    # f_price = f_price+this_item_tax
+
+                    # added tax to total tax
+                    cal_total_tax += this_item_tax
+                    print(f_price, this_item_tax)
+                    item_dict = {
+                        "type": "physical",
+                        "reference": f'{i.unit.sku}',
+                        "name": f'{i.unit.kitchen} with {i.unit}',
+                        "quantity": i.qty,
+                        "quantity_unit": "pcs",
+                        "unit_price": int(i.unit.price + (i.unit.price * 20 / 100)) * 100,
+                        "tax_rate": 2000,
+                        "total_amount": f_price,
+                        "total_discount_amount": 0,
+                        "total_tax_amount": this_item_tax
+                    }
+                    raw_data['order_lines'].append(item_dict)
+                    price += int((i.unit.price + (i.unit.price * 20 / 100)) * i.qty)
+            else:
+                sample_price += 5
+                # total amount
+                f_price = int(5 * 100)
+
+                # total tax
+                this_item_tax = int(((f_price * 10000) / (10000 + 1000)) / 10)
+
+                # added tax to total tax
+                cal_total_tax += this_item_tax
+                item_dict = {
+                    "type": "physical",
+                    "reference": 'Sample',
+                    "name": f'{item.kitchen_order.kitchen} Sample',
+                    "quantity": 1,
+                    "quantity_unit": "pcs",
+                    "unit_price": f_price,
+                    "tax_rate": 1000,
+                    "total_amount": f_price,
+                    "total_discount_amount": 0,
+                    "total_tax_amount": this_item_tax
+                }
+                raw_data['order_lines'].append(item_dict)
+
+        if item.service:
+            service = 'service'
+            sample_price += 50
+            # total amount
+            f_price = 50 * 100
+
+            # total tax
+            this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
+
+            # added tax to total tax
+            cal_total_tax += this_item_tax
+            item_dict = {
+                "type": "physical",
+                "reference": "19-402-USA",
+                "name": 'Service',
+                "quantity": 1,
+                "quantity_unit": "pcs",
+                "unit_price": 50 * 100,
+                "tax_rate": 2000,
+                "total_amount": 50 * 100,
+                "total_discount_amount": 0,
+                "total_tax_amount": this_item_tax
+            }
+            raw_data['order_lines'].append(item_dict)
+    if price < 300 and price != 0:
+        raw_data['shipping_options'] = [{
+            'id': 'Shipping Detail',
+            'name': 'Shipping',
+            'price': 3000,
+            'preselected': True,
+            'tax_rate': 0,
+            'tax_amount': 0
+        }, ]
+    price = int(price + sample_price)
+    raw_data['order_amount'] = price * 100
+    raw_data['order_tax_amount'] = cal_total_tax
+
+    data = json.dumps(raw_data)
+    value = json.dumps({
+        'PK34671_2300d5bebae2': 'wPTKWhc1xSyImu6R'
+    })
+
+    headers = {'Authorization': 'Basic UEszNDY3MV8yMzAwZDViZWJhZTI6d1BUS1doYzF4U3lJbXU2Ug==',
+               'content-type': 'application/json'
+               }
+
+    res = requests.post(url, data=data, headers=headers)
+    result = res.json()
+    ctx = {'html': result['html_snippet'],'cart_count':cart_count(request),'appliances': appliances, 'worktop': worktop}
+    request.session['order_id'] = result['order_id']
+    return render(request, 'klarna_snippet.html', ctx)
+
+
+def confirmation(request):
+    base_url = 'https://api.playground.klarna.com'
+    worktop = Worktop_category.objects.all()
+    appliances = Category_Applianes.objects.all()
+    order_id = request.session.get('order_id')
+    url = base_url + f'/checkout/v3/orders/{order_id}'
+    headers = {'Authorization': 'Basic UEszNDY3MV8yMzAwZDViZWJhZTI6d1BUS1doYzF4U3lJbXU2Ug==',
+               'content-type': 'application/json'
+               }
+    res = requests.get(url, headers=headers)
+    result = res.json()
+    ctx = {'html': result['html_snippet'],'cart_count':cart_count(request),'appliances': appliances, 'worktop': worktop}
+    acknowledge_url = base_url + f'/ordermanagement/v1/orders/{order_id}/acknowledge'
+    requests.post(acknowledge_url, headers=headers)
+    send_mail(
+        'Push',
+        'An order has been placed. Kindly check your klarna account to process the order.',
+        None,
+        ['hiphop.ali1041@gmail.com']
+    )
+    info = UserInfo.objects.get(pk=request.session.get('user_info_pk'))
+    complete_order = CompleteOrder.objects.create(user=info)
+    my_cart = Cart.objects.select_related('user').filter(user=request.user,checkedout=False)
+    # print(my_cart.checkedout,my_cart)
+    complete_order.order.add(*my_cart)
+    Cart.objects.filter(user=request.user, checkedout=False).update(checkedout=True)
+    return render(request, 'klarna_confirm.html', ctx)
+
+
+def push(request, **kwargs):
+    if request.method == 'POST':
+        print(request.POST)
+        send_mail(
+            'Push',
+            'Your push order',
+            None,
+            ['hiphop.ali1041@gmail.com']
+        )
+    raise ValueError('Push notification through klarna')
+    return redirect('application:index')

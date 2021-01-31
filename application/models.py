@@ -42,8 +42,8 @@ class Kitchen(models.Model):
     tall_unit_guide = models.URLField(blank=True, null=True)
     x_tall_unit_guide = models.URLField(blank=True, null=True)
     carcases_tech_guide = models.URLField(blank=True, null=True)
-    door_color = models.CharField(max_length=128,blank=True, null=True)
-    cabnet = models.CharField(max_length=128,blank=True, null=True)
+    door_color = models.CharField(max_length=128, blank=True, null=True)
+    cabnet = models.CharField(max_length=128, blank=True, null=True)
     img = models.ImageField(upload_to='kitchen', null=True, blank=True)
 
     def __str__(self):
@@ -52,6 +52,7 @@ class Kitchen(models.Model):
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
+
 
 # class Doors(models.Model):
 #     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_door')
@@ -84,7 +85,6 @@ class Kitchen(models.Model):
 #     def __str__(self):
 #         return self.kitchen.name + ' picture'
 #
-
 
 
 class UnitType(models.Model):
@@ -149,6 +149,9 @@ class WorkTop(models.Model):
     size = models.CharField(max_length=30)
     worktop_img = models.ImageField(upload_to='worktops/')
 
+    # for_sample = models.CharField(max_length=10,blank=True,null=True,default='Yes')
+    # sample_price = models.FloatField(blank=True,null=True,default=5)
+
     def __str__(self):
         return f'{self.name}'
 
@@ -191,27 +194,25 @@ class Appliances(models.Model):
         ordering = ['pk']
 
 
-
-
-
 class Combining(models.Model):
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='complete_kitchen')
     units = models.ManyToManyField(Units, through='Units_intermediate')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
     # door = models.ForeignKey(Doors, on_delete=models.CASCADE, blank=True, null=True)
     # cabnet = models.ForeignKey(Cabnets, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.kitchen.kitchen_type.name + 'purchased'
 
+
 class Units_intermediate(models.Model):
     unit = models.ForeignKey(Units, on_delete=models.CASCADE, related_name='units_qty')
-    combine = models.ForeignKey(Combining,on_delete=models.CASCADE)
+    combine = models.ForeignKey(Combining, on_delete=models.CASCADE)
     qty = models.IntegerField()
 
     def __str__(self):
-        return  str(self.qty)
-
+        return str(self.qty)
 
 
 class Services(models.Model):
@@ -228,6 +229,8 @@ class Cart(models.Model):
     service = models.ForeignKey(Services, on_delete=models.CASCADE, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     qty = models.IntegerField(blank=True, null=True)
+    sample_worktop = models.CharField(max_length=100, default='No', blank=True, null=True)
+    checkedout = models.BooleanField(default=False)
 
     def __str__(self):
         if self.kitchen_order:
@@ -319,6 +322,7 @@ class Newsletter(models.Model):
     def __str__(self):
         return self.email
 
+
 class ContactUs(models.Model):
     name = models.CharField(max_length=128)
     email = models.EmailField()
@@ -329,5 +333,6 @@ class ContactUs(models.Model):
     require_things = models.BooleanField(default=False)
     your_budgets = models.CharField(max_length=100)
     detail = models.TextField()
+
     def __str__(self):
         return self.name

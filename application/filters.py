@@ -17,7 +17,7 @@ class AppliancesFilters(django_filters.FilterSet):
     class Meta:
         model = Appliances
         fields={
-            'name':['iexact'],
+            'appliance_category':['iexact'],
             # 'appliances_type':['iexact'],
             'price':['gte','lte']
         }

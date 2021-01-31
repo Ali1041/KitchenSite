@@ -1,19 +1,19 @@
 {% load static %}
 <div class="d-flex justify-content-center p-4 mt-2 bg-white" id="second_bar" style="position: sticky;top: 0;z-index: 2">
     <div class="d-flex justify-content-around" style="width: 60%">
-        <a href="{% url 'application:index' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;" class="text-secondary">Home</a>
+        <a href="{% url 'application:index' %}" style="color:inherit;font-weight: 600;text-decoration: none;cursor:pointer;" class="a_btn">Home</a>
 
         <div class="btn-group">
-            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
 {#               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"#}
-               class="text-secondary a_btn " href="{% url 'application:all-kitchen' %}">Kitchen Styles</a>
+               class=" a_btn " href="{% url 'application:all-kitchen' %}">Kitchen Styles</a>
         </div>
 
 
         <div class="btn-group">
-            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               class="text-secondary a_btn dropdown-toggle">WorkTops</a>
+               class="a_btn dropdown-toggle">WorkTops</a>
 
           <div class="dropdown-menu p-0">
               {% for item in worktop %}
@@ -25,9 +25,9 @@
 
 
         <div class="btn-group">
-            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               class="text-secondary a_btn dropdown-toggle">Appliances</a>
+               class=" a_btn dropdown-toggle">Appliances</a>
 
           <div class="dropdown-menu p-0">
               {% for item in appliances %}
@@ -39,18 +39,23 @@
 
 
         <div class="btn-group">
-            <a style="font-weight: 600;text-decoration: none;cursor:pointer;"
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               class="text-secondary a_btn dropdown-toggle">Services</a>
+               class=" a_btn dropdown-toggle">Services</a>
 
           <div class="dropdown-menu p-0">
                 <a class="dropdown-item dropHover a_btn" href="{% url 'application:installation' %}">Installation</a>
                 <a href="{% url 'application:design' %}" class="dropdown-item dropHover a_btn">Design</a>
           </div>
         </div>
-        <a href="{% url 'application:blog-list' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;" class="text-secondary">Latest Kitchen Trends</a>
-        <a style="font-weight: 600;text-decoration: none;cursor:pointer;" href="{% url 'application:installation_contact' %}" class="text-secondary">Contact Us</a>
+        <a href="{% url 'application:blog-list' %}" style="color:inherit;font-weight: 600;text-decoration: none;cursor:pointer;" class="a_btn">Latest Kitchen Trends</a>
+        <a style="color:inherit;font-weight: 600;text-decoration: none;cursor:pointer;" href="{% url 'application:contact' %}" class="a_btn">Contact Us</a>
         <a href="{% url 'application:cart' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center"><img src="{% static 'Svg/shopping-cart-solid.svg' %}" height="15px" alt=""></a>
+        {% if request.user.is_authenticated %}
+        <small class="m-0 text-white border pl-1 pr-1"
+                style="position: relative;right: 2%;top: -40%;
+                background-color: forestgreen;border-radius: 8px;font-size: 65%;height: 75%" >{{ cart_count.count }}</small>
+        {% endif %}
     </div>
 </div>
 
@@ -115,9 +120,14 @@
           </div>
         </div>
         <a href="{% url 'application:blog-list' %}" style="text-decoration: none;cursor:pointer;" class="text-secondary d-block pb-1 mb-2 border-bottom">Latest Kitchen Trends</a>
-        <a style="text-decoration: none;cursor:pointer;" class="text-secondary d-block pb-1 mb-2 border-bottom">Contact Us</a>
+        <a style="text-decoration: none;cursor:pointer;" href="{% url 'application:contact' %}" class="text-secondary d-block pb-1 mb-2 border-bottom">Contact Us</a>
         <a href="{% url 'application:cart' %}" style="text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center d-block pb-1 mb-2 border-bottom"><img src="{% static 'Svg/shopping-cart-solid.svg' %}" height="15px" alt=""></a>
-    </div>
+        {% if request.user.is_authenticated %}
+                <small class="m-0 text-white border pl-1 pr-1"
+                style="position: relative;left: 4%;top: -42px;
+                background-color: forestgreen;border-radius: 8px;font-size: 65%;height: 75%" >{{ cart_count.count }}</small>
+            </div>
+        {% endif %}
 
         </div>
     </div>

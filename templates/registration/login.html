@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% block content %}
     <div class="p-5 border border-rounded my-4" style="width: 40%;margin: auto" id="search_in">
-        <form action="{% url 'application:login' %}" method="POST">
+        <form action="{% url 'application:login' %}" onsubmit="redirect(event)" method="POST">
             <h4 class="text-center" style="color: rgb(46, 154, 135)">Login</h4>
             {% if messages %}
                 {% for msg in messages %}
@@ -11,22 +11,26 @@
                 {% endfor %}
             {% endif %}
             {% csrf_token %}
-            {% bootstrap_form form %}
-            <button class="btn btn-success w-100">Login</button>
-            <small>No account?<a href="{% url 'application:signup' %}">Signup here</a></small>
+            <label for="" class="d-block">
+                <input type="text" name="username" class="form-control" placeholder="Username" >
+
+            </label>
+
+            <label for="" class="d-block">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+            </label>
+            <input type="text" value="{{ url }}" hidden name="url">
+            <button class="btn btn-success w-100 my-2">Login</button>
+            <p>No account?<a href="{% url 'application:signup' %}">Signup here</a></p>
+            <p><a href="{% url 'reset_password' %}">Forgot Password?</a></p>
         </form>
     </div>
 {% endblock %}
 {% block script %}
     <script>
-            let msg = `{{ msg }}`;
-            const p =document.getElementById('pop')
-            if (msg!==''){
-                p.innerHTML = msg
-                setTimeout(()=>{
-                    p.innerHTML = ''
-                },3000)
-            }
+        function redirect(e){
+            history.back()
+        }
     </script>
 
 

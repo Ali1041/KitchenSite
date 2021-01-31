@@ -2,9 +2,15 @@
 {% block content %}
 
     <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-4" id="search_in">
-        <form action="{% url 'application:signup' %}" method="POST"  >
+        <form onsubmit="disable(event)" action="{% url 'application:signup' %}" method="POST"  >
             {% csrf_token %}
-            <h3 class="text-center" style="color: rgb(46, 154, 135)">Register here!</h3>
+            <h3 class="text-center" style="color: rgb(46, 154, 135)">Register for our exclusive prices and offers!</h3>
+            {% if messages %}
+                {% for msg in messages %}
+
+                    <p class="alert alert-danger" id="pop" role="alert">{{ msg }}</p>
+                {% endfor %}
+            {% endif %}
             <label for="" class="d-block">
                 Username
                 <input type="text" required name="username" class="form-control" placeholder="Username">
@@ -21,10 +27,17 @@
                 Confirm Password
                 <input type="password" name="re_password" required min="8" class="form-control" placeholder="Confirm Password">
             </label>
-            <button class="w-100 btn btn-success">Signup</button>
-            <small>Already have an account?<a href="{% url 'application:login' %}">Login here</a></small>
+            <button  class="w-100 btn btn-success my-2">Signup</button>
+            <p>Already have an account?<a href="{% url 'application:login' %}">Login here</a></p>
         </form>
     </div>
 
 
+{% endblock %}
+{% block script %}
+    <script>
+        function disable(e){
+            e.target.children[6].setAttribute('disabled',true)
+        }
+    </script>
 {% endblock %}

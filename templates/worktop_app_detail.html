@@ -43,7 +43,7 @@
             <div class="col-md-6">
                 <h2>{{ detail }}</h2>
 
-                <h4>£ {{ detail.price }}</h4>
+                <h4>£ {{ detail.price|floatformat:"0" }}</h4>
                 <p>{{ detail.description }}</p>
                     <div class="row m-0">
                         <input type="button" onclick="operation(event)" class="btn btn-success col-lg-1" value="-">
@@ -154,7 +154,7 @@
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
                     <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
-                    <p class="text-center">£ {{ item.price }}</p>
+                    <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
 
@@ -164,7 +164,7 @@
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
                     <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
-                    <p class="text-center">£ {{ item.price }}</p>
+                    <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
 
@@ -176,9 +176,14 @@
 
     </div>
 
+
+
+{% endblock %}
+{% block script %}
     <script>
         function operation(e){
-            if (e.target.value==='-'&& e.target.nextElementSibling.value!==1){
+            {#console.log(e.target.nextElementSibling.value!==1,e.target.nextElementSibling.value)#}
+            if (e.target.value==='-'&& e.target.nextElementSibling.value!=='1'){
                 const x=parseInt(e.target.nextElementSibling.value)
                 e.target.nextElementSibling.value = x-1
             }
@@ -219,6 +224,5 @@
             })
         }
     </script>
-
 
 {% endblock %}

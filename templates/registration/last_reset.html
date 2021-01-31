@@ -1,0 +1,8 @@
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+{% bootstrap_javascript %}
+<div class="container text-center my-3">
+    <h2>Your password has been set successfully</h2>
+    <a href="{% url 'application:login' %}">Login</a>
+</div>

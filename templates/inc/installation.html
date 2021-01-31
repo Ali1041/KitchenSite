@@ -79,27 +79,28 @@
 
         <hr class="mt-5"/>
 
-    <div class="row m-0 p-5" id="container_remove">
-        <div class="col-md-6">
-            <div style="width: 70%;margin: auto;height: 100%" id="search_in">
-                <img src="{% static 'imgs/instalation.jpg' %}" height="450px" class="img1" width="450px" alt="">
-            </div>
-        </div>
-        <div class="col-md-6" >
-            <div style="width: 70%;margin: auto" id="search_in">
-            <div class="my-2">
-                <h3 style="color: rgb(46, 154, 135)">This is how it begins</h3>
-                <p>We can handle your project from start to finish including planning, design, installation and minor building works that we may encounter.</p>
-            </div>
-            <div class="my-5">
-                <h3 style="color: rgb(46, 154, 135)">Clean work flow</h3>
-                <p>Removal of the existing kitchen and all the necessary disconnections & reconnections that needs to be made is our responsibility.</p>
-            </div>
-            <div>
-                <h3 style="color: rgb(46, 154, 135)">There is experience out there</h3>
-                <p>Our Workman are well Experienced & Qualified. All with a guarantee on the workmanship and the products we will provide.</p>
-            </div>
+        <div class=" my-3" style="width: 60%;margin: auto" id="contain">
+            <div class="row m-0 my-2 bg-light justify-content-between" >
+                <img class="col-lg-6 p-0" height="282px" src="{% static 'imgs/install16.JPG' %}" alt="">
+                <div class="col-lg-6 align-self-center">
+                    <h3 style="color: rgb(46, 154, 135)">This is how it begins</h3>
+                    <p>We can handle your project from start to finish including planning, design, installation and minor building works that we may encounter.</p>
                 </div>
+            </div>
+            <div class="row m-0 my-5 bg-light justify-content-between" >
+                <img class="col-lg-6 p-0" height="282px" src="{% static 'imgs/install21.JPG' %}" alt="">
+                <div class="col-lg-6 align-self-center">
+                    <h3 style="color: rgb(46, 154, 135)">Clean work flow</h3>
+                    <p>Removal of the existing kitchen and all the necessary disconnections & reconnections that needs to be made is our responsibility.</p>
+                </div>
+            </div>
+            <div class="row m-0 bg-light justify-content-between">
+                <img class="col-lg-6 p-0" height="282px" src="{% static 'imgs/install4.JPG' %}" alt="">
+                <div class="col-lg-6 align-self-center">
+                    <h3 style="color: rgb(46, 154, 135)">There is experience out there</h3>
+                    <p>Our Workman are well Experienced & Qualified. All with a guarantee on the workmanship and the products we will provide.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -109,25 +110,25 @@
             </video>
         </div>
 
-    <div class="d-flex justify-content-around menu">
-        <div style="width: 50%;" id="contain">
+        <div style="width: 50%;margin: auto" class="my-2" id="contain">
             <h2>Our Story</h2>
             <p>We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout country to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
             </p>
             <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the dorm room or you’re finally downsizing after all of your kids have left the nest.</p></p>
         </div>
-        <div class="align-self-center" id="contain">
-            <a href="{% url 'application:installation_contact' %}" class="btn btn-success btn-lg">Contact Us</a>
-        </div>
-    </div>
 
-        <div class="text-center">
+
+
+        <div class="text-center my-3">
             <video height="400px" id="video" controls>
                 <source src="{% static 'videos/installation2.mp4' %}" type="video/mp4">
             </video>
         </div>
 
     </div>
+    <div class="text-center mt-2 mb-2" >
+            <a href="{% url 'application:installation_contact' %}" class="btn btn-success btn-lg">Hire our installation services</a>
+        </div>
     </div>
 
 

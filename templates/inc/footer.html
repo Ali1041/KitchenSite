@@ -1,5 +1,24 @@
 {% load static %}
 
+<div class="modal fade" id="news">
+    <div class="modal-dialog modal-dialog-centered">
+        <div style="border: 2px solid green!important;" class="modal-content">
+            <div class="modal-header">
+                <h5>Newsletter Subscription</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <p id="msg"></p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
 <div class="bg-dark text-white p-4" id="footer">
     <div class="p-4" id="footer" style="width: 90%;margin: auto">
     <div class="row pb-2 m-0 menu" id="search_in">
@@ -9,7 +28,7 @@
 
         <div class="col-lg-6 d-flex justify-content-right align-self-center" id="search_in" >
             <input type="email" placeholder="Your Email"  class="form-control" id="search_in" style="width: 50%!important;">
-            <button onclick="subscribe(event)" class=" btn btn-success " style="height: 70%">Subscribe</button>
+            <button data-target="#news" data-toggle="modal" onclick="subscribe(event)" class=" btn btn-success " style="height: 70%">Subscribe</button>
                         <p id="sub" class="ml-2 align-self-center m-0"></p>
         </div>
     </div>
@@ -58,6 +77,8 @@
             }
 
         if (validateEmail(email)){
+            const p = document.getElementById('msg')
+            p.style.color = 'green'
             const base_url = 'http://127.0.0.1:8000/subscribe/'
             fetch(base_url,{
                 method:'POST',
@@ -68,10 +89,15 @@
                 }
             })
             .then((res)=>{
-                return
+                return res.json()
             })
             .then((result)=>{
-                alert('Subscribed successfully')
+                if (result.added==='added'){
+                    p.innerHTML = 'Thank you.You have subscribed successfully to our newsletter!!'
+                }
+                else{
+                    p.innerHTML = 'Thank you.You are already subscribed to the list!!'
+                }
                 e.target.previousElementSibling.value = ''
             })
         }

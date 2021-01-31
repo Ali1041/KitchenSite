@@ -19,7 +19,7 @@
                 <p class="col-md-8">Street Address: <b>{{ detail.user.street_address }}</b></p>
             </div>
         </div>
-        {% for items in detail.order.all|slice:":1" %}
+        {% for items in detail.order.all %}
             <div class="d-flex my-3 justify-content-around" style="width: 90%;margin:auto">
                 {% if items.worktop %}
                     <div class="card p-3 shadow" >

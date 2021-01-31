@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+{% bootstrap_javascript %}
+{% block content %}
+    <div  style="width:40%;margin: auto" id="search_in">
+        <form action="" class="p-5 border border-rounded" method="POST">
+            <h3 class="text-center">Checkout Info</h3>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button class="btn btn-success w-100">Process order</button>
+        </form>
+    </div>
+
+
+
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}

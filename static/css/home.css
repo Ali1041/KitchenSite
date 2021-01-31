@@ -1,3 +1,25 @@
+:root{
+    --White:white;
+    --Black:black;
+    --Anthracite:#383e42;
+    --Cashmere:#d1b399;
+    --Cream:#fffdd0;
+    --Dust-Grey:#7a7b7a ;
+    --Light-Grey:lightgray;
+    --Pavilion:#C8C3BC;
+    --Porcelain:#dddcdb ;
+    --Stone:#888c8d ;
+    --Ivory:#FFFFF0;
+    --Mussel:#fbd1c3 ;
+    --Oak:#806517 ;
+    --Dakar:#988E7D;
+    --Saga-Green:#58724c ;
+    --Indigo:indigo;
+
+
+
+
+}
 .hoverEffect{
     transition:all 0.3s ease-in-out;
 }
@@ -15,9 +37,9 @@
 .my_c{
     color:rgb(46, 154, 135)!important;
 }
-p{
-    font-size: 1em;
-}
+/*p{*/
+/*    font-size: 1em;*/
+/*}*/
 /*h1,h2,h3,h4,h5{*/
 /*    font-weight: 800;*/
 /*}*/
@@ -44,7 +66,9 @@ p{
         width: 100vw;
     }
 
-
+    .height-cut{
+        height: 200px!important;
+    }
     #our_info{
         display: none!important;
     }
@@ -134,6 +158,12 @@ p{
         animation: remove 1s ease-in-out;
         transition: all ease-in-out;
     }
+    .small2{
+        font-size: 13px!important;
+    }
+    #cart{
+        left: 35%!important;
+    }
     @keyframes remove {
         0%{
             height: 60%;
@@ -150,6 +180,8 @@ p{
             height: 60%;
         }
     }
+
+
 }
 @media only screen and (min-width: 767px) and (max-width: 1007px) {
         .input{

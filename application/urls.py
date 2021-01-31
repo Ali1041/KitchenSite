@@ -1,6 +1,7 @@
 from django.urls import path, include
 from .views import *
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView
+
 
 app_name = 'application'
 
@@ -9,7 +10,7 @@ urlpatterns = [
 
     # auth urls
     path('signup/', signup, name='signup'),
-    path('login/', LoginView.as_view(), name='login'),
+    path('login/', login, name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
 
     # ajax call
@@ -18,7 +19,7 @@ urlpatterns = [
     # kitchen
     path('all-kitchen/', AllKitchenView.as_view(), name='all-kitchen'),
     path('kitchen-view/<int:pk>/', KitchenView.as_view(), name='kitchen-view'),
-    path('unit-change/<int:pk>/<str:name>/<int:qty>/',unit_change,name='unit-change'),
+    path('unit-change/<int:pk>/<str:name>/<int:qty>/', unit_change, name='unit-change'),
 
     # worktop
     path('worktop/<int:pk>/', WorktopListView.as_view(), name='worktop-view'),
@@ -52,9 +53,16 @@ urlpatterns = [
     path('intellectual-property-notification/', intellectual, name='intelectual'),
     path('disclaimer/', disclaimer, name='disclaimer'),
 
-    path('doors/cabnets/<int:pk>/<str:name>/', choose, name='choose'),
+    # path('doors/cabnets/<int:pk>/<str:name>/', choose, name='choose'),
     path('subscribe/', newsletter, name='newsletter'),
 
-    path('install-contact/', install_contact, name='installation_contact')
+    path('install-contact/', install_contact, name='installation_contact'),
+
+    # checkout
+    path('checkout/', checkout, name='checkout'),
+    path('order-creation/', create_order_klarna, name='create-order'),
+    path('order-confirmed/', confirmation, name='confirm'),
+    path('push-email/',push,name='push-email'),
+
 
 ]
