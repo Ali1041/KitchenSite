@@ -426,10 +426,11 @@ def file_reading(request, **kwargs):
                 img_loader = SheetImageLoader(worksheet)
                 img = img_loader.get(f'G{i}')
                 img_io = BytesIO()
-                new_img = File(img_io, name=f'hobs_{i}')
+                new_img = File(img_io, name=f'{cat}_{i}')
                 if img.mode in 'RGBA':
                     img = img.convert('RGB')
                 img.save(img_io, 'JPEG', optimize=True)
+                print(img,new_img)
                 app = Appliances.objects.create(
                     name=worksheet.cell(row=i, column=3).value,
                     appliance_category=worksheet.cell(row=i, column=5).value,
@@ -455,7 +456,7 @@ def file_reading(request, **kwargs):
                 img_loader = SheetImageLoader(worksheet)
                 img = img_loader.get(f'I{i}')
                 img_io = BytesIO()
-                new_img = File(img_io, name=f'worktop_{i}')
+                new_img = File(img_io, name=f'{cat}_{i}')
                 if img.mode in 'RGBA':
                     img = img.convert('RGB')
                 img.save(img_io, 'JPEG', optimize=True)
@@ -484,7 +485,7 @@ def file_reading(request, **kwargs):
             if img.mode in 'P':
                 img = img.convert('RGBA')
             img.save(img_io, 'PNG', optimize=True)
-            new_img = File(img_io, name=f'kitchen_{i}')
+            new_img = File(img_io, name=f'{cat}_{unit_cat}_{i}')
             app = Units.objects.create(
                 name=worksheet.cell(row=i, column=5).value,
                 unit_type=unit_cat[0],
@@ -493,7 +494,6 @@ def file_reading(request, **kwargs):
                 price=worksheet.cell(row=i, column=8).value,
                 sku=worksheet.cell(row=i, column=9).value,
                 img=new_img
-
             )
             app.save()
         file.delete()
@@ -527,4 +527,14 @@ class ContactUsList(generic.ListView):
 class ContactUsDetail(generic.DetailView):
     model = ContactUs
     template_name = 'adminPanel/admin_panel_contact_detail.html'
+    context_object_name = 'detail'
+
+class ContactActualList(generic.ListView):
+    model = ContactActual
+    template_name = 'adminPanel/admin_actual_contact.html'
+    context_object_name = 'list'
+
+class ContactActualDetail(generic.DetailView):
+    model = ContactActual
+    template_name = 'adminPanel/admin_actual_detail.html'
     context_object_name = 'detail'

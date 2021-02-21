@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
+    {% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
+
+    {% endblock %}
 {% block content %}
 
     <div class="modal" id="hireModal">
@@ -33,11 +38,11 @@
             <div style="width: 40%" class="text-center" id="search_in">
                 <h4 class='' style="color: rgb(46, 154, 135)">Design </h4>
                 <h2>Overview</h2>
-                <button data-target="#hireModal" data-toggle="modal" class="btn btn-success">Hire our design service</button>
+                <button data-target="#hireModal" data-toggle="modal" class="btn btn-success btn-lg   my-3">Hire our design service</button>
             </div>
             <div style="width: 60%" id="search_in" class="my-2">
                 <p>We provide personalized kitchen designs that balance style & functionality. Find the perfect kitchen designs for you and your family. Our all Kitchen designers have experience of over 10 years. Our Kitchen Designs aired on National TV in two documentaries. We can also provide references on request.</p>
-                <p>If you are investing £3000 into a project. You make sure that the kitchen is designed by professionals and is measured accurately to save you from issues relating to wrong unit selection.</p>
+                <p>If you are investing £2000 plus into your project, you need to make sure that the kitchen is designed by professionals and is measured accurately to save you from issues relating to wrong unit selection.</p>
             </div>
         </div>
 
@@ -110,9 +115,10 @@
 
     <div class="row m-0 p-5" id="container_remove">
         <div class="col-lg-6">
-            <div style="width: 70%;margin: auto;height: 100%" id="search_in">
-                <img src="{% static 'imgs/design1.jpg' %}" class="img1" height="450px" width="500px" alt="">
-            </div>
+{#                <img src="{% static 'imgs/design1.jpg' %}" class="img1" height="450px" width="600px" alt="">#}
+            <video height="400px" id="video" controls>
+                <source src="{% static 'videos/design2.mp4' %}" type="video/mp4">
+            </video>
         </div>
         <div class="col-lg-6 my-2" >
             <div style="width: 70%;margin: auto" id="search_in">
@@ -142,9 +148,7 @@
     </div>
 
         <div class="bg-light text-center">
-            <video height="400px" id="video" controls>
-                <source src="{% static 'videos/design2.mp4' %}" type="video/mp4">
-            </video>
+
         </div>
 
 
@@ -154,7 +158,7 @@
             <h2>Our Story</h2>
             <p>We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout country to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
             </p>
-            <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the dorm room or you’re finally downsizing after all of your kids have left the nest.</p></p>
+            <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the student accommodation or you’re finally downsizing after all of your kids have left the nest.</p></p>
         </div>
         <div class="align-self-center" >
             <a href="{% url 'application:contact' %}" class="btn btn-success btn-lg">Contact Us</a>

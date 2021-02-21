@@ -6,34 +6,16 @@
 {% load custom_tag %}
 
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+    {% block meta %}
+        <title>TKC KITCHENS</title>
 
+    {% endblock %}
 {% block content %}
     <div class="my-5 container" id="container_remove">
         <h2 class="text-center"><span style="color: rgb(46, 154, 135)">{{ kitchen_view }}</span></h2>
         <div style="width: 100%;margin: auto">
 
-
-            <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
-              <div class="carousel-inner" id="slider_get">
-                  {% for pics in kitchen_color %}
-                <div class="carousel-item bg-dark get" >
-                  <img class="d-block w-100" id="k_img"  style="opacity:0.7;height: 700px" src="{{ pics.get_photo_url }}" alt="{{ pics.color }}">
-                </div>
-                  {% endfor %}
-              <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls" role="button" data-slide="prev">
-                <div class="p-3 bg-dark" style="">
-                    <span class="carousel-control-prev-icon"  style="color: black!important;" aria-hidden="true"></span>
-                    <span class="sr-only" style="padding: 20px!important;" id="arrow_left">Previous</span>
-                </div>
-              </a>
-              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                <div class="p-3 bg-dark">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </div>
-              </a>
-            </div>
-            </div>
+            <img class="d-block mx-auto" id="k_img"  style="height: 700px" src="{{ current_pic.get_photo_url }}" alt="{{ pics.color }}">
 
 
             <div class="container my-2">
@@ -44,8 +26,8 @@
         {% if not form %}
         <div class="d-flex justify-content-between menu">
 
-            <div style="width:30%" id="search_in" class="p-3 align-self-center" >
-                <form action="{% url 'application:kitchen-view' kitchen_view.pk %}" id="filter" class="text-center" >
+            <div style="width:30%" id="search_in" class="p-3 align-self-center move" >
+                <form action="{% url 'application:kitchen-view' kitchen_view.name current_color %}" id="filter" class="text-center" >
                     <select name="unit_type" id="" class="form-control  mb-2">
                         <option value="" >Select a unit</option>
                         {% for item in search %}
@@ -53,24 +35,67 @@
                         {% endfor %}
                     </select>
                     <button class="btn btn-success">Apply filter</button>
-                    <a href="{% url 'application:kitchen-view' kitchen_view.pk %}" class="btn btn-secondary">Remove filter</a>
+                    <a href="{% url 'application:kitchen-view' kitchen_view.name current_color %}" class="btn btn-secondary">Remove filter</a>
                 </form>
             </div>
 
-            <div class="align-self-start text-center p-3">
+            <div class="align-self-start text-center p-3 move3">
                 <a href="{% url 'application:add-to-cart' 'sample' 'white' kitchen_view.pk 1 'create' %}" class="btn btn-success">Order a sample</a>
             </div>
-            <div class=" p-3 align-self-start" id="search_in" style="width: 30%">
-{#                <label for="">Kitchen Color</label>#}
-                <select name="" id="select" class="form-control" onchange="change_url(event)">
-                    <option value="">Select Kitchen color</option>
-                    {% for item in kitchen_color %}
-                        <option value="{{ item.color }}">{{ item.color }}</option>
-                    {% endfor %}
-                </select>
+
+
+            <div class=" p-3 align-self-start " id="search_in" style="width: 30%">
+                    <div class="btn-group border p-2 move2" style="width: 100%;border-radius: 6px">
+                        <p class="align-self-center m-0 mr-2" style="height: 20px;width: 20px;background-color: var(--{{ current_color }})">
+                        </p>
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class=" a_btn dropdown-toggle" id="select">(Selected Color) {{ current_color }}</a>
+
+
+          <div class="dropdown-menu p-0 w-100">
+              {% for item in kitchen_color %}
+                    <div class="dropdown-item dropHover a_btn d-flex" onclick="change_url(event)" style="cursor:pointer">
+                    <p class="align-self-center m-0 mr-2" style="display: inline-block;height: 20px;width: 20px;background-color: var(--{{ item.color }})">
+                        </p>
+                        <span class="">
+                      {{ item.color }}</span>
+                    </div>
+
+
+
+              {% endfor %}
+          </div>
+                    </div>
+
             </div>
 
         </div>
+            {% else %}
+            <div style="width: 80%;margin: auto">
+                    <div class="btn-group border p-2 my-2" style="width: 100%;border-radius: 6px">
+                        <p class="align-self-center m-0 mr-2" style="height: 20px;width: 20px;background-color: var(--{{ current_color }})">
+                        </p>
+            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               class=" a_btn dropdown-toggle" id="select">(Selected Color) {{ current_color }}</a>
+
+
+          <div class="dropdown-menu p-0 w-100">
+              {% for item in kitchen_color %}
+                    <div class="dropdown-item dropHover a_btn d-flex" onclick="change_url(event)" style="cursor:pointer">
+                    <p class="align-self-center m-0 mr-2" style="display: inline-block;height: 20px;width: 20px;background-color: var(--{{ item.color }})">
+                        </p>
+                        <span class="">
+                      {{ item.color }}</span>
+                    </div>
+
+
+
+              {% endfor %}
+          </div>
+                    </div>
+            </div>
         {% endif %}
         {% if units %}
         {% if user.is_authenticated %}
@@ -113,9 +138,12 @@
                     <td>{{ item.description }}</td>
                     <td>£ {{ item.price }}</td>
                     <td><input type="number" value="1" class="form-control input" style="width: 60%;" min="1"></td>
+{#                    {% ifequal item.added False %}#}
                     <td><a id="url" style="color: rgb(46, 154, 135);cursor: pointer"
                            onclick="stop(event,'kitchen',`{{ item.kitchen }}`,`{{ item.pk }}`,'create')" ><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
-
+{#                    {% else %}#}
+{#                        <td>Added {{ item.added }}</td>#}
+{#                    {% endifequal %}#}
                 </tr>
             {% endfor %}
             </tbody>
@@ -135,56 +163,71 @@
         <div class="alert alert-primary" role="alert">
             No units!!
         </div>
+            {% if form %}
+             <div id="contain">
+                <p>
+                    Vero handleless rail system needs a highly-skilled designer and highly technical
+skills for installation. To save our valuable clients from getting into any
+                    installation or design-related problems, we only offer <b>{{ kitchen_view }}</b> when you acquire installation services from us as well. Contact us by
+filling the below form and our team will get in touch with you in 48 hours.
+                </p>
+             </div>
+
             <div style="width: 60%;margin: auto" class="border p-5" id="search_in">
         <form action="{% url 'application:installation_contact' %}" method="POST">
             {% csrf_token %}
-            <h3 class="text-center">Installation form</h3>
+            {% if messages %}
+                {% for msg in messages %}
+                <p class="alert alert-primary" role="alert">{{ msg }}</p>
+                {% endfor %}
+                {% endif %}
+            <h3 class="text-center">Order and Installation Service</h3>
             <label for="" class="d-block">
                 Name
-                <input placeholder="Name" type="text" name="name" class="form-control">
+                <input placeholder="Name" required type="text" name="name" class="form-control">
             </label>
 
             <label for="" class="d-block">
                 Email Address
-                <input placeholder="Email" type="email" name="email" class="form-control">
+                <input placeholder="Email" required type="email" name="email" class="form-control">
             </label>
 
             <label for="" class="d-block">
                 Phone Number
-                <input placeholder="Phone Number" type="number" name="phone" class="form-control">
+                <input placeholder="Phone Number" required type="number" name="phone" class="form-control">
             </label>
 
             <label for="" class="d-block">
                 Site Address
-                <input placeholder="Site Address" type="text" name="address" class="form-control">
+                <input placeholder="Site Address" required type="text" name="address" class="form-control">
             </label>
 
             <label for="" class="d-block my-4">
                 Is room ready to measure?<br/>
-                <input type="radio" name="measure" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" name="measure" value="False"><span class="ml-2">No</span>
+                <input type="radio" name="measure" required value="True"><span class="ml-2">Yes</span><br/>
+                <input type="radio" name="measure" required value="False"><span class="ml-2">No</span>
             </label>
 
             <label for="" class="d-block my-4">
                 Do you want us to remove the old kitchen?<br/>
-                <input type="radio" name="old" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" name="old" value="False"><span class="ml-2">No</span>
+                <input type="radio" required name="old" value="True"><span class="ml-2">Yes</span><br/>
+                <input type="radio" required name="old" value="False"><span class="ml-2">No</span>
             </label>
 
             <label for="" class="d-block my-4">
                 Do you require Plastering, Plumbing & Electrics?<br/>
-                <input type="radio" name="ee" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" name="ee" value="False"><span class="ml-2">No</span>
+                <input type="radio" required name="ee" value="True"><span class="ml-2">Yes</span><br/>
+                <input type="radio" required name="ee" value="False"><span class="ml-2">No</span>
             </label>
 
             <label for="" class="d-block my-4">
                 What is your budget on the project Including Cabinets, Worktops, Appliances, Accessories and Installation?<br/>
-                <input type="radio" name="price" value="12,000-"><span class="ml-2">£ 10,000-12,000</span><br/>
-                <input type="radio" name="price" value="14,000-"><span class="ml-2">£ 12,000-14,000</span><br/>
-                <input type="radio" name="price" value="16,000-"><span class="ml-2">£ 14,000-16,000</span><br/>
-                <input type="radio" name="price" value="18,000-"><span class="ml-2">£ 16,000-18,000</span><br/>
+                <input type="radio" required name="price" value="12,000-"><span class="ml-2">£ 10,000-12,000</span><br/>
+                <input type="radio" required name="price" value="14,000-"><span class="ml-2">£ 12,000-14,000</span><br/>
+                <input type="radio" required name="price" value="16,000-"><span class="ml-2">£ 14,000-16,000</span><br/>
+                <input type="radio" required name="price" value="18,000-"><span class="ml-2">£ 16,000-18,000</span><br/>
 
-                <input type="radio" name="price" value="20,000+" ><span class="ml-2">£ 20,000+</span>
+                <input type="radio" required name="price" value="20,000+" ><span class="ml-2">£ 20,000+</span>
             </label>
 
 
@@ -195,7 +238,7 @@
             <button class="btn btn-success">Submit</button>
         </form>
     </div>
-
+            {% endif %}
     {% endif %}
     </div>
 
@@ -209,47 +252,48 @@
 {% endblock %}
 {% block script %}
     <script>
-    const img = document.getElementsByClassName('get')
-    img[0].classList.add('active')
-    const slider = document.getElementById('slider_get').children
-    const div = document.getElementById('cart')
+            const select = document.getElementById('select').innerText
+            const value = select.split(' ')
+            const div = document.getElementById('cart')
+            function stop(e, status, kit, pk, pro) {
+                {#e.target.removeEventListener()#}
 
-    function stop(e,status,kit,pk,pro){
-        const s = document.getElementById('select')
-        if (s.value===''){
-            alert('Select a color')
-        }
-        else{
-            const qty = e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
-            let url = `${base_url}/${s.value}/${kit}/${pk}/${qty}/${pro}/`
-            fetch(url)
-            .then((res)=>{
-                return res.json()
-            })
-            .then((result)=>{
-                div.style.bottom = 10+'%'
-                setTimeout(()=>{
-                    div.style.bottom = -10+'%'
-                },1500)
-                return result
-            })
-        }
-    }
+                const qty = e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value
+                const base_url = `${origin}/add-to-cart`
+                let url = `${base_url}/${value[2]}/${kit}/${pk}/${qty}/${pro}/`
+                fetch(url)
+                    .then((res) => {
+                        return res.json()
+                    })
+                    .then((result) => {
+                        div.style.bottom = 10 + '%'
 
-    function change_url(e){
+                        setTimeout(() => {
+                            div.style.bottom = -10 + '%'
+                        }, 1500)
+                        e.target.style.color = 'lightgray'
+                        const ls = localStorage.getItem('pk')
+                        if (ls === pk) {
+                            const val = parseInt(qty) + 1
+                            e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value = val
+                        }
+                        localStorage.setItem('pk', pk)
 
-        const color = e.target.value
-    for (let i=0;i<slider.length-2;i++){
-        if (slider[i].firstElementChild.alt===color){
-            slider[i].classList.add('active')
-        }
-        else{
-            slider[i].classList.remove('active')
-        }
-    }
+                        return result
+                    })
 
-    }
+                cart_count('e')
+            }
+
+            function change_url(e) {
+
+                const color = e.target.innerText;
+                const kitchen = `{{ kitchen_view.name }}`
+                const base_url = `${origin}/kitchen-view`
+                location.replace(`${base_url}/${kitchen}/${color}/`)
+            }
+
+
 
 
     </script>

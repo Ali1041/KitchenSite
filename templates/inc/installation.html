@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
+    {% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
+
+    {% endblock %}
 {% block content %}
     <div class="my-4">
+            <div class="text-center">
+            <video height="400px" id="video" controls>
+                <source src="{% static 'videos/installation1.mp4' %}" type="video/mp4">
+            </video>
+        </div>
+
         <div class="p-3 d-flex justify-content-around mt-3 menu" id="container_remove">
             <div style="width: 40%" class="text-center" id="search_in">
                 <h4 class='' style="color: rgb(46, 154, 135)">Installation </h4>
@@ -15,7 +26,7 @@
         <div class="row p-2 mt-5" style="width: 90%;margin: auto">
 
 
-            <div class="col-md-3 my-2 ">
+            <div class="col-md-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body ">
                     <div class="d-flex justify-content-between">
@@ -35,7 +46,7 @@
                         <h2 class="card-title m-0 align-self-center counter-count" style="font-weight: 800">110</h2>
                           <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
                     </div>
-                      <p style="font-weight: 500" class="text-left m-0">Employees</p>
+                      <p style="font-weight: 500" class="text-left m-0">Design Plans</p>
                   </div>
                 </div>
 
@@ -52,7 +63,7 @@
                         </div>
                           <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
                     </div>
-                      <p style="font-weight: 500" class="text-left m-0 ">Working Hours</p>
+                      <p style="font-weight: 500" class="text-left m-0 ">Combined Experience</p>
                   </div>
                 </div>
 
@@ -70,7 +81,7 @@
                         </div>
                           <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
                     </div>
-                      <p style="font-weight: 500" class="text-left m-0">Win Awards</p>
+                      <p style="font-weight: 500" class="text-left m-0">Completed Projects</p>
                   </div>
                 </div>
 
@@ -104,17 +115,13 @@
         </div>
     </div>
 
-        <div class="text-center">
-            <video height="400px" id="video" controls>
-                <source src="{% static 'videos/installation1.mp4' %}" type="video/mp4">
-            </video>
-        </div>
 
-        <div style="width: 50%;margin: auto" class="my-2" id="contain">
+
+        <div style="width: 60%;margin: auto" class="my-2" id="contain">
             <h2>Our Story</h2>
             <p>We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout country to find exceptional artisans and bring their unique handcrafted objects to connoisseurs everywhere.
             </p>
-            <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the dorm room or you’re finally downsizing after all of your kids have left the nest.</p></p>
+            <p>You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment, moved out of the student accommodation or you’re finally downsizing after all of your kids have left the nest.</p></p>
         </div>
 
 
@@ -126,7 +133,7 @@
         </div>
 
     </div>
-    <div class="text-center mt-2 mb-2" >
+    <div class="text-center my-5" >
             <a href="{% url 'application:installation_contact' %}" class="btn btn-success btn-lg">Hire our installation services</a>
         </div>
     </div>

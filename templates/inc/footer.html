@@ -2,15 +2,10 @@
 
 <div class="modal fade" id="news">
     <div class="modal-dialog modal-dialog-centered">
-        <div style="border: 2px solid green!important;" class="modal-content">
+        <div style="border: 4px solid green!important;" class="modal-content">
             <div class="modal-header">
-                <h5>Newsletter Subscription</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-            </div>
-            <div class="modal-body">
-                <p id="msg"></p>
+                <h4 id="msg" class="text-center"></h4>
+
             </div>
         </div>
 
@@ -22,7 +17,7 @@
 <div class="bg-dark text-white p-4" id="footer">
     <div class="p-4" id="footer" style="width: 90%;margin: auto">
     <div class="row pb-2 m-0 menu" id="search_in">
-        <div class="col-lg-6 align-content-middle" id="search_in">
+        <div class="col-lg-6 align-content-middle p-0" id="search_in">
             <h3 class="m-0 p-2">Signup for our Newsletter</h3>
         </div>
 
@@ -36,8 +31,8 @@
     <div class="d-flex justify-content-around menu">
         <div class="">
             <p><i class="fas fa-map-marker-alt"></i><span class="p-2">International House, Mosley Street, Manchester M2 3HZ</span></p>
-            <p><i class="fas fa-phone-alt align-self-center"></i><span class="m-0 p-2 my-5">08002118289</span></p>
-            <p><i class="fas fa-envelope align-self-center"></i><span class="m-0 p-2">customer.service@tkckitchens.co.uk</span></p>
+            <p><i class="fas fa-phone-alt align-self-center"></i><a style="color:inherit;text-decoration: none" href="tel:+08002118289" class="m-0 p-2">08002118289</a></p>
+            <p><i class="fas fa-envelope align-self-center"></i><a style="color: inherit;text-decoration: none;" href="https://mail.google.com/mail/?view=cm&fs=1&to=service@tkckitchens.co.uk" class="m-0 p-2">service@tkckitchens.co.uk</a></p>
         </div>
         <div class="align-self-baseline">
             <p>
@@ -55,16 +50,18 @@
             <p><a href="{% url 'application:cookies' %}" class="a_btn" style="color: inherit;text-decoration: none">Cookies policy</a></p>
             <p><a href="{% url 'application:intelectual' %}" class="a_btn" style="color: inherit;text-decoration: none">Intellectual property notification</a></p>
             <p><a href="{% url 'application:disclaimer' %}" class="a_btn" style="color: inherit;text-decoration: none">Disclaimer policy</a></p>
+            <p><a class="a_btn" style="color: inherit;text-decoration: none">Ziegal Ltd(10914681)</a></p>
+
         </div>
         <div class="">
-            <p><i class="fab fa-facebook-f"></i><span class="pl-2">Facebook</span></p>
-            <p><i class="fab fa-pinterest-p"></i><span class="pl-2">Pinterest</span></p>
-            <p><i class="fab fa-instagram"></i><span class="pl-2">Instagram</span></p>
+            <a href="https://www.facebook.com/tkckitchens.co.uk" class="d-block" style="margin-bottom: 1rem;color: inherit;text-decoration: none"><i class="fab fa-facebook-f"></i><span class="pl-2">Facebook</span></a>
+            <a href="https://www.pinterest.co.uk/TKCkitchens/_created/" class="d-block" style="margin-bottom: 1rem;color: inherit;text-decoration: none"><i class="fab fa-pinterest-p"></i><span class="pl-2">Pinterest</span></a>
+            <a href="https://www.instagram.com/tkckitchens.co.uk/" class="d-block" style="margin-bottom: 1rem;color: inherit;text-decoration: none"><i class="fab fa-instagram"></i><span class="pl-2">Instagram</span></a>
         </div>
     </div>
 </div>
-    <p class="text-center border-top border-bottom m-0 p-3">Copyright&copy;</p>
-    <p class="text-center m-0 p-1">All icons are property of <a href="https://fontawesome.com/">Font Awesome</a></p>
+    <p class="text-center border-top border-bottom m-0 p-3">Copyright&copy; TKC KITCHENS</p>
+{#    <p class="text-center m-0 p-1">All icons are property of <a href="https://fontawesome.com/">Font Awesome</a></p>#}
 </div>
 <script>
         function subscribe(e){
@@ -79,7 +76,7 @@
         if (validateEmail(email)){
             const p = document.getElementById('msg')
             p.style.color = 'green'
-            const base_url = 'http://127.0.0.1:8000/subscribe/'
+            const base_url = `${origin}/subscribe/`
             fetch(base_url,{
                 method:'POST',
                 body:JSON.stringify({'email':e.target.previousElementSibling.value}),

@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+    {% block meta %}
+        <title>TKC KITCHENS</title>
+
+    {% endblock %}
 {% block content %}
     <div class="p-5 border border-rounded my-4" style="width: 40%;margin: auto" id="search_in">
         <form action="{% url 'application:login' %}" onsubmit="redirect(event)" method="POST">
@@ -12,11 +16,12 @@
             {% endif %}
             {% csrf_token %}
             <label for="" class="d-block">
-                <input type="text" name="username" class="form-control" placeholder="Username" >
-
+                Email Address
+                <input type="email" name="email" class="form-control" placeholder="Email" >
             </label>
 
             <label for="" class="d-block">
+                Password
                 <input type="password" name="password" class="form-control" placeholder="Password">
             </label>
             <input type="text" value="{{ url }}" hidden name="url">

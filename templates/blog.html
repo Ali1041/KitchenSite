@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
+    {% block meta %}
+        <title>TKC KITCHENS</title>
 
+    {% endblock %}
 {% block content %}
     <div class="container">
         {% for item in list %}
@@ -10,7 +13,7 @@
                     <small>{{ item.timestamp }}</small>
                 </div>
                 <div>
-                    <img src="{{ item.get_photo_url }}" class="img1" height="200px" width="300px" alt="{{ item }} image">
+                    <img src="{{ item.get_photo_url }}" id="k_img" height="200px" width="300px" alt="{{ item }} image">
                 </div>
             </div>
 

@@ -14,25 +14,41 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include, re_path
 from django.conf.urls.static import static
 from django.conf import settings
-from django.contrib.auth.views import  \
-    PasswordResetCompleteView, PasswordResetDoneView,PasswordResetView,PasswordResetConfirmView
+from django.contrib.auth.views import \
+    PasswordResetCompleteView, PasswordResetDoneView, PasswordResetView, PasswordResetConfirmView
+from django.contrib.sitemaps.views import sitemap
+from application.sitemaps import *
+
+sitemaps = {
+    'static': StaticMaps,
+    'worktop':WorktopMap,
+    'appliances':AppliancesMap,
+    'kitchen':KitchenMap,
+    'worktopDetail':WorktopsDetailMap,
+    'appliancesDetail':AppliancesDetailMap
+}
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('',include('application.urls')),
-    path('adminPanel/', include('adminPanel.urls')),
-    path('ckeditor',include('ckeditor_uploader.urls')),
-  # reset password
-  path('reset_password/', PasswordResetView.as_view(template_name='registration/reset_password.html'),
-       name='reset_password'),
-  path('password_reset_done/', PasswordResetDoneView.as_view(), name='password_reset_done'),
-  path('password_reset_confirm/<uidb64>/<token>/',
-       PasswordResetConfirmView.as_view(),
-       name='password_reset_confirm'),
-  path('password_reset_complete/', PasswordResetCompleteView.as_view(template_name='registration/last_reset.html'), name='password_reset_complete')
+                  path('admin/', admin.site.urls),
+                  path('', include('application.urls')),
+                  path('adminPanel/', include('adminPanel.urls')),
+                  path('ckeditor', include('ckeditor_uploader.urls')),
+                  re_path('djga/', include('google_analytics.urls')),
+                  path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+                       name='django.contrib.sitemaps.views.sitemap'),
+                  # reset password
+                  path('reset_password/', PasswordResetView.as_view(template_name='registration/reset_password.html'),
+                       name='reset_password'),
+                  path('password_reset_done/', PasswordResetDoneView.as_view(), name='password_reset_done'),
+                  path('password_reset_confirm/<uidb64>/<token>/',
+                       PasswordResetConfirmView.as_view(),
+                       name='password_reset_confirm'),
+                  path('password_reset_complete/',
+                       PasswordResetCompleteView.as_view(template_name='registration/last_reset.html'),
+                       name='password_reset_complete')
 
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

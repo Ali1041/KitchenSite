@@ -58,4 +58,8 @@ urlpatterns = [
     # contact us
     path('contact-list/',ContactUsList.as_view(),name='contact_list'),
     path('contact-list-detail/<int:pk>/',ContactUsDetail.as_view(),name='detail-contact'),
+
+    # contact actual
+    path('contact-us-list/',ContactActualList.as_view(),name='actual-list'),
+    path('contact-us-detail/<int:pk>/',ContactActualDetail.as_view(),name='actual-detail'),
 ]

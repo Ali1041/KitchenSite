@@ -16,7 +16,7 @@
                 <p class="col-md-4">Region: <b>{{ detail.user.region }}</b></p>
                 <p class="col-md-4">Post Code: <b>{{ detail.user.postcode }}</b></p>
                 <p class="col-md-4">Country: <b>{{ detail.user.country }}</b></p>
-                <p class="col-md-8">Street Address: <b>{{ detail.user.street_address }}</b></p>
+                <p class="col-md-8">Complete Address: <b>{{ detail.user.door_number }} {{ detail.user.street_name }}</b></p>
             </div>
         </div>
         {% for items in detail.order.all %}
@@ -52,26 +52,28 @@
                     </div>
                 {% endif %}
             </div>
-            {% if i.kitchen_order %}
+            {% if items.kitchen_order %}
             <div class="container">
-                <h5>Kitchen:{{ items.kitchen_order.kitchen_type }}</h5>
-                <table>
+                <h5>Kitchen:{{ items.kitchen_order.kitchen }}</h5>
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Type</th>
                             <th>Description</th>
-                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>(£) Price</th>
                         </tr>
 
                     </thead>
                     <tbody>
-                        {% for i in items.kitchen_order.units.all %}
+                        {% for i in items.kitchen_order.units_intermediate_set.all %}
                             <tr>
-                                <td>{{ i.name }}</td>
-                                <td>{{ i.unit_type }}</td>
-                                <td>{{ i.description }}</td>
-                                <td>{{ i.price }}</td>
+                                <td>{{ i.unit.name }}</td>
+                                <td>{{ i.unit.unit_type }}</td>
+                                <td>{{ i.unit.description }}</td>
+                                <td>{{ i.qty }}</td>
+                                <td>{{ i.unit.price }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

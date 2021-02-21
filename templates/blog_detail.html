@@ -1,19 +1,44 @@
 {% extends 'base.html' %}
+    {% block meta %}
+        <title>TKC KITCHENS</title>
 
+    {% endblock %}
 {% block content %}
     <div class="container my-3">
         <div style="width: 65%;margin: auto" class="my-3" id="search_in">
-            <img src="{{ detail.get_photo_url }}" class="img1" height="500px" alt="">
+            <img src="{{ detail.get_photo_url }}" id="k_img" height="500px" width="100%" alt="">
         </div>
         <div>
             <h4 class="text-center mb-2">{{ detail.title }}</h4>
             <small>Uploaded at: {{ detail.timestamp }}</small>
             <hr/>
-            <p>{{ detail.text|safe }}</p>
+            <p id="contain">{{ detail.text|safe }}</p>
         </div>
     </div>
 
 
 
 
+{% endblock %}
+{% block script %}
+    <script>
+        const imgs_blog = document.getElementsByTagName('img')
+        if (window.innerWidth<839){
+            for (let i=0;i<imgs_blog.length;i++){
+            if (i>2){
+                console.log(imgs_blog[i].style.width)
+                if (imgs_blog[i].style.width<500+'px'){
+                    imgs_blog[i].style.height = 250+'px'
+                    imgs_blog[i].style.width = 60+'%'
+                    continue
+                }
+            imgs_blog[i].setAttribute('id','k_img')
+            imgs_blog[i].style.width = 100+'%'
+            }
+        }
+
+
+
+        }
+    </script>
 {% endblock %}

@@ -8,9 +8,11 @@
             <p>{{ item.comment }}</p>
             {% if item.worktop %}
             <p>{{ item.worktop }}</p>
+                <p>Rating {{ item.rating }}</p>
                 <a href="{% url 'adminPanel:approved' 'worktop' item.pk %}" class="btn btn-success">Approve</a>
             {% else %}
             <p>{{ item.appliances }}</p>
+                <p>Rating {{ item.rating }}</p>
                 <a class="btn btn-success" href="{% url 'adminPanel:approved' 'appliance' item.pk %}">Approve</a>
             {% endif %}
         </div>

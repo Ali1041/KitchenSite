@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.urls import reverse
 
 # Create your models here.
 
@@ -28,10 +29,14 @@ class KitchenCategory(models.Model):
         ['Vivo+gloss for vero', 'Vivo+gloss for vero'],
         ['Vivo+matt for vero', 'Vivo+matt for vero'],
     ]
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+
+    def natural_key(self):
+        return self.name
+
 
 
 class Kitchen(models.Model):
@@ -45,6 +50,7 @@ class Kitchen(models.Model):
     door_color = models.CharField(max_length=128, blank=True, null=True)
     cabnet = models.CharField(max_length=128, blank=True, null=True)
     img = models.ImageField(upload_to='kitchen', null=True, blank=True)
+    available = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.kitchen_type.name} {self.color}'
@@ -53,7 +59,11 @@ class Kitchen(models.Model):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
 
+    def get_absolute_url(self):
+        return reverse('application:kitchen-view', kwargs={'name': self.kitchen_type.name,'color':self.color})
 
+    class Meta:
+        ordering = ['-pk']
 # class Doors(models.Model):
 #     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_door')
 #     door_img = models.ImageField(upload_to='doors')
@@ -99,20 +109,22 @@ class UnitType(models.Model):
         ['EXTRA DOOR', 'EXTRA DOOR'],
 
     ]
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 
 class Units(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
     unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     price = models.FloatField()
     kitchen = models.ForeignKey(KitchenCategory, on_delete=models.CASCADE, related_name='kitchen_units')
     img = models.ImageField(upload_to='base_units')
-    sku = models.CharField(max_length=128, default='SKU')
+    sku = models.CharField(max_length=255, default='SKU')
+    added = models.BooleanField(default=False)
+    available = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -134,20 +146,28 @@ class Worktop_category(models.Model):
         ['Stone Worktops', 'Stone Worktops'],
 
     ]
-    worktop_type = models.CharField(max_length=150)
+    worktop_type = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ['-pk']
 
     def __str__(self):
         return self.worktop_type
 
+    def get_absolute_url(self):
+        return reverse('application:worktop-view', kwargs={'pk': self.id})
+
 
 class WorkTop(models.Model):
     category = models.ForeignKey(Worktop_category, on_delete=models.CASCADE, related_name='worktop_category')
-    name = models.CharField(max_length=100)
-    color = models.CharField(max_length=50)
+    name = models.CharField(max_length=255)
+    color = models.CharField(max_length=255)
     description = models.TextField()
     price = models.FloatField()
-    size = models.CharField(max_length=30)
+    size = models.CharField(max_length=255)
     worktop_img = models.ImageField(upload_to='worktops/')
+    added = models.BooleanField(default=False)
+    available = models.BooleanField(default=True)
 
     # for_sample = models.CharField(max_length=10,blank=True,null=True,default='Yes')
     # sample_price = models.FloatField(blank=True,null=True,default=5)
@@ -159,39 +179,51 @@ class WorkTop(models.Model):
         if self.worktop_img and hasattr(self.worktop_img, 'url'):
             return self.worktop_img.url
 
+    def get_absolute_url(self):
+        return reverse('application:worktop-detail-view', kwargs={'name':self.category.worktop_type,'pk': self.pk})
+
     class Meta:
-        ordering = ['pk']
+        ordering = ['-pk']
 
 
 class Category_Applianes(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('application:appliances-list', kwargs={'pk': self.id})
+
     class Meta:
         verbose_name_plural = 'Category_Appliances'
+        ordering = ['-pk']
 
 
 class Appliances(models.Model):
     category = models.ForeignKey(Category_Applianes, on_delete=models.CASCADE, related_name='appliance_category')
-    name = models.CharField(max_length=50)
-    appliances_type = models.CharField(max_length=120, default='none')
-    brand_name = models.CharField(max_length=50, default='none')
+    name = models.CharField(max_length=255)
+    appliances_type = models.CharField(max_length=255, default='none')
+    brand_name = models.CharField(max_length=255, default='none')
     description = models.TextField(blank=True, null=True)
     img = models.ImageField(upload_to='Appliance', default='none')
     price = models.FloatField()
-    appliance_category = models.CharField(max_length=128)
+    appliance_category = models.CharField(max_length=255)
+    added = models.BooleanField(default=False)
+    available = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('application:appliances-detail-view', kwargs={'name':self.category.name,'pk': self.id})
 
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
 
     class Meta:
-        ordering = ['pk']
+        ordering = ['-pk']
 
 
 class Combining(models.Model):
@@ -231,6 +263,7 @@ class Cart(models.Model):
     qty = models.IntegerField(blank=True, null=True)
     sample_worktop = models.CharField(max_length=100, default='No', blank=True, null=True)
     checkedout = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         if self.kitchen_order:
@@ -252,15 +285,17 @@ class CompleteOrder(models.Model):
 
 
 class UserInfo(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     email_address = models.EmailField()
-    phone_number = models.CharField(max_length=20)
-    street_address = models.TextField()
-    city = models.CharField(max_length=20)
-    region = models.CharField(max_length=20)
-    postcode = models.CharField(max_length=20)
-    country = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=255)
+    door_number = models.CharField(max_length=255, blank=True, null=True, )
+    street_name = models.CharField(max_length=255, blank=True, null=True, )
+    street_address = models.TextField(blank=True, null=True, default='none')
+    city = models.CharField(max_length=255)
+    region = models.CharField(max_length=255, blank=True, null=True)
+    postcode = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
 
     def __str__(self):
         return self.first_name
@@ -281,7 +316,7 @@ class WishList(models.Model):
 
 
 class Blogs(models.Model):
-    title = models.CharField(max_length=128)
+    title = models.CharField(max_length=255)
     text = RichTextUploadingField()
     title_img = models.ImageField(upload_to='blog_img', default='hello')
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -324,10 +359,10 @@ class Newsletter(models.Model):
 
 
 class ContactUs(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=255)
     email = models.EmailField()
     site_address = models.TextField()
-    phone = models.IntegerField()
+    phone = models.BigIntegerField()
     room_ready = models.BooleanField(default=False)
     remove_old_kitchen = models.BooleanField(default=False)
     require_things = models.BooleanField(default=False)
@@ -336,3 +371,48 @@ class ContactUs(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['-pk']
+
+
+class ContactActual(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    detail = models.TextField()
+    phone = models.BigIntegerField()
+    order_number = models.CharField(max_length=255)
+    reason = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class MetaInfo(models.Model):
+    home_title = models.CharField(max_length=255)
+    home_name = models.CharField(max_length=255)
+    home_description = models.TextField()
+
+    kitchen_title = models.CharField(max_length=255)
+    kitchen_name = models.CharField(max_length=255)
+    kitchen_description = models.TextField()
+
+    worktop_title = models.CharField(max_length=255)
+    worktop_name = models.CharField(max_length=255)
+    worktop_description = models.TextField()
+
+    appliance_title = models.CharField(max_length=255)
+    appliance_name = models.CharField(max_length=255)
+    appliance_description = models.TextField()
+
+    design_title = models.CharField(max_length=255)
+    design_name = models.CharField(max_length=255)
+    design_description = models.TextField()
+
+    install_title = models.CharField(max_length=255)
+    install_name = models.CharField(max_length=255)
+    install_description = models.TextField()
+
+    contact_title = models.CharField(max_length=255)
+    contact_name = models.CharField(max_length=255)
+    contact_description = models.TextField()

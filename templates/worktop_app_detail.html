@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load social_share %}
+    {% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
+
+    {% endblock %}
 {% block content %}
 
     <div class="modal" id="reviewModal">
@@ -12,11 +18,11 @@
                         <input type="text" hidden value="{{ product }}" name="name">
                         <label for="" class="d-block">
                             Your Comment
-                            <input type="text" name="comment" class="form-control">
+                            <input placeholder="Comment" type="text" name="comment" class="form-control">
                         </label>
                         <label for="" class="d-block">
                             Rating out of 5
-                            <input type="number" min="0" max="5" name="rating" class="form-control">
+                            <input placeholder="Rating" type="number" min="0" max="5" name="rating" class="form-control">
                         </label>
                 </div>
                 <div class="modal-footer">                     
@@ -73,9 +79,13 @@
             <div style="width: 30%;margin: auto" id="search_in" class="d-flex justify-content-around p-3 border-top border-bottom my-3">
 
                 <span>Share</span>
-                <img src="{% static 'Svg/facebook-f-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center">
-                <img src="{% static 'Svg/twitter-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center">
-                <img src="{% static 'Svg/pinterest-p-brands.svg' %}" height="15px" alt="" style="cursor:pointer;" class="align-self-center">
+                {% post_to_facebook request.build_absolute_uri %}
+                <img src="{% static 'Svg/facebook-f-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center inside_link">
+                {% post_to_twitter request.build_absolute_uri %}
+                <img src="{% static 'Svg/twitter-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center inside_link">
+                {% save_to_pinterest request.build_absolute_uri %}
+                <img src="{% static 'Svg/pinterest-p-brands.svg' %}" height="15px" alt="" style="cursor:pointer;" class="align-self-center inside_link">
+
 
             </div>
 
@@ -181,6 +191,23 @@
 {% endblock %}
 {% block script %}
     <script>
+
+        const face = document.getElementsByClassName('facebook-this')
+        const twit = document.getElementsByClassName('tweet-this')
+        const pin = document.getElementsByClassName('pinterest-this')
+
+        const imgs = document.getElementsByClassName('inside_link')
+        face[0].children[0].innerHTML = ''
+        face[0].children[0].append(imgs[0])
+        face[0].style.alignSelf = 'center'
+
+        twit[0].children[0].innerHTML = ''
+        twit[0].children[0].append(imgs[1])
+        twit[0].style.alignSelf = 'center'
+
+        pin[0].children[0].innerHTML = ''
+        pin[0].children[0].append(imgs[2])
+        pin[0].style.alignSelf = 'center'
         function operation(e){
             {#console.log(e.target.nextElementSibling.value!==1,e.target.nextElementSibling.value)#}
             if (e.target.value==='-'&& e.target.nextElementSibling.value!=='1'){
@@ -195,7 +222,7 @@
         }
 
         function add_cart(e){
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            const base_url = `${origin}/add-to-cart`
             const product = `{{ product }}`
             const item_name =`{{ detail }}`
             const process = 'create'
@@ -207,7 +234,6 @@
                 return res.url
             })
             .then((result)=>{
-                console.log(result)
                 const check = result.split('/')
                 if (check[3]==='login'){
                     location.replace(result)
@@ -222,6 +248,7 @@
                     }, 3000)
                 }
             })
+            cart_count('e')
         }
     </script>
 

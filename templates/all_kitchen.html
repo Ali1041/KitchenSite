@@ -5,7 +5,7 @@
         <div class="row m-0 ">
             {% for item in list %}
                 <div class="col-lg-6 my-4">
-                    <div class="card p-0" style="height: 680px" >
+                    <div class="card p-0" style="max-height: fit-content;min-height: 700px" >
                         <div id="carouselExampleControls{{ item.first.pk }}" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 {% for i in item %}
@@ -39,7 +39,7 @@
                             <h4 style="color:rgb(46, 154, 135);">{{ item.first.kitchen_type }}</h4>
                             <p>{{ item.first.description }}</p>
                             <p class="m-0">Available Colors:</p>
-                            <div class="d-flex justify-content-around" style="width: 50%">
+                            <div class="d-flex justify-content-around" id="container_remove" style="width: 50%">
                                 {% for i in item %}
                                     <p class="m-0"
                                           style="height: 20px;width: 20px;border: 2px solid lightgray;cursor: pointer;

@@ -2,6 +2,11 @@
 {% load static %}
 {% load bootstrap4 %}
 {% load custom_tag %}
+    {% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
+
+    {% endblock %}
 {% block content %}
     {% if list %}
     <div class="my-3">
@@ -55,7 +60,7 @@
 
 {#   Wokrtop list     #}
         {% for item in list %}
-            <div class="border border-rounded d-flex mb-5 menu pb-3 " id="search_in" style="width: 60%;margin: auto">
+            <div class="border border-rounded d-flex mb-5 menu " id="search_in" style="width: 60%;margin: auto">
                 <div style="width: fit-content;" id="contain">
                     <img src="{{ item.get_photo_url }}" loading="lazy" class="img1" height="245px" width="367px"     alt="">
                 </div>
@@ -127,12 +132,12 @@
 
         {% for item in list %}
 
-            <div class="border border-rounded d-flex mb-5 menu" id="search_in" style="width: 60%;margin: auto">
+            <div class="border border-rounded d-flex justify-content-around mb-5 menu" id="search_in" style="width: 60%;margin: auto">
                 <div style="width: fit-content;" id="contain">
-                    <img src="{{ item.get_photo_url }}" loading="lazy" id="k_img" height="245px"      alt="">
+                    <img src="{{ item.get_photo_url }}" loading="lazy" id="k_img" height="245px"       alt="">
                 </div>
 
-                <div class="align-self-center ml-5" id="contain">
+                <div class="align-self-center ml-5" style="width: 374px" id="contain">
                     <h5 style="color: rgb(46, 154, 135)"><a style="color: rgb(46, 154, 135)" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}" >{{ item }}</a></h5>
                     <h4>£ {{ item.price|floatformat:"0" }}</h4>
                     <p>{{ item.description|truncatewords:15 }}</p>
@@ -166,6 +171,7 @@
 {% endblock %}
 {% block script %}
     <script>
+
         const out_max = document.getElementById('output_max')
         const out_min = document.getElementById('output_min')
         function change(e){
@@ -174,7 +180,8 @@
         }
 
             function add_cart_1(e,pk,process,pro){
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            {#https://tkc-kitchen.nw.r.appspot.com#}
+            const base_url = `${origin}/add-to-cart`
             let url = `${base_url}/${pro}/appliance/${pk}/1/${process}/`
             if (e.target.innerText==='Order sample'){
                 url = `${base_url}/${pro}/sample/${pk}/1/${process}/`
@@ -196,8 +203,11 @@
                     p.innerHTML = ''
                 },1500)
                 }
+                cart_count('e')
 
             })
+
+
         }
 
 

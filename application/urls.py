@@ -18,7 +18,8 @@ urlpatterns = [
 
     # kitchen
     path('all-kitchen/', AllKitchenView.as_view(), name='all-kitchen'),
-    path('kitchen-view/<int:pk>/', KitchenView.as_view(), name='kitchen-view'),
+    path('kitchen-view/<str:name>/<str:color>/', KitchenView.as_view(), name='kitchen-view'),
+    path('get-kitchens/<str:color>/',get_kitchen,name='get-kitchen'),
     path('unit-change/<int:pk>/<str:name>/<int:qty>/', unit_change, name='unit-change'),
 
     # worktop
@@ -27,7 +28,7 @@ urlpatterns = [
 
     # appliances
     path('appliances/<int:pk>/', AppliancesListView.as_view(), name='appliances-list'),
-    path('appliances-detail<str:name>/<int:pk>/', WorktopDetailView.as_view(), name='appliances-detail-view'),
+    path('appliances-detail/<str:name>/<int:pk>/', WorktopDetailView.as_view(), name='appliances-detail-view'),
 
     # cart
     path('add-to-cart/<str:product>/<str:name>/<int:pk>/<int:qty>/<str:process>/', addcart, name='add-to-cart'),
@@ -60,9 +61,10 @@ urlpatterns = [
 
     # checkout
     path('checkout/', checkout, name='checkout'),
-    path('order-creation/', create_order_klarna, name='create-order'),
-    path('order-confirmed/', confirmation, name='confirm'),
-    path('push-email/',push,name='push-email'),
+    path('order-creation/', temp_checkout, name='create-order'),
+    # path('order-confirmed/', confirmation, name='confirm'),
+    # path('push-email/',hello,name='push-email'),
+    path('cart-count/',cart_count,name='cart-count'),
 
 
 ]

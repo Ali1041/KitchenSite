@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
+    {% block meta %}
+        <title>TKC KITCHENS</title>
 
+    {% endblock %}
 {% block content %}
     {% if cart %}
     <div class='container my-4' id="container_remove">
@@ -9,7 +12,7 @@
         {% if item.kitchen_order %}
             <p id="info_kitchen"></p>
             <div class=" my-2">
-                <div class="my-5 card shadow p-3 border-rounded">
+                <div class="my-2 card shadow p-3 border-rounded">
                 <div class="card-title d-flex justify-content-between">
                     <h3 class="m-0">{{ item.kitchen_order.kitchen }}</h3>
                     <a onclick="remove_cart(event,{{ item.kitchen_order.pk }},'delete',`{{ item.kitchen_order.kitchen.color }}`)" style="color: white;text-decoration: none" class="btn btn-danger">X</a>
@@ -54,10 +57,10 @@
                                     </tbody>
                                 </table>
                         {% else %}
-                            <h5>No units. A sample of this kitchen of price £ 4.99 will be sent to your location.</h5>
+                            <h5>Sample of this kitchen will be sent to your location</h5>
+                            <p>Price of sample: £5</p>
                         {% endif %}
                         <p class="m-0"><b>Door color:</b> {{ item.kitchen_order.kitchen.door_color }}</p>
-                        <p><b>Cabnet color:</b> {{ item.kitchen_order.kitchen.cabnet }}</p>
                         <p>All our cabnets come with doors unless specified.Doors come undrilled and we can drill the side you require i.e left or right handed, but you have to specify this later.</p>
                         <p>Doors will be provided with cabinets</p>
                         <p>Handles will also be provided as per the images.</p>
@@ -94,7 +97,7 @@
                     <tr>
                         <td><img src="{{ item.worktop.get_photo_url }}" height="30px" alt=""></td>
                         <td>{{ item.worktop }}</td>
-                        <td>{{ item.worktop.description|truncatewords:3 }}</td>
+                        <td>  {{ item.worktop.description|truncatewords:3 }}</td>
                         <td>{{ item.worktop.size }}</td>
                         {% ifequal item.sample_worktop 'Yes' %}
                             <td style="width: 20%" id="search_in">
@@ -104,7 +107,7 @@
                                    value="{{ item.qty }}" name="qty"></td>
 
 
-                        <td>5.0</td>
+                        <td>5.0 <b>Sample</b></td>
                         {% else %}
                             <td style="width: 20%" id="search_in">
                                 <input type="number" onchange="changing(event,`{{ item.worktop.pk }}`,'worktop','update')"
@@ -190,8 +193,7 @@
     </div>
         </div>
     <div class="container my-2">
-    <h3>Grand total(including VAT): £ {{ total|floatformat:"2" }}</h3>
-                <small class="d-block">Note:For orders below £ 300, £ 30 are delivery charges.</small>
+    <h3 id="less">Grand total(Including VAT and Delivery Charges): £ {{ total|floatformat:"2" }}</h3>
 
         <a href="{% url 'application:checkout' %}" class="btn btn-success">Proceed to checkout</a>
     </div>
@@ -225,10 +227,13 @@
 
     {% else %}
         <div class="alert alert-primary text-center my-3" role="alert">
-            No item in the cart. <a href="{% url 'application:index' %}">Start adding now!!</a>
+            No item in the cart. <a href="{% url 'application:index' %}">Start Shopping!!</a>
         </div>
     {% endif %}
+{% endblock %}
+{% block script %}
     <script>
+
         function unit_change(e,pk,status){
              const p =document.getElementById('unit_info')
             let qty = 1
@@ -237,8 +242,7 @@
 
             }
 
-            const base_url = 'http://127.0.0.1:8000'
-            fetch(`${base_url}/unit-change/${pk}/${status}/${qty}/`)
+            fetch(`${origin}/unit-change/${pk}/${status}/${qty}/`)
             .then((res)=>{
                 return res.json()
             })
@@ -261,8 +265,8 @@
 
 
         function remove_cart(e,pk,process,pro){
-            console.log(pro)
-            const base_url = 'http://127.0.0.1:8000/add-to-cart';
+
+            const base_url = `${origin}/add-to-cart`;
             let p='';
 
             fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
@@ -297,7 +301,7 @@
 
         function changing(e,pk,name,status){
             const qty = e.target.value
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            const base_url = `${origin}/add-to-cart`
             let p=''
             fetch(`${base_url}/${name}/any/${pk}/${qty}/${status}`)
             .then((res)=>{
@@ -330,4 +334,6 @@
             })
         }
     </script>
+
+
 {% endblock %}

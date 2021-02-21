@@ -28,7 +28,7 @@
 
 
             <div><i class="fas fa-envelope align-self-center"></i>
-                <span class="m-0 p-2">customer.service@tkckitchens.co.uk</span></div>
+                <span class="m-0 p-2">service@tkckitchens.co.uk</span></div>
 
 
 
@@ -90,7 +90,8 @@
                     <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'application:index' %}">Back to main </a>
                     <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:admin-all-orders' %}">All orders</a>
                     <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:all-users' %}">All users</a>
-                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:contact_list' %}">Contact List</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:contact_list' %}">Installation List</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:actual-list' %}">Contact List</a>
 
                     <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="">Logout</a>
 
@@ -136,6 +137,9 @@
 
         {% endblock %}
 
+    </div>
+    <div>
+{#        {% include 'adminPanel/admin_main.html' %}#}
     </div>
     {% include 'inc/footer.html' %}
 </body>
