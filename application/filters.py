@@ -26,3 +26,12 @@ class UnitFilter(django_filters.FilterSet):
     class Meta:
         model = Units
         fields = ['unit_type']
+
+
+class AccessoriesFilter(django_filters.FilterSet):
+    class Meta:
+        model = Accessories
+        fields = {
+            'price': ['gte', 'lte']
+
+        }

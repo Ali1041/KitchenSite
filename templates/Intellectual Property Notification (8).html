@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
+{% load compress %}
+{% load static %}
     {% block meta %}
-        <title>TKC KITCHENS</title>
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
 
     {% endblock %}
 {% block content %}
@@ -61,7 +64,7 @@ body {margin-top: 0px;margin-left: 0px;}
 
 
 <DIV id="id1_1">
-<P class="p0 ft0"id="zero">INTELLECTUAL PROPERTY RIGHTS NOTIFICATION</P>
+<h1 class="p0 ft0"id="zero">INTELLECTUAL PROPERTY RIGHTS NOTIFICATION</h1>
 <P class="p1 ft2"id="zero">We (“<SPAN class="ft1">Ziegal Ltd</SPAN>” “we,” or “our”) respects the rights of copyright owners to control the uses of their intellectual property and requires users of our websites and services to do the same. It is our policy to respond to notices of alleged infringement that comply with the applicable intellectual property laws. Responses may include removing or disabling access to the material.</P>
 <P class="p1 ft2"id="zero">If you have an intellectual property <NOBR>rights-related</NOBR> complaint about material posted on the website, you may contact us using the information below.</P>
 <P class="p2 ft1"id="zero">www.tkckitchens.co.uk</P>

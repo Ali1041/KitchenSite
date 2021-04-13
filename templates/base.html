@@ -1,6 +1,10 @@
+{% load compress %}
 {% load static %}
+{% load custom_tag %}
+{% canonical_tag request as can_tag %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block meta %}
@@ -8,37 +12,39 @@
         <title>{{ title }}</title>
 
     {% endblock %}
-    <link rel="shortcut icon" type="image/png" href="{% static 'imgs/tkc.png' %}">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-    <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+	{% load bootstrap4 %}
+	{% bootstrap_css %}
+	{% bootstrap_jquery %}
+	{% bootstrap_javascript %}
+	<meta name="vapid-key" content="{{ vapid_key }}">
+    {% if user.id %}
+        <meta name="user_id" content="{{ user.id }}">
+    {% endif %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'imgs/favicon.png' %}">
     <script defer src="https://kit.fontawesome.com/359826513d.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="{% static 'css/home.css' %}" type="text/css" id="style">
+	<link rel="stylesheet" href="{% static 'css/admin.css' %}" type="text/css" id="style2">
 
+	<link rel="canonical" href="{{ can_tag }}">
 
 </head>
 <body>
-
-{# including the top bar #}
-{#{% include './inc/navbar.html' with ctx=kitchen %}#}
 <div>
     <div class="p-3 bg-light">
-    <div class="d-flex justify-content-right">
+    <div class="d-flex justify-content-right" id="display_b">
 
-        <div id="our_info" class="d-flex justify-content-around align-self-center" style="width: 40%">
+        <div id="display_b" class="d-flex justify-content-around align-self-center mtb" style="width: 40%">
             <div><i class="fas fa-phone-alt align-self-center"></i>
-                <a style="color:inherit;text-decoration: none" href="tel:+08002118289" class="m-0 p-2">08002118289</a></div>
+                <a style="color:inherit;text-decoration: none" href="tel:08002118289" class="m-0 p-2">08002118289</a></div>
 
 
-            <div><i class="fas fa-envelope align-self-center"></i>
+            <div class="mtb1"><i class="fas fa-envelope align-self-center"></i>
                 <a style="color: inherit;text-decoration: none;" href="https://mail.google.com/mail/?view=cm&fs=1&to=service@tkckitchens.co.uk" class="m-0 p-2">service@tkckitchens.co.uk</a></div>
-
-
 
         </div>
 
 
-        <div id="display_b" class="d-flex justify-content-end align-self-center" style="width: 60%">
+        <div id="display_b" class="d-flex justify-content-end align-self-center mtb" style="width: 60%">
             <div id='top-bar' class="align-self-center d-flex justify-content-around" style="width: 40%">
                 {% if user.is_superuser %}
                     <a class="a_btn" style="text-decoration: none;color: black;font-weight: 500" href="{% url 'adminPanel:index' %}">Admin Panel</a>
@@ -84,50 +90,73 @@
 
 
 {% block content %}
-    <div >
-        <div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
-          <div class="carousel-inner">
+
+
+		{% for msg in messages %}
+			{% if msg %}
+					<div class="alert alert-primary text-center" role="alert">
+
+						<p class="m-0">{{ msg }}</p>
+					</div>
+
+			{% endif %}
+		{% endfor %}
+
+	<!--Slider -->
+	<div id="carouselExampleControls" class="carousel slide block"  style="width: min-content;margin: auto" data-ride="carousel">
+          <div class="carousel-inner" >
 
               <div class="carousel-item active">
-              <img class="d-block w-100 img1" style="height: 700px" src="{% static 'imgs/ezgif.com-gif-maker.webp' %}" alt="Kitchen designs and styles">
-                <div class="carousel-caption">
-                    <h4 class="small2">Welcome to the Home of Premium Kitchens</h4>
-                    <p class="small2">Combine with a variety of large collection of Kitchen Units and accessories.</p>
-                </div>
+              <img class="d-block " id="k_img" loading="lazy" style="height: 700px" src="{% static 'imgs/Brand New Traditional kitchen in Mussel oak cambr.jpg' %}" alt="Kitchen designs and styles">
+	              <div class="carousel-caption d-none d-md-block">
+		              <a href="{% url 'application:all-kitchen' %}" class="mtb btn btn-success btn-sm2">View Our New Kitchens</a>
+
+				  </div>
+
             </div>
 
 
               <div class="carousel-item ">
-              <img class="d-block w-100 img1" loading="lazy" style="height: 700px" src="{% static 'imgs/m22.jpg' %}" alt="Modern Tkc kitchen style">
-                <div class="carousel-caption">
-                    <h4 class="small2">We transform your Dreams into Reality</h4>
-                    <p class="small2">Build Complete Kitchens that are Modern and Beautiful.</p>
-                </div>
+              <img class="d-block " id="k_img"  style="height: 700px" src="{% static 'imgs/New Traditional fitted Kitchens in indigo cartmel.jpg' %}" alt="Modern Tkc kitchen style">
+	              <div class="carousel-caption d-none d-md-block">
+		              <a href="{% url 'application:all-kitchen' %}" class="mtb btn btn-success btn-sm2">View Our New Kitchens</a>
+
+				  </div>
             </div>
 
 
               <div class="carousel-item ">
-              <img class="d-block w-100 img1" loading="lazy" style="height: 700px;" src="{% static 'imgs/m23.jpg' %}" alt="Tkc kitchens style">
-                <div class="carousel-caption">
-                    <h4 class="small2">Build Your Complete Modern and Powerful Kitchens</h4>
-                    <p class="small2">With us, every step is seamless.</p>
-                </div>
+              <img class="d-block " id="k_img"  style="height: 700px;" src="{% static 'imgs/New_High_Gloss_anthracite_Kitchens ascot.jpg' %}" alt="Tkc kitchens style">
+	              <div class="carousel-caption d-none d-md-block">
+		              <a href="{% url 'application:all-kitchen' %}" class="mtb btn btn-success btn-sm2">View Our New Kitchens</a>
+
+				  </div>
+              </div>
+
+
+              <div class="carousel-item ">
+              <img class="d-block " id="k_img"  style="height: 700px;" src="{% static 'imgs/New_High_Gloss_anthracite_Kitchens lucent gloss.jpg' %}" alt="Modern Kitchen Style">
+	              <div class="carousel-caption d-none d-md-block">
+		              <a href="{% url 'application:all-kitchen' %}" class="mtb btn btn-success btn-sm2">View Our New Kitchens</a>
+
+				  </div>
             </div>
 
 
               <div class="carousel-item ">
-              <img class="d-block w-100 img1" loading="lazy" style="height: 700px;" src="{% static 'imgs/m24.jpg' %}" alt="Modern Kitchen Style">
-                <div class="carousel-caption">
-                </div>
+              <img class="d-block " id="k_img" style="height: 700px;" src="{% static 'imgs/New_High_Gloss_new Kitchens glacier.jpg' %}" alt="Modern Kitchen design">
+	              <div class="carousel-caption d-none d-md-block">
+		              <a href="{% url 'application:all-kitchen' %}" class="mtb btn btn-success btn-sm2">View Our New Kitchens</a>
+
+				  </div>
             </div>
 
-
               <div class="carousel-item ">
-              <img class="d-block w-100 img1" loading="lazy" style="height: 700px;" src="{% static 'imgs/m25.jpg' %}" alt="Modern Kitchen design">
-                <div class="carousel-caption">
-                    <h4 class="small2">We transform your Dreams into Reality</h4>
-                    <p class="small2">Build Complete Kitchens that are Modern and Beautiful.</p>
-                </div>
+              <img class="d-block " id="k_img" style="height: 700px;" src="{% static 'imgs/New_Traditional_kitchen_in_Denim cambridge.jpg' %}" alt="Modern Kitchen design">
+	              <div class="carousel-caption d-none d-md-block">
+		              <a href="{% url 'application:all-kitchen' %}" class="mtb btn btn-success btn-sm2">View Our New Kitchens</a>
+
+				  </div>
             </div>
 
 
@@ -145,26 +174,19 @@
             </div>
           </a>
         </div>
-    </div>
+
+		<h1 style="color: rgb(46, 154, 135);" class="text-center m-0">ITALIAN INSPIRED NEW KITCHENS FROM A BRITISH COMPANY</h1>
 
 
-
-
-    <div class="text-center p-5 my-4">
-        <h2 style="font-weight: 800;color: rgb(46, 154, 135)">WHY US</h2>
-        <p style="font-weight: 500">We are a British company with Italian inspired furniture. Hassle-free payment over 3 months. </p>
-        <p style="font-weight: 500">Nationwide Service and Quick Delivery of stocked items in 7-10 days. We are Committed to producing quality priced kitchens at affordable prices.</p>
-        <p style="font-weight: 500">A team that has over 100 years experience. Our Kitchen furniture has been tested and approved by FIRA to reassure our customers of our high-quality kitchens and FSC certified to ensure our products are responsibly sourced.</p>
-
-
-        <div class="container mx-auto row p-2 my-5 counter" style="">
+    <div class="pl-5 pr-5 pt-1 pb-0" >
+        <div class="container row m-0 mx-auto  p-2  counter" id="width" style="">
 
 
             <div class="col-lg-3 my-2">
                 <div class="card hoverEffect shadow" style="max-width:90%;">
                   <div class="card-body ">
                     <div class="d-flex justify-content-between">
-                        <h2 style="font-weight: 800" class="card-title m-0 align-self-center counter-count">436</h2>
+                        <h2 style="font-weight: 800" class="card-title m-0 align-self-center counter-count">4000+</h2>
                           <i class="far fa-handshake align-self-center" style="font-size: xx-large"></i>
                     </div>
                       <p style="font-weight: 500" class="text-left m-0">Satisfied Clients</p>
@@ -221,22 +243,95 @@
 
             </div>
         </div>
-    </div>
-    
 
-    <div class="text-center complete-line" style="width: 50%;margin: auto">
-        <div class="my-3">
-            <video  height="380px" id="video1" class="video" controls preload="none" autoplay="False">
-                <source src="{% static 'videos/tkc kitchen.mp4' %}" type="video/mp4">
-            </video>
-        </div>
-        <h4 style="color:rgb(46, 154, 135);font-weight: 800">SERVICES</h4>
-        <h2 style="font-weight: 800">What we do</h2>
-        <p style="font-weight: 500">We provide UK market with the finest Italian modern and traditional kitchens, created by the world's top architects and designers. We will help you get kitchen which is perfect for you and your family.</p>
+
 
     </div>
 
-    <div class="row text-center my-3 p-3" style="width: 80%;margin: auto">
+	
+	<div style="width: 82%;margin: auto" id="contain" >
+		<ul class="list-style" id="zero">
+			<li class="d-flex mb-2">
+				<img src="{% static 'imgs/images.png' %}" height="20px" alt="">
+				<p class="align-self-center bold ml-2 mb-0" style="display: inline-block">We are a British Design Kitchen Company with a Focus on British Fitted Furniture.</p>
+
+			</li>
+			<li class="d-flex mb-2">
+				<img src="{% static 'imgs/images.png' %}" height="20px" alt="">
+
+				<p class="align-self-center bold ml-2 mb-0" style="display: inline-block">Nationwide Service and Quick Delivery of newly stocked kitchen items in 7-10 days.
+
+				</p>
+			</li>
+			<li class="d-flex mb-2">
+
+				<img src="{% static 'imgs/images.png' %}" height="20px" alt="">
+
+				<p class="align-self-center bold ml-2 mb-0" style="display: inline-block">We are committed to producing quality priced new kitchens at affordable prices.</p></li>
+			<li class="d-flex mb-2">
+
+				<img src="{% static 'imgs/images.png' %}" height="20px" alt="">
+
+				<p class="m-0 align-self-center bold ml-2 mb-0" style="display: inline-block">Your new Kitchen furniture has been tested and approved by FIRA to reassure our customers of our high-quality kitchen units and FSC certified to ensure our products are responsibly sourced.</p>
+
+			</li>
+			<li class="d-flex mb-2">
+				<img src="{% static 'imgs/images.png' %}" height="20px" alt="">
+
+				<p class="align-self-center bold ml-2 mb-0" style="display: inline-block">We provide a full range of products and services ranging from Kitchen units, kitchen worktops, kitchen appliances, kitchen design and full kitchen unit installation service.</p>
+
+			</li>
+
+
+
+			<li class="d-flex mb-2" >
+				<img src="{% static 'imgs/images.png' %}" height="20px" alt="">
+
+				<p class="align-self-center bold ml-2 mb-0" style="display: inline-block">Our team is fully qualified from design to Installation, 100’s of years of experience.</p>
+
+			</li>
+
+		</ul>
+
+
+	</div>
+
+	<!--Place of video -->
+	<div class="text-center">
+		<div >
+			<video src="" id="afterVideo" poster="{% static 'imgs/Brand New Traditional kitchen in Mussel oak cambr.jpg' %}" class="video" height="580px" controls muted></video>
+
+		</div>
+				<a style="position: relative;top: -110px" class="btn btn-success" id="btn" href="{% url 'application:all-kitchen' %}">View Our New Kitchens</a>
+
+	</div>
+
+	<div class=" my-3 display_b" id="contain" style="width: max-content;margin: auto">
+			<a href="{% url 'application:contact' %}" class="mtb btn btn-success btn-sm2">Get Free Sample</a>
+			<a href="{% url 'application:installation_contact' %}" class="mtb btn btn-success btn-sm2">Installation Service</a>
+			<a href="{% url 'application:design' %}" class="mtb btn btn-success btn-sm2">Design Service</a>
+		</div>
+
+
+
+	<div class=" my-3 newPosition justify-content-between display_b" id="display_b" style="width: 50%;margin: auto;display: none">
+		<div class=" d-flex justify-content-between mtb w-50"  id="contain">
+			<a href="{% url 'application:contact' %}" class="mtb btn btn-success btn-sm2">Get Free Sample</a>
+			<a href="{% url 'application:all-kitchen' %}" class="mtb btn btn-success btn-sm2">View Our Kitchens</a>
+		</div>
+		<div class="d-flex justify-content-between mtb w-50 ml-3" id="contain">
+			<a href="{% url 'application:installation_contact' %}" class="mtb btn btn-success btn-sm2">Installation Service</a>
+			<a href="{% url 'application:design' %}" class="mtb btn btn-success btn-sm2">Design Service</a>
+		</div>
+
+	</div>
+
+
+
+
+
+
+        <div class="row text-center my-3 p-3" style="width: 80%;margin: auto">
         <div class="col-lg-3 p-3 hoverEffect border-right d-flex height-cut" style="height: 350px">
             <div class="align-self-center ">
                 <i class="fas fa-pencil-ruler p-3" style="font-size: xx-large"></i>
@@ -244,7 +339,7 @@
             <p style="font-weight: 500">We deliver Kitchen designs that balance style & functionality.</p>
             </div>
         </div>
-        <div class="col-lg-3 p-3 hoverEffect border-right d-flex my-2 height-cut"  style="height: 350px">
+        <div class="col-lg-3 p-3 hoverEffect border-right d-flex height-cut"  style="height: 350px">
             <div class="align-self-center">
                 <i class="fas fa-cogs p-3" style="font-size: xx-large"></i>
             <h2 style="font-weight: 800">Installation</h2>
@@ -269,60 +364,29 @@
 
 
 
-    <div class="container my-5" id="container_remove">
 
 
-        <h1 style="color: rgb(46, 154, 135);font-weight: 800" class="text-center">Kitchen Styles</h1>
-        <div style="width: 60%;margin: auto" id="search_in">
-            <div class="d-flex justify-content-around">
-                <a style="cursor: pointer;text-decoration: none;color: black;font-weight: 500" class="a_btn" href="{% url 'application:all-kitchen' %}">View all</a>
-                <a style="cursor: pointer;text-decoration: none;color: black;font-weight: 500" class="a_btn" onclick="my_func(event)">Cartmel</a>
-                <a style="cursor: pointer;text-decoration: none;color: black;font-weight: 500" class="a_btn" onclick="my_func(event)">Lucent Matt</a>
-                <a style="cursor: pointer;text-decoration: none;color: black;font-weight: 500" class="a_btn" onclick="my_func(event)">Oxford</a>
-                <a style="cursor: pointer;text-decoration: none;color: black;font-weight: 500" class="a_btn" onclick="my_func(event)">Windsor</a>
-            </div>
-            <hr/>
+    <div class="text-center complete-line" style="width: 70%;margin: auto">
+
+        <h4 style="color:rgb(46, 154, 135);font-weight: 800">Services We Provide to Our Customers</h4>
+        <p>We only provide the finest, modern and traditional new kitchens, created by UK architects and designers. We offer the UK the largest selection of Stocked Quality new kitchens. We will help you every step of your journey to get a new kitchen that is perfect for any occasion.</p>
+        <p>Designing your new kitchen is extremely important and we will help you in building your dream kitchen that will perfectly match your lifestyle. We think each kitchen needs to be professionally designed first to suit you. Our Process is simply we will provide you with a Free 15 Minute consultation we will contact you to find out what is important to you whether it’s Style, Price, Fitting everything in, the materials used, Appliances, Worktops and then we will provide a personalized new kitchen design that balance style, functionality and will be priced competitively. This will also help you to avoid any unnecessary errors that may occur due to poor planning of your kitchen. All our designers have more than 20 years of experience with published designs.</p>
+        <p>In addition, we can also provide an exceptional full installation service for your kitchen units that will include removing your old kitchen, electrical work, plumbing work and minor building works.</p>
+		<p>If you can't find what you are looking for, please ask, as we can also produce custom kitchens.</p>
+    </div>
+            <div class="my-1" style="width: min-content;margin: auto" >
+            <video  height="580px" id="video1" class="video" poster="{% static  'imgs/New_Traditional_kitchen_in_Denim cambridge.jpg' %}" controls preload="none" muted>
+                <source src="{% static 'videos/base.mov' %}" type="video/mp4">
+            </video>
         </div>
 
-        <div style="width: 80%;margin: auto" id="search_in">
 
-        {#   custom carosel to be made     #}
-        <div id="carouselExampleControls1" class="carousel slide " data-ride="carousel">
+    {#  kitchens style section   #}
 
 
-          <div class="carousel-inner" id="deleteId">
-
-
-            <div class="carousel-item active" id="carosel">
-              <img class="d-block w-100 " id="k_img" style="height: 470px" loading="lazy" src="{% static 'imgs/m23.jpg' %}" alt="First kitchen slide">
-            </div>
-            <div class="carousel-item">
-              <img class="d-block w-100 " id="k_img" loading="lazy" style="height: 470px" src="{% static 'imgs/m22.jpg' %}" alt="Second kitchen slide">
-            </div>
-            <div class="carousel-item">
-              <img class="d-block w-100 " id="k_img" loading="lazy" style="height: 470px" src="{% static 'imgs/m24.jpg' %}" alt="Third kitchen slide">
-            </div>
-          </div>
-          <a class="carousel-control-prev"   href="#carouselExampleControls1" role="button" data-slide="prev">
-            <div class="p-3 bg-dark" style="">
-                <span class="carousel-control-prev-icon"  style="color: black!important;" aria-hidden="true"></span>
-                <span class="sr-only"  id="arrow_left">Previous</span>
-            </div>
-          </a>
-          <a class="carousel-control-next" href="#carouselExampleControls1" role="button" data-slide="next">
-            <div class="p-3 bg-dark">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </div>
-          </a>
-        </div>
-
-    </div>
-    </div>
-
-    <div class="row ml-0 mr-0 mt-5 ">
+    <div class="row ml-0 mr-0 mt-5 newPosition mtb">
         <div class="col-md-6 p-0 text-center" style="">
-            <video height="380px" id="video" controls preload="none" autoplay="False" >
+            <video height="380px" id="video" controls poster="{% static 'imgs/New Traditional fitted Kitchens in indigo cartmel.jpg' %}" preload="none" >
                 <source src="{% static 'videos/main.mp4' %}" type="video/mp4">
             </video>
 {#            <video src="{% static 'videos/main.mp4' %}" height="674px" width="400px"></video>#}
@@ -330,10 +394,9 @@
         <div class="col-md-6 p-5 bg-light">
             <h2>Samples</h2>
             <p>
-                Due to COVID-19 and for the protection of our team all showroom visits need to be by appointment
-                only. Showroom visits are limited to 20-30 minutes. If you require samples, we are happy to post samples free of charge
-                . But you have to cover the cost of postage and packaging.
+                Due to COVID-19 and for the protection of our team all showroom visits need to be by appointment only. Showroom visits are limited to 20-30 minutes. If you require new kitchen samples, we are happy to post samples free of charge. But you have to cover the cost of postage and packaging for new kitchen samples.
             </p>
+            <a class="btn btn-success" href="{% url 'application:contact' %}">Get Free Sample</a>
         </div>
     </div>
 
@@ -341,11 +404,11 @@
         <div>
             <h4 style="color: rgb(46, 154, 135);font-weight: 800" class="text-center">Latest Kitchen Trends</h4>
             <div class="row m-0 justify-content-around menu">
-                {% for item in blogs %}
+                {% for item in blog %}
                     <div class="card shadow col-lg-4 p-0 date my-3" id="blog" style="max-width: 27%;">
                         <img src="{{ item.get_photo_url }}" loading="lazy" height="240px" class="card-img-top" alt="Blog image">
                         <div class="card-body p-3 d-flex">
-                            <div style="height: fit-content;background-color: rgb(46, 154, 135);color: white;border-radius: 4px"
+                            <div style="height: min-content;background-color: rgb(46, 154, 135);color: white;border-radius: 4px"
                                  class="p-3 date2 ">
                                 <h2 class="m-0">{{ item.timestamp|date:'d' }}</h2>
                                 <h5 class="m-0">{{ item.timestamp|date:'M' }}</h5>
@@ -354,7 +417,7 @@
                                 <h4 class="card-title m-0">{{ item.title }}</h4>
 
                                 <p class="m-0">{{ item.text|safe|truncatechars_html:20 }}</p>
-                                <a href="{% url 'application:blog-detail' item.pk %}">Read here</a>
+                                <a href="{% url 'application:blog-detail' item.slug item.pk %}">Read here</a>
                             </div>
                         </div>
                     </div>
@@ -365,217 +428,119 @@
     </div>
 
 
+    <div class="my-3 text-center">
+        <h5 style="color:rgb(46, 154, 135);font-weight: 700 ">WANT TO KNOW MORE?</h5>
+        <h3>Request a Free Brochure</h3>
+        <hr/>
+        <p>To request your copy of our brochure and see more of beautiful kitchen designs simply complete your details below, or alternatively call us on 08002118289</p>
+
+        <div style="width: 80%;margin: auto">
+            <form action="{% url 'application:index' %}" method="POST">
+                {% csrf_token %}
+                <div class="d-flex justify-content-between" id="display_b">
+	                <input type="text" id="search_in" placeholder="TITLE" class="form-control-form mtb">
+	                <input type="text" name="first" id="search_in"  placeholder="FIRST NAME" class="form-control-form mtb">
+	                <input type="text" name="last" id="search_in"  placeholder="LAST NAME" class="form-control-form mtb">
+                </div>
+
+                <div class="d-flex justify-content-between my-3" id="display_b">
+	                <input type="number" name="phone" id="search_in"  placeholder="MOBILE" required class="form-control-form mtb">
+	                <input type="number" id="search_in"  placeholder="LANDLINE NUMBER"  class="form-control-form mtb">
+	                <input type="email" name="email" id="search_in"  placeholder="EMAIL ADDRESS" required class="form-control-form mtb">
+                </div>
+	            <input type="text" name="detail" class="form-control-form1 mb-2" placeholder="POSTCODE">
+
+	            <label for="" class="d-block m-0">Would you like a free design visit?
+	            </label>
+	            <span class="mr-1">Yes</span><input type="radio" name="visit" class="mr-2">
+	            <span class="mr-1">No</span><input type="radio" name="visit"><br/>
+                <button class="btn btn-success mt-2">Send Brochure</button>
+            </form>
+        </div>
+
+    </div>
+
+	<div class="mt-5 text-center mb-2" style="width: min-content;margin: auto" id="search_in">
+		<h3 style="color:rgb(46, 154, 135);">Our Appliances Brand</h3>
+		<img src="{% static 'imgs/logoes.jpg' %}" id="brand" loading="lazy" height="100px" alt="tkc-kitchen logos">
+	</div>
+
+
+
+
 {% endblock %}
+
+{% if request.user.is_superuser %}
+<div id="pop-up" class="pop-up p-2 px-4 bg-white" style="display: none">
+	            <div class="">
+		            <p class="m-0 align-self-end">Hi,</p>
+		            <p class="m-0">My name is Andy.</p>
+		            <p class="m-0">How can I help?</p>
+		            <p class="link-style m-0" onclick="closePopup(event)">Close</p>
+	            </div>
+	        </div>
+
+<div class="chat-div " style="z-index: 1;display: block;" onclick="openChat(event)">
+		        <img src="{% static 'imgs/New Traditional fitted Kitchens in indigo cartmel.jpg' %}" height="70px" width="80px" alt="Chat Kitchen image">
+	        </div>
+
+<div class="border w-chat chat-position " id="chatDiv" style="z-index: 2;display: none">
+				<div class="p-5 bg-gradient text-white new-p-1">
+					<div>
+						<div class="text-right">
+							<p class="m-0 text-white ml-auto" onclick="closeChat(event)" style="font-size: 20px;cursor:pointer;width: fit-content">x</p>
+						</div>
+						<h6>Have a question?</h6>
+						<p class="m-0">Drop a note to our customer care team and we'd be glad to assist you!</p>
+					</div>
+					<div class="row m-0 my-3">
+						<div class="col-4 align-self-center p-0">
+							<img src="{% static 'imgs/New_High_Gloss_anthracite_Kitchens ascot.jpg' %}" class="chat-img" alt="TKC kitchen images" style="border-radius: 50%"  height="110px" width="120px">
+						</div>
+					</div>
+				</div>
+
+
+				{#		Chat template to be included here        #}
+	            <div style="height: 45vh;overflow: auto" class="bg-white" id="messages1">
+		            {% if request.user.is_authenticated %}
+		            {% include 'adminPanel/room_detail.html' %}
+		            {% else %}
+			            <p>Click here to login to chat with our customer care representative. <a href="{% url 'application:login' %}">Login</a></p>
+		            {% endif %}
+	            </div>
+	        </div>
+{% endif %}
 
 {# including the footer #}
 {% include './inc/footer.html' %}
 </body>
-
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WKLM57GY6R"></script>
-    <script>
+    <script async>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
       gtag('config', 'G-WKLM57GY6R');
+
+
+
+
     </script>
-<script>
-    const origin = location.origin
 
-    var url = 'https://wati-integration-service.clare.ai/ShopifyWidget/shopifyWidget.js?27325';
-    var s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.async = true;
-    s.src = url;
-    var options = {
-  "enabled":true,
-  "chatButtonSetting":{
-      "backgroundColor":"#4dc247",
-      "ctaText":"",
-      "borderRadius":"25",
-      "marginLeft":"0",
-      "marginBottom":"50",
-      "marginRight":"50",
-      "position":"right"
-  },
-  "brandSetting":{
-      "brandName":"WATI",
-      "brandSubTitle":"Typically replies within an hour",
-      "welcomeText":"Hi, there!\nHow can I help you?",
-      "messageText":"Hello, I have a question",
-      "backgroundColor":"#0a5f54",
-      "ctaText":"Start Chat",
-      "borderRadius":"25",
-      "autoShow":false,
-      "phoneNumber":"447506626749"
-  }
-};
-    s.onload = function() {
-        CreateWhatsappChatWidget(options);
-    };
-    var x = document.getElementsByTagName('script')[0];
-    x.parentNode.insertBefore(s, x);
-    function mobile_click(e) {
-        const div = document.getElementById('menu_div')
-        const upper_div = document.getElementById('animating')
-        if (div.style.display === 'block'){
-            upper_div.setAttribute('class','remove-animating')
-            div.style.display='none'
+<!-- Facebook Pixel Code --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js'); fbq('init', '244190073982241'); fbq('track', 'PageView');</script><noscript> <img height="1" width="1" src="https://www.facebook.com/tr?id=244190073982241&ev=PageView&noscript=1"/></noscript><!-- End Facebook Pixel Code -->
 
-        }
-        else{
-            upper_div.setAttribute('class','animating')
-            div.style.display='block'
-
-        }
-
-    }
-    function cart_count(e){
-            {# get the cart count as json as every add to cart is ajax request #}
-            const num = document.getElementsByClassName('cart_count')
-            {#https://tkc-kitchen.nw.r.appspot.com#}
-            const base_url = `${origin}/cart-count/`
-            fetch(base_url)
-            .then((res)=>{
-                return res.json()
-            })
-            .then((result)=>{
-                for (let i=0;i<num.length;i++){
-                    num[i].innerHTML = result.Count
-
-                }
-            })
-    }
-
-    const link2 = document.createElement('link')
-    link2.rel = 'stylesheet'
-    link2.href = `{% static 'css/home.css' %}`
-    const head = document.getElementsByTagName('head')
-    head[0].append(link2)
+<script async type="text/javascript" src="{% static 'js/index.js' %}">
 
 </script>
-
 {% block script %}
-<script>
 
-    const video = document.getElementById('video')
-    const video2 = document.getElementById('video1')
-    window.addEventListener('scroll',()=>{
-            const sides = video.getBoundingClientRect()
-            const sides1 = video2.getBoundingClientRect()
-        if (	sides.top >= 0 &&
-        sides.left >= 0 &&
-        sides.right <= (window.innerWidth || document.documentElement.clientWidth) &&
-        sides.bottom <= (window.innerHeight || document.documentElement.clientHeight)){
-            video.setAttribute('muted','muted')
-            video.play()
-        }
-                if (	sides1.top >= 0 &&
-        sides1.left >= 0 &&
-        sides1.right <= (window.innerWidth || document.documentElement.clientWidth) &&
-        sides1.bottom <= (window.innerHeight || document.documentElement.clientHeight)){
-                    video2.muted = true
-            video2.setAttribute('muted','true')
-            video2.play()
-        }
-    })
+<script async src="{% static 'js/base.js' %}" type="text/javascript">
 
 
-    function search(e){
-        function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-        const csrftoken = getCookie('csrftoken');
-        const base_url = `${origin}/search/`
-        const varData = new FormData()
-        varData.append('value',e.target.previousElementSibling.value)
-        fetch(base_url,{
-            method:'POST',
-            body:JSON.stringify({'search':e.target.previousElementSibling.value}),
-        headers: {'Content-Type':'application/json','X-CSRFToken': csrftoken,'X-Requested-With':'XMLHttpRequest'}
-        })
-        .then(()=>{
-            return
-        })
-        .then((res)=>{
-            return
-        })
-
-    }
-
-        function my_func(e){
-            let url = [];
-            {#const carosel = document.getElementById('carosel')#}
-            fetch(`${origin}/get-images/${e.target.text}/`)
-            .then((res)=>{
-                return res.json()
-            })
-            .then((result)=>{
-                const parseResult = JSON.parse(result)
-                parseResult.forEach((item)=>{
-                    url.push('https://storage.googleapis.com/kitchensite/'+item.fields.img)
-
-                })
-            })
-                setTimeout(()=>{
-                    const toDelete = document.getElementById('deleteId')
-                    toDelete.innerHTML=''
-                    url.forEach((item,index)=>{
-                        const div = document.createElement('div')
-                        const img = document.createElement('img')
-                        img.src=item
-                        if (index===0){
-                        div.setAttribute('class','carousel-item active')
-
-                        }
-                        else{
-                        div.setAttribute('class','carousel-item')
-
-                        }
-                        img.setAttribute('class','d-block w-100')
-                            img.setAttribute('id','k_img')
-                        img.style.height = 470+'px'
-
-                        div.append(img)
-                        toDelete.append(div)
-                })
-
-
-                },1000)
-
-
-
-
-
-
-    }
-{#$('.counter-count').each(function () {#}
-{#        $(this).prop('Counter',0).animate({#}
-{##}
-{#            Counter: $(this).text()#}
-{#        },#}
-{#            {#}
-{#            duration: 2000,#}
-{#            easing: 'swing',#}
-{#            step: function (now) {#}
-{#                $(this).text(Math.ceil(now));#}
-{#            }#}
-{#        });#}
-{#    });#}
 </script>
+
 {% endblock %}
 
 </html>

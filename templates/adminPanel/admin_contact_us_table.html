@@ -8,16 +8,18 @@
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Budget</th>
+	                <th>Date</th>
                     <th>Detail</th>
                 </tr>
             </thead>
             <tbody>
-                {% for item in list %}
+                {% for item,i in date %}
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>{{ item.phone }}</td>
                         <td>{{ item.email }}</td>
                         <td>{{ item.your_budgets }}</td>
+	                    <td>{{ i }}</td>
                         <td><a href="{% url 'adminPanel:detail-contact' item.pk %}" class="btn btn-success">Details</a></td>
                     </tr>
                 {% endfor %}

@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'service@tkckitchens.co.uk'
 EMAIL_HOST_PASSWORD = 'rkpoibdxvvnohnrh'
@@ -58,6 +59,9 @@ INSTALLED_APPS = [
     'django_social_share',
     'google_analytics',
     'corsheaders',
+    'webpush',
+    'compressor',
+    'crispy_forms'
 ]
 
 SITE_ID = 1
@@ -157,7 +161,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+WEBPUSH_SETTINGS = {
+   "VAPID_PUBLIC_KEY": "BP47yAVLNSvHVWDJkzMeu6FduiBLmP6ve-AUgFeUA7uCKdBEXZRVnvZ7-ikzo-PRFECedMaiQIwyqIlYj1csCq4",
+   "VAPID_PRIVATE_KEY": "TAOidJ8NGiLG88NnIMfelb2UxGIVaEQfUyvRQEO2yJ4",
+   "VAPID_ADMIN_EMAIL": "admin@example.com"
+}
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -173,11 +181,26 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles'),)
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
+# COMPRESS_URL = os.path.join(BASE_DIR,'/static/')
+# COMPRESS_PARSER = 'compressor.parser.HtmlParser'
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+COMPRESS_FILTERS = {
+    'css': ['compressor.filters.css_default.CssAbsoluteFilter'],
+    'js': ['compressor.filters.jsmin.JSMinFilter']
+}
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+DEBUG = False
+# cloud_sql_proxy.exe -instances="tkc-kitchen:europe-west2:application-instance"=tcp:3307
 if DEBUG:
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
@@ -186,6 +209,9 @@ else:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 DEFAULT_FILE_STORAGE = 'KitchenSite.gcloud.GoogleCloudMediaFileStorage'
 GS_PROJECT_ID = 'tkc-kitchen'
 GS_BUCKET_NAME = 'kitchensite'
@@ -199,5 +225,10 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(BASE_DIR, 'credential.json')
 )
 
-# LOGIN_REDIRECT_URL = 'application:index'
 LOGOUT_REDIRECT_URL = 'application:login'
+
+TWILIO_ACCOUNT_SID = 'AC271497c44f145c263aa90809a2f460dd'
+TWILIO_API_KEY = 'SK3d3f1b19f4d694da8fce3eb61118ebab'
+TWILIO_API_SECRET = 'Xryo3bOqeIZbNuOq950Dn80FOKBGPIQU'
+TWILIO_CHAT_SERVICE_SID = 'IS9c61f796d4a9493a8af3f0abe374bd1b'
+NOTIFY = 'ISda051134072af5c96595f32bff482372'

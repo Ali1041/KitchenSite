@@ -40,6 +40,12 @@ class AppliancesMap(sitemaps.Sitemap):
     def items(self):
         return Category_Applianes.objects.all()
 
+class AccessoriesList(sitemaps.Sitemap):
+
+    def items(self):
+        return AccessoriesType.objects.all()
+
+
 class KitchenMap(sitemaps.Sitemap):
 
     def items(self):
@@ -54,3 +60,12 @@ class AppliancesDetailMap(sitemaps.Sitemap):
 
     def items(self):
         return Appliances.objects.select_related('category').all()
+
+class AccessoriesDetail(sitemaps.Sitemap):
+
+    def items(self):
+        return Accessories.objects.select_related('accessories_type').all()
+
+class BlogsMap(sitemaps.Sitemap):
+    def items(self):
+        return Blogs.objects.all()

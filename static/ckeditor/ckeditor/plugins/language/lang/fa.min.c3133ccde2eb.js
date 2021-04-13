@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","fa",{button:"تعیین زبان",remove:"حذف زبان"});

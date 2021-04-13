@@ -20,6 +20,7 @@ class KitchenForm(forms.ModelForm):
         model = Kitchen
         fields = '__all__'
 
+
 #
 # class ImagesForm(forms.ModelForm):
 #     class Meta:
@@ -60,4 +61,10 @@ class BlogForm(forms.ModelForm):
 class FileForm(forms.ModelForm):
     class Meta:
         model = UploadFile
+        fields = '__all__'
+
+
+class AccessoriesForm(forms.ModelForm):
+    class Meta:
+        model = Accessories
         fields = '__all__'

@@ -21,24 +21,33 @@ from django.contrib.auth.views import \
     PasswordResetCompleteView, PasswordResetDoneView, PasswordResetView, PasswordResetConfirmView
 from django.contrib.sitemaps.views import sitemap
 from application.sitemaps import *
+from django.views.generic import TemplateView
 
 sitemaps = {
     'static': StaticMaps,
-    'worktop':WorktopMap,
-    'appliances':AppliancesMap,
-    'kitchen':KitchenMap,
-    'worktopDetail':WorktopsDetailMap,
-    'appliancesDetail':AppliancesDetailMap
+    'worktop': WorktopMap,
+    'appliances': AppliancesMap,
+    'kitchen': KitchenMap,
+    'worktopDetail': WorktopsDetailMap,
+    'appliancesDetail': AppliancesDetailMap,
+    'accessoriesList': AccessoriesList,
+    'accessoriesDetail': AccessoriesDetail,
+    'blogmap': BlogsMap,
 }
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
+
                   path('', include('application.urls')),
                   path('adminPanel/', include('adminPanel.urls')),
                   path('ckeditor', include('ckeditor_uploader.urls')),
                   re_path('djga/', include('google_analytics.urls')),
+                  path('webpush/', include('webpush.urls')),
                   path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
                        name='django.contrib.sitemaps.views.sitemap'),
+                  path('sw.js', TemplateView.as_view(template_name='adminPanel/sw.js', content_type='text/javascript')),
+                  path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/text'),
+                       name='robot'),
                   # reset password
                   path('reset_password/', PasswordResetView.as_view(template_name='registration/reset_password.html'),
                        name='reset_password'),
@@ -52,3 +61,7 @@ urlpatterns = [
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+handler403 = 'application.views.error_403'
+handler404 = 'application.views.error_404'
+handler500 = 'application.views.error_500'
+handler400 = 'application.views.error_404'

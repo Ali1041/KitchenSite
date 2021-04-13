@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load social_share %}
-    {% block meta %}
-        <meta name="{{ name }}" content="{{ description }}">
-        <title>{{ title }}</title>
+{% block meta %}
+        <meta name="{{ detail.meta_name }}" content="{{ detail.meta_description }}">
+        <title>{{ detail.meta_title }}</title>
 
     {% endblock %}
 {% block content %}
@@ -88,6 +88,9 @@
 
 
             </div>
+	        <div style="width: 30%;margin: auto" id="search_in" class="d-flex justify-content-around p-3 my-3">
+		        <a href="{% url 'application:all-kitchen' %}" class="btn btn-success">View Our Latest Fitted Kitchens</a>
+	        </div>
 
     
 
@@ -163,7 +166,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
@@ -173,7 +176,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>

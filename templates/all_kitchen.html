@@ -1,68 +1,59 @@
 {% extends 'base.html' %}
 {% load static %}
+    {% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
+
+    {% endblock %}
 {% block content %}
-        <h3 class="text-center">Kitchen Ranges</h3>
-        <div class="row m-0 ">
-            {% for item in list %}
-                <div class="col-lg-6 my-4">
-                    <div class="card p-0" style="max-height: fit-content;min-height: 700px" >
-                        <div id="carouselExampleControls{{ item.first.pk }}" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                {% for i in item %}
-                                    {% ifequal forloop.counter0 0 %}
-                                    <div class="carousel-item active" >
-                                    {% else %}
-                                        <div class="carousel-item" >
+        <h3 class="text-center">Our Fitted Kitchen Ranges</h3>
+		{% for item in list %}
+			<div id="search_in" class="text-center my-5">
+				<h3 style="color: rgb(46, 154, 135)">{{ item.name }}</h3>
+				<p style="width: 85%;margin: auto;margin-bottom: 5px">{{ item.description }}</p>
+				<div style="width: 85%;margin: auto">
 
-                                    {% endifequal %}
-                                        <img style="height: 400px;width: 100%" id="k_img" src="{{ i.get_photo_url }}" alt="First slide">
-                                    </div>
-                                {% endfor %}
+				<div>
+					{% for i in item.imgs %}
+						{% ifequal forloop.counter 1 %}
+								<img src="https://storage.googleapis.com/kitchensite/{{ i }}" loading="lazy" class="d-block mx-auto lazy img1 shadow" id="main{{ item.name }}" style="max-width: 100%" height="700px" alt="{{ i }} ">
+							{% else %}
+							<img src="https://storage.googleapis.com/kitchensite/{{ i }}" loading="lazy" style="cursor:pointer;" height="70px" class="mx-auto my-2 lazy" onclick="img_change(event,`{{ item.name }}`,`{{ item.colors }}`)" alt="{{ i }}/{{ forloop.counter0 }}">
+						{% endifequal %}
+					{% endfor %}
+				</div>
 
-                              </div>
-                              <a class="carousel-control-prev"  style="color: black!important;" href="#carouselExampleControls{{ item.first.pk }}" role="button" data-slide="prev">
-                                <div class="p-3 bg-dark" style="">
-                                    <span class="carousel-control-prev-icon"  style="color: black!important;" aria-hidden="true"></span>
-                                    <span class="sr-only" style="padding: 20px!important;" id="arrow_left">Previous</span>
-                                </div>
-                              </a>
-                              <a class="carousel-control-next" href="#carouselExampleControls{{ item.first.pk }}" role="button" data-slide="next">
-                                <div class="p-3 bg-dark">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </div>
-                              </a>
-                    </div>
+				<div class="d-flex  my-3" style="width: 60%;margin: auto" id="display_b">
+					<span style="width: 30%"><b>Color Available:</b></span>
 
-{#                        <img src="{{ item.get_photo_url }}" height="278px" alt="">#}
-                        <div class="card-body">
-                            <h4 style="color:rgb(46, 154, 135);">{{ item.first.kitchen_type }}</h4>
-                            <p>{{ item.first.description }}</p>
-                            <p class="m-0">Available Colors:</p>
-                            <div class="d-flex justify-content-around" id="container_remove" style="width: 50%">
-                                {% for i in item %}
-                                    <p class="m-0"
-                                          style="height: 20px;width: 20px;border: 2px solid lightgray;cursor: pointer;
-                                          background-color: var(--{{ i.color }})"></p>
-                                {% endfor %}
+					<div class="d-flex justify-content-around" style="width: 90%;margin: auto" id="search_in">
+						{% for i in item.colors %}
 
-                            </div>
-                            <a style="color: rgb(46, 154, 135)" href="{% url 'application:kitchen-view' item.first.kitchen_type.pk %}">View {{ item.first.kitchen_type }}</a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+						<p class="m-0 align-self-center" style="width: 30px;height: 30px;background-color: var(--{{ i }});border: 1px solid lightgrey"></p>
+						{% endfor %}
+					</div>
+				</div>
+				<a id="link{{ item.name }}" href="{% url 'application:kitchen-view' item.name item.colors|slice:"0:1"|last  %}" class="btn btn-success">View Fitted Kitchen & Prices</a>
 
+				</div>
+
+			</div>
+
+		{% endfor %}
 {% endblock %}
 {% block script %}
 <script>
-    {#const img = document.getElementsByClassName('get')#}
-    {#for (let i=0;i<=img.length;i++){#}
-    {#    console.log(img[i])#}
-    {#    img[0].classList.add('active')#}
-    {#}#}
 
+
+	{# on click change image	#}
+	function img_change(e,name,color){
+	    const main = document.getElementById(`main${name}`)
+		const link = document.getElementById(`link${name}`)
+		const split = color.split(',')
+		const target_alt = e.target.alt.split('/')
+		const exactColor = split[target_alt[target_alt.length-1]].split("'")
+		link.href = `/kitchen-view/${name}/${exactColor[1]}/`
+		main.src = e.target.src
+	}
 </script>
 {% endblock %}

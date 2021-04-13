@@ -4,5 +4,5 @@ from application.views import async_task
 
 def start():
     scedular = BackgroundScheduler()
-    scedular.add_job(async_task,'interval',minutes=55)
+    scedular.add_job(async_task,'interval',minutes=30)
     scedular.start()

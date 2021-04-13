@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
     {% block meta %}
-        <title>TKC KITCHENS</title>
-
+        <title>TKC KITCHENS - Cart</title>
+	    <meta name="description" content="Your cart">
     {% endblock %}
 {% block content %}
     {% if cart %}
@@ -61,9 +61,12 @@
                             <p>Price of sample: £5</p>
                         {% endif %}
                         <p class="m-0"><b>Door color:</b> {{ item.kitchen_order.kitchen.door_color }}</p>
-                        <p>All our cabnets come with doors unless specified.Doors come undrilled and we can drill the side you require i.e left or right handed, but you have to specify this later.</p>
-                        <p>Doors will be provided with cabinets</p>
-                        <p>Handles will also be provided as per the images.</p>
+                        <ul>
+	                        <li><p><b>All our cabinets come with doors unless specified.Doors come un-drilled and we can drill the side you require i.e left or right handed, but you have to specify this later.</b></p></li>
+	                        <li><p><b>Doors will be provided with cabinets.</b></p>
+                        </li>
+	                        <li><p><b>Handles will also be provided as per the images.</b></p></li>
+                        </ul>
                     </div>
                 </div>
             <div>
@@ -170,6 +173,47 @@
 
     {% endif %}
 
+{# accessories  #}
+
+	    {% if accessories_cart %}
+        <h3>Accessories:</h3>
+        <p id="info_acc"></p>
+
+        <table class="table table-striped table-responsive1">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price(£)</th>
+                    <th class="text-center">Option</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in accessories_cart %}
+                    <tr>
+                        <td><img src="{{ item.accessories.get_photo_url }}" height="30px" alt=""></td>
+                        <td>{{ item.accessories.accessories_type|truncatewords:4 }}</td>
+                        <td>{{ item.accessories.description|truncatewords:3 }}</td>
+                            <td style="width: 20%" id="search_in">
+
+                                <input type="number" class="form-control" id="search_in" min="1" style="width: 60%!important;"
+                                       onchange="changing(event,`{{ item.accessories.pk }}`,'accessories','update')"
+                                   value="{{ item.qty }}" name="qty"></td>
+                        <td>{{ item.accessories.price }}</td>
+
+                        <td class="text-center"><a id="search_in"
+                        onclick="remove_cart(event,{{ item.accessories.pk }},'delete','accessories')"
+                                class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a></td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+    {% endif %}
 
 
 {#  kitchen cart table  #}
@@ -205,7 +249,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
@@ -215,7 +259,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
@@ -282,6 +326,9 @@
                  p =document.getElementById('info_app')
 
                 }
+                else if (pro==='accessories'){
+                    p = document.getElementById('info_acc')
+                }
                 else if (pro==='service'){
                  p =document.getElementById('info_service')
 
@@ -320,6 +367,9 @@
                 else if (name==='service'){
                  p =document.getElementById('info_service')
 
+                }
+                else if (name==='accessories'){
+                    p = document.getElementById('info_acc')
                 }
                 else if(name==='kitchen'){
                  p =document.getElementById('info_kitchen')

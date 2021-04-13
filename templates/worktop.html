@@ -2,11 +2,19 @@
 {% load static %}
 {% load bootstrap4 %}
 {% load custom_tag %}
-    {% block meta %}
-        <meta name="{{ name }}" content="{{ description }}">
-        <title>{{ title }}</title>
 
-    {% endblock %}
+{% block meta %}
+    {% if not meta %}
+	<meta name="{{ list.first.category.meta_name }}" content="{{ list.first.category.meta_description }}">
+        <title>{{ list.first.category.meta_title }}</title>
+	{% else %}
+		<meta name="{{ meta.meta_name }}" content="{{ meta.meta_description }}">
+        <title>{{ meta.meta_title }}</title>
+	{% endif %}
+
+{% endblock %}
+
+
 {% block content %}
     {% if list %}
     <div class="my-3">
@@ -15,7 +23,7 @@
         {% if stone %}
             <div class="container">
                 <h3>Stone Worktops</h3>
-                <p>We can supply all stone worktops Marble, Granite, Quartz and Onyx. We supply branded and unbranded both stone worktops. But we will only provide a price if you buy a kitchen with design and installation from us</p>
+                <p>We can supply all stone worktops Marble, Granite, Quartz and Onyx. We supply branded and unbranded both stone worktops.These type of worktops are priced per application and will need to be purchased as part of our kitchen supply and installation service. If you require any more information please feel free to get in touch. Thank You.</p>
 
             </div>
         {% else %}
@@ -31,8 +39,8 @@
 {#                {{ search.form }}#}
                 <label class="align-self-center">Min value: £ <span id="output_min">100</span></label>
                 <input type="range" name="price__gte" id="search_in" class="menu bottom" value="100" oninput="change(event)" step="any" max="500" min="100">
-                <label for="" class="align-self-center">Max Value: £ <span id="output_max">500</span></label>
-                <input type="range" name="price__lte" id="search_in" class="menu bottom" value="500" step="any" max="500" min="100" oninput="change(event)">
+                <label for="" class="align-self-center">Max Value: £ <span id="output_max">1000</span></label>
+                <input type="range" name="price__lte" id="search_in" class="menu bottom" value="1000" step="any" max="1000" min="100" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
                 <a href="{% url 'application:worktop-view' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
@@ -66,7 +74,7 @@
                 </div>
 
                 <div class="align-self-center ml-5" id="contain">
-                    <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}" style="color:rgb(46, 154, 135)" >{{ item }}</a></h5>
+                    <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}" style="color:rgb(46, 154, 135)" >{{ item }}</a></h5>
                     <h4>£ {{ item.price|floatformat:"0" }}</h4>
                     <p>{{ item.description }}</p>
                     <p class="m-0">Dimension/Size: {{ item.size }}</p>
@@ -81,6 +89,24 @@
             </div>
 
         {% endfor %}
+	                <div class="container text-center my-2">
+                <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+        {% endif %}
+    </span>
+            </div>
+
 
         {% endif %}
 
@@ -138,7 +164,7 @@
                 </div>
 
                 <div class="align-self-center ml-5" style="width: 374px" id="contain">
-                    <h5 style="color: rgb(46, 154, 135)"><a style="color: rgb(46, 154, 135)" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}" >{{ item }}</a></h5>
+                    <h5 style="color: rgb(46, 154, 135)"><a style="color: rgb(46, 154, 135)" href="{% url 'application:appliances-detail-view' 'appliance' item.category.slug item.pk %}" >{{ item }}</a></h5>
                     <h4>£ {{ item.price|floatformat:"0" }}</h4>
                     <p>{{ item.description|truncatewords:15 }}</p>
                     <p>Type: {{ item.appliances_type }}</p>
@@ -153,6 +179,24 @@
             </div>
 
         {% endfor %}
+	                <div class="container text-center my-2">
+                <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+        {% endif %}
+    </span>
+            </div>
+
 
         {% else %}
         <div class="alert alert-primary text-center mt-2" role="alert">

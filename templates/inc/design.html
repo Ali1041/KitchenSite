@@ -16,12 +16,12 @@
                 <div class="modal-body">
                     <p>Feeling overwhelmed why not get someone to design your kitchen. Just place an order for our design service and get your kitchen designed by professional designers.
                     </p>
-                    <p><b>Price: £50</b></p>
+                    <p><b>Price: Free Design</b></p>
                     <p>Design will be based on the measurements provided by the customer and it is customer responsibility that the units and appliances will fit within their kitchen or desired location
 </p>
             </div>
             <div class="modal-footer">
-                <a href="{% url 'application:add-to-cart' 'service' '1' 1 1 'create' %}" class="btn btn-success">Go to Cart</a>
+                <a href="{% url 'application:contact' %}" class="btn btn-success">Free Design Service</a>
                 <a href="{% url 'application:design' %}" class="btn btn-secondary">Cancel</a>
             </div>
             </div>
@@ -32,13 +32,13 @@
 
     <div class="my-5">
         <div class="text-center">
-            <video src="{% static 'videos/design1.mp4' %}" id="video" controls height="400px"></video>
+            <video src="{% static 'videos/modern-kitchen-designs.mp4' %}" autoplay muted id="video" controls height="400px"></video>
         </div>
         <div class="p-3 d-flex justify-content-around mt-3 menu" id="contain">
             <div style="width: 40%" class="text-center" id="search_in">
-                <h4 class='' style="color: rgb(46, 154, 135)">Design </h4>
+                <h1 class='' style="color: rgb(46, 154, 135)">Free Kitchen Design Service</h1>
                 <h2>Overview</h2>
-                <button data-target="#hireModal" data-toggle="modal" class="btn btn-success btn-lg   my-3">Hire our design service</button>
+                <button data-target="#hireModal" data-toggle="modal" class="btn btn-success btn-lg   my-3">Free Design Service</button>
             </div>
             <div style="width: 60%" id="search_in" class="my-2">
                 <p>We provide personalized kitchen designs that balance style & functionality. Find the perfect kitchen designs for you and your family. Our all Kitchen designers have experience of over 10 years. Our Kitchen Designs aired on National TV in two documentaries. We can also provide references on request.</p>
@@ -116,8 +116,8 @@
     <div class="row m-0 p-5" id="container_remove">
         <div class="col-lg-6">
 {#                <img src="{% static 'imgs/design1.jpg' %}" class="img1" height="450px" width="600px" alt="">#}
-            <video height="400px" id="video" controls>
-                <source src="{% static 'videos/design2.mp4' %}" type="video/mp4">
+            <video height="400px" width="650px" id="video1" controls muted>
+                <source src="{% static 'videos/Modern Kitchen interior 720p 30fps.mp4' %}" type="video/mp4">
             </video>
         </div>
         <div class="col-lg-6 my-2" >
@@ -169,4 +169,18 @@
     </div>
 
 
+{% endblock %}
+{% block script %}
+    <script>
+        const video = document.getElementById('video1')
+    window.addEventListener('scroll',()=> {
+        const sides = video.getBoundingClientRect()
+        if (sides.top >= 0 &&
+            sides.left >= 0 &&
+            sides.right <= (window.innerWidth || document.documentElement.clientWidth) &&
+            sides.bottom <= (window.innerHeight || document.documentElement.clientHeight)) {
+            video.play()
+        }
+    })
+    </script>
 {% endblock %}

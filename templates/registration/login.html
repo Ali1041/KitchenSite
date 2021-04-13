@@ -1,13 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap4 %}
     {% block meta %}
-        <title>TKC KITCHENS</title>
-
+        <title>{{ title }}</title>
+	    <meta name="{{ name }}" content="{{ description }}">
     {% endblock %}
 {% block content %}
-    <div class="p-5 border border-rounded my-4" style="width: 40%;margin: auto" id="search_in">
-        <form action="{% url 'application:login' %}" onsubmit="redirect(event)" method="POST">
-            <h4 class="text-center" style="color: rgb(46, 154, 135)">Login</h4>
+	
+	<div class="row " style="width: 70%;margin: auto"  id="search_in">
+		
+		<div class="col-sm-6 my-4 p-0 align-self-center" style="width: fit-content">
+			<img src="{% static 'imgs/login.PNG' %}" width="100%" height="" alt="" id="k_img1">
+		</div>
+	
+	    <div class="col-sm-6 align-self-center p-5 my-4 text-white class" style="background-color: rgb(46, 154, 135);width: 40%;margin: auto" id="search_in">
+        <form action="{% url 'application:login' %}"  method="POST">
+            <h4 class="text-center mb-5" >Register or Login to view Prices</h4>
             {% if messages %}
                 {% for msg in messages %}
 
@@ -26,16 +34,28 @@
             </label>
             <input type="text" value="{{ url }}" hidden name="url">
             <button class="btn btn-success w-100 my-2">Login</button>
-            <p>No account?<a href="{% url 'application:signup' %}">Signup here</a></p>
-            <p><a href="{% url 'reset_password' %}">Forgot Password?</a></p>
+            <p><a href="{% url 'application:signup' %}" style="text-decoration: underline;color: white" >Register to View Units and Prices</a></p>
+            <p><a href="{% url 'reset_password' %}" style="text-decoration: underline;color: white" >Forgot Password?</a></p>
+                    <div class="text-center">
+	                <small>For further information about how we use your personal data please see our <a style="text-decoration: underline;color: white" href="{% url 'application:GDPR' %}">
+	        GDPR
+Policy
+        </a> and <a style="text-decoration: underline;color: white" href="{% url 'application:terms' %}">Terms &amp; conditions.</a></small>
+                    </div>
         </form>
     </div>
+
+	</div>
+	
 {% endblock %}
 {% block script %}
     <script>
-        function redirect(e){
-            history.back()
-        }
+
+
+        const div = document.getElementsByClassName('class')
+        const img = document.getElementById('k_img1')
+        img.style.height = div[0].offsetHeight+'px'
+
     </script>
 
 

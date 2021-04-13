@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
-    {% block meta %}
-        <title>TKC KITCHENS</title>
+{% block meta %}
+        <meta name="{{ detail.meta_name }}" content="{{ detail.meta_description }}">
+        <title>{{ detail.meta_title }}</title>
+{% endblock %}
 
-    {% endblock %}
 {% block content %}
     <div class="container my-3">
         <div style="width: 65%;margin: auto" class="my-3" id="search_in">
@@ -10,10 +11,12 @@
         </div>
         <div>
             <h4 class="text-center mb-2">{{ detail.title }}</h4>
-            <small>Uploaded at: {{ detail.timestamp }}</small>
             <hr/>
             <p id="contain">{{ detail.text|safe }}</p>
         </div>
+    <div class="text-center my-1">
+	    <a class="btn btn-success" href="{% url 'application:all-kitchen' %}">View Our Latest Fitted Kitchens</a>
+    </div>
     </div>
 
 
@@ -24,9 +27,8 @@
     <script>
         const imgs_blog = document.getElementsByTagName('img')
         if (window.innerWidth<839){
-            for (let i=0;i<imgs_blog.length;i++){
+            for (let i=0;i<imgs_blog.length-1;i++){
             if (i>2){
-                console.log(imgs_blog[i].style.width)
                 if (imgs_blog[i].style.width<500+'px'){
                     imgs_blog[i].style.height = 250+'px'
                     imgs_blog[i].style.width = 60+'%'

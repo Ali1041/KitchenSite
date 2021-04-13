@@ -6,7 +6,7 @@
     {% endblock %}
 {% block content %}
 <div  class="p-3">
-    <div style="width: 50%;margin: auto" id="search_in">
+    <div style="width: 70%;margin: auto" id="search_in">
         <form action="{% url 'application:contact' %}" method="POST">
             {% csrf_token %}
             {% if messages %}
@@ -17,66 +17,71 @@
             {% endfor %}
             {% endif %}
             <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
-                <h2>Contact form</h2>
+                <h1>Contact Us</h1>
                 <p>We consider our customer's feedback and queries very important. Contact us through following form regarding feedback or any questions</p>
                 <p>Phone: 08002118289</p>
                 <p>Email: service@tkckitchens.co.uk</p>
-                <p>Address: International House, Mosley Street, Manchester M2 3HZ</p>
             </div>
+			<div class="d-flex justify-content-between" id="display_b">
+                <div class="card p-3 mb-3 shadow " style="width: 45%;border-radius: 8px" id="search_in">
+            <label for="" class="d-block" >
+                Name
+                <input placeholder="Name" required name="name" type="text" class="form-control" ></label>
 
-            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
-            <label for="" class="d-block" style="font-size: 20px">
-                Name <span style="color: red">*</span>
-                <input placeholder="Name" name="name" type="text" class="form-control" style="border-top: none!important;border-left: none!important;border-right:none!important;"></label>
-            </div>
-
-            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
             <label for="" class="d-block">
-                Email Address<span style="color: red">*</span>
-                <input placeholder="Email" name="email" type="text" class="form-control"></label>
-            </div>
+                Email Address
+                <input placeholder="Email" required name="email" type="text" class="form-control"></label>
 
-            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
             <label for="" class="d-block">
                 Phone Number
-                <input placeholder="Phone Number" name="phone" type="text" class="form-control"></label>
-            </div>
+                <input placeholder="Phone Number" required name="phone" type="text" class="form-control"></label>
+                <div class="text-center">
+	                <small>For further information about how we use your personal data please see our <a href="{% url 'application:GDPR' %}">
+	        GDPR
+Policy
+        </a> and <a href="{% url 'application:terms' %}">Terms &amp; conditions.</a></small>
+                </div>            </div>
 
-            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+                <div class="card p-3 mb-3 shadow w-50 align-self-center" id="search_in" style="border-radius: 8px">
             <label for="" class="d-block">
                 Order Number(If applicable)
                 <input placeholder="Order Number" name="order" type="text" class="form-control"></label>
-            </div>
 
-            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+
             <label for="" class="d-block">
-                Reason for contacting us<span style="color: red">*</span>
+                Reason for contacting us
                 <div>
-                    <input type="checkbox" name="check1" value="Order and Support" class="my-2"><label class="pl-2">Order & Support Queries</label>
+                    <input type="checkbox"  name="check1" value="Order and Support" class="my-2"><label class="pl-2">Order & Support Queries</label>
 
                 </div>
                 <div>
-                    <input type="checkbox" name="check1" value="Installed Projects" class=""><label class="pl-2">Installed Projects</label>
+                    <input type="checkbox"  name="check1" value="Installed Projects" class=""><label class="pl-2">Installed Projects</label>
 
                 </div>
 
                 <div>
-                    <input type="checkbox" name="check1" value="Other" class=" my-2"><label class="pl-2">Other</label>
+                    <input type="checkbox"  name="check1" value="Other" class=" my-2"><label class="pl-2">Other</label>
 
                 </div>
                 <div>
-                    <input type="checkbox" name="check1" value="Feedback" class=""><label class="pl-2">Feedback</label>
+                    <input type="checkbox"  name="check1" value="Feedback" class=""><label class="pl-2">Feedback</label>
+
+                </div>                <div>
+                    <input type="checkbox"  name="check1" value="Free Sample" class=""><label class="pl-2">Free Sample</label>
 
                 </div>
             </label>
-            </div>
 
-            <div class="card p-3 mb-3 shadow" style="border-radius: 8px">
+
             <label for="" class="d-block">
                 Detail
-                <textarea placeholder="Detail" name="detail" class="form-control"></textarea></label>
+                <textarea placeholder="Detail" required name="detail" class="form-control"></textarea></label>
             </div>
-            <button class="btn btn-primary">Submit</button>
+			</div>
+        <div class="text-center">
+            <button class="btn btn-success">Submit</button>
+	        </div>
+
         </form>
     </div>
 </div>

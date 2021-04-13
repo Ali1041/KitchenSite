@@ -1,9 +1,12 @@
 from django.urls import path
 from .views import *
+from django.views.generic import TemplateView
 
 app_name = 'adminPanel'
 
 urlpatterns = [
+    path('sw.js', TemplateView.as_view(template_name='adminPanel/sw.js', content_type='application/x-javascript')),
+
     path('', index, name='index'),
 
     # kitchen urls
@@ -39,7 +42,7 @@ urlpatterns = [
     path('admin-order-detail/<int:pk>/', DetailOrder.as_view(), name='admin-order-detail'),
 
     # all users
-    path('admin-orders/', users, name='all-users'),
+    path('admin-orders/', all_user, name='all-users'),
 
 
     # blogs
@@ -62,4 +65,26 @@ urlpatterns = [
     # contact actual
     path('contact-us-list/',ContactActualList.as_view(),name='actual-list'),
     path('contact-us-detail/<int:pk>/',ContactActualDetail.as_view(),name='actual-detail'),
+
+
+    path('all-user/',all_user,name='user'),
+
+    path('brochure-list/',BrochureRequests.as_view(),name='brochure-list'),
+
+    # accessories url
+    path('accessories-list/',AccessoriesList.as_view(),name='accessories'),
+    path('add-type-accessories/',add_accessories_type,name='accessories_type'),
+    path('add-accessories/',add_accessories,name='add_accessories'),
+    path('accessories-detail/<int:pk>/',AccessoriesDetail.as_view(),name='detail_accessories'),
+    path('accessories-in-detail/<int:pk>/<int:pk2>/', AccessoriesInDetail.as_view(), name='detail_in_accessories'),
+    path('accessories-edit/<int:pk>/',edit_accessories,name='edit-accessories'),
+
+
+    # Chat options
+    path('all-chat-rooms/',ChatRoomsList.as_view(),name='all_rooms'),
+    # path('create-room/',create_room,name='create_room'),
+    path('chat-room/<slug:slug>', room_detail, name='room'),
+    # path('token/', token, name='token'),
+    # path('send_push/',send_push,name='push'),
+
 ]

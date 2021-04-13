@@ -23,7 +23,7 @@
 
         <div class="col-lg-6 d-flex justify-content-right align-self-center" id="search_in" >
             <input type="email" placeholder="Your Email"  class="form-control" id="search_in" style="width: 50%!important;">
-            <button data-target="#news" data-toggle="modal" onclick="subscribe(event)" class=" btn btn-success " style="height: 70%">Subscribe</button>
+            <button data-target="#news" data-toggle="modal" onclick="subscribe1(event)" class=" btn btn-success " style="height: 70%">Subscribe</button>
                         <p id="sub" class="ml-2 align-self-center m-0"></p>
         </div>
     </div>
@@ -33,6 +33,11 @@
             <p><i class="fas fa-map-marker-alt"></i><span class="p-2">International House, Mosley Street, Manchester M2 3HZ</span></p>
             <p><i class="fas fa-phone-alt align-self-center"></i><a style="color:inherit;text-decoration: none" href="tel:+08002118289" class="m-0 p-2">08002118289</a></p>
             <p><i class="fas fa-envelope align-self-center"></i><a style="color: inherit;text-decoration: none;" href="https://mail.google.com/mail/?view=cm&fs=1&to=service@tkckitchens.co.uk" class="m-0 p-2">service@tkckitchens.co.uk</a></p>
+            <div class="my-3">
+	            <img src="{% static 'imgs/Payment.png' %}" loading="lazy" id="pay" height="50px" alt="tkc-kitchen payment">
+            </div>
+
+
         </div>
         <div class="align-self-baseline">
             <p>
@@ -60,11 +65,11 @@
         </div>
     </div>
 </div>
-    <p class="text-center border-top border-bottom m-0 p-3">Copyright&copy; TKC KITCHENS</p>
+    <p class="text-center border-top border-bottom m-0 p-3">Copyright&copy; 2021 TKC KITCHENS</p>
 {#    <p class="text-center m-0 p-1">All icons are property of <a href="https://fontawesome.com/">Font Awesome</a></p>#}
 </div>
 <script>
-        function subscribe(e){
+        function subscribe1(e){
             e.preventDefault()
             const email=e.target.previousElementSibling.value
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;

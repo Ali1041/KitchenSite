@@ -1,0 +1,29 @@
+{% extends 'adminPanel/admin_home.html' %}
+{% block content %}
+
+    <div class="container my-4">
+        <a href="{% url 'adminPanel:index' %}" class="btn btn-secondary mb-3">Back</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+	                <th>Phone</th>
+	                <th>Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list %}
+                    <tr>
+                        <td>{{ item.first_name }} {{ item.last_name }}</td>
+                        <td>{{ item.email }}</td>
+                        <td>{{ item.phone }}</td>
+                        <td>{{ item.detail }}</td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

@@ -2,30 +2,37 @@
     --White:white;
     --Black:black;
     --Blue:blue;
-    --Anthracite:#383e42;
-    --Cashmere:#d1b399;
-    --Cream:#fffdd0;
-    --Dust-Grey:#7a7b7a ;
-    --Light-Grey:lightgray;
-    --Pavilion:#C8C3BC;
-    --Porcelain:#dddcdb ;
-    --Stone:#888c8d ;
-    --Ivory:#FFFFF0;
-    --Mussel:#fbd1c3 ;
-    --Oak:#806517 ;
-    --Dakar:#988E7D;
-    --Saga-Green:#58724c ;
-    --Indigo:indigo;
+    --Anthracite:#444848;
+    --Cashmere:#bbafa6;
+    --Cream:#e0d6ca;
+    --Dust-Grey:#888888 ;
+    --Light-Grey:#babbb6;
+    --Pavilion:#a69c8d;
+    --Porcelain:#858377 ;
+    --Stone:#b4a99a ;
+    --Ivory:#dad6c1;
+    --Mussel:#e4d6bb ;
+    --Oak:#c99f6f ;
+    --Dakar:#a79c8b;
+    --Saga-Green:#bdbda4 ;
+    --Indigo:#404757;
 
 
 
 
 }
+.list-style{
+    list-style: none ;
+}
+
 #on:hover {
     background-color: dodgerblue;
     color: white;
     border-radius: 4px;
 
+}
+h1{
+    font-size: 30px!important;
 }
 .wishlistth{
     padding: .75rem 50px!important;
@@ -33,29 +40,23 @@
 .hoverEffect{
     transition:all 0.3s ease-in-out;
 }
+.bold{
+    font-weight: 700;
+}
 .hoverEffect:hover{
     cursor: pointer;
     background-color: rgb(46, 154, 135);
     color: white;
     border:none;
 }
-/*.btn-success{*/
-/*    color: #fff;*/
-/*    background-color: rgb(46, 154, 135) !important;*/
-/*    border-color: rgb(46, 154, 135)!important;*/
-/*}*/
+
 .my_c{
     color:rgb(46, 154, 135)!important;
 }
 .a_btn:hover{
     color: forestgreen!important;
 }
-/*p{*/
-/*    font-size: 1em;*/
-/*}*/
-/*h1,h2,h3,h4,h5{*/
-/*    font-weight: 800;*/
-/*}*/
+
 .by-ajax{
     height: 300px;
 }
@@ -69,9 +70,42 @@
     background-color: rgb(46, 154, 135)!important;
     color:white!important;
 }
-/*body{
-    background-color: blue;
-}*/
+.form-control-form {
+    display: block;
+    width: 30%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    outline: none;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control-form1 {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    outline: none;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control-form:focus,.form-control-form1:focus{
+        box-shadow: 1px 1px forestgreen;
+
+}
 
 @media only screen and (min-width: 100px) and (max-width: 768px){
     body{
@@ -79,6 +113,12 @@
         width: 100vw;
     }
 
+    .mtb{
+        margin: 3px 0!important;
+    }
+    .mtb1{
+        margin: 7px 0!important;
+    }
     .height-cut{
         height: 200px!important;
     }
@@ -99,12 +139,11 @@
     }
     #search_in{
         width: 100% !important;
+                margin-left: 0!important;
+
     }
     #second_bar{
         display: none!important;
-    }
-    #menu_div{
-        transition: all 2s ease-in-out;
     }
     .img{
         height: 350px!important;
@@ -128,11 +167,15 @@
         padding: 0!important;
     }
     #video{
-        /*height: 100px!important;*/
+        height: 300px!important;
+        width: 310px!important;
+    }
+        #video1{
+        height: 300px!important;
         width: 310px!important;
     }
     .video{
-        /*height: 100px!important;*/
+        height: 300px!important;
         width: 310px!important;
     }
     #blog{
@@ -143,8 +186,8 @@
         padding: 2px!important;
     }
     .img1{
-        height: 320px!important;
-        width: 100%!important;
+        height: 250px!important;
+        max-width: 100%!important;
     }
     .bottom{
         margin: 8px 0!important;
@@ -159,6 +202,17 @@
     -webkit-overflow-scrolling: touch;
 
 }
+    #contain-div{
+        display: block!important;
+        width: 94%!important;
+        margin: auto!important;
+    }
+    .btn-sm2 {
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
     #contain{
         width: 80%!important;
         margin: auto!important;
@@ -167,16 +221,22 @@
         height: 250px!important;
         max-width: 100%!important;
     }
+        #k_img1{
+        height: 350px!important;
+        max-width: 100%!important;
+    }
     .input{
         width: 160%!important;
     }
-    .animating{
-        animation: show 1.5s ease-in-out;
-        transition: all ease-in-out;
+    .fade-in-menu{
+        opacity: 1;
+        transform:translateY(0%) ;
+        transition: .2s all ease-in-out;
     }
-    .remove-animating{
-        animation: remove 1.5s ease-in-out;
-        transition: all ease-in-out;
+    .fade-out-menu{
+        opacity: 0;
+        transform: translateY(-19%);
+        transition: .2s all ease-in-out;
     }
     .small2{
         font-size: 13px!important;
@@ -186,7 +246,7 @@
     }
     .move2{
         position: relative;
-        top:-200px;
+        top:-205px;
         left: 0;
     }
     .move{
@@ -203,47 +263,18 @@
         font-size:medium!important ;
         font-weight: 700!important;
     }
-    @keyframes remove {
-        0%{
-            height: 60%;
-        }
-        100%{
-            height: 3%;
-        }
-    }
-    @keyframes show {
-        0%{
-            height: 3%;
-        }
-        100%{
-            height: 60%;
-        }
-    }
 
+    .block{
+        display: block!important;
+        width: 100%!important;
+    }
+    .newPosition{
+        position: relative;
+        top: -50px;
+    }
 
 }
-/*@media only screen and (min-width: 100px) and (max-width: 319px) {*/
-/*    .move2{*/
-/*        top:107%!important;*/
-/*        left: 11%!important;*/
-/*    }*/
-/*!*}*!*/
-/*@media only screen and (min-width: 320px) and (max-width: 374px) {*/
-/*    .move2{*/
-/*        top:107%!important;*/
-/*        left: 16%!important;*/
-/*    }*/
-/*}@media only screen and (min-width: 375px) and (max-width: 474px) {*/
-/*    .move2{*/
-/*        top:103%!important;*/
-/*        left: 19%!important;*/
-/*    }*/
-/*}@media only screen and (min-width: 475px) and (max-width: 768px) {*/
-/*        .move2{*/
-/*        top:93%!important;*/
-/*        left: 34%!important;*/
-/*    }*/
-/*}*/
+
 @media only screen and (min-width: 767px) and (max-width: 1007px) {
         .input{
         width: 100%!important;

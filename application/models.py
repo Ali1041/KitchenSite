@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.urls import reverse
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -30,13 +31,15 @@ class KitchenCategory(models.Model):
         ['Vivo+matt for vero', 'Vivo+matt for vero'],
     ]
     name = models.CharField(max_length=255)
+    meta_name = models.CharField(max_length=255, default='KitchenCategory', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='KitchenCategory', blank=True, null=True)
+    meta_description = models.TextField(default='KitchenCategory', blank=True, null=True)
 
     def __str__(self):
         return self.name
 
     def natural_key(self):
         return self.name
-
 
 
 class Kitchen(models.Model):
@@ -51,50 +54,28 @@ class Kitchen(models.Model):
     cabnet = models.CharField(max_length=128, blank=True, null=True)
     img = models.ImageField(upload_to='kitchen', null=True, blank=True)
     available = models.BooleanField(default=True)
+    img_alt_text = models.CharField(max_length=255, blank=True, null=True, default='alt')
+
+    # alt_text = models.CharField(max_length=255,blank=True,null=True,default='alt')
 
     def __str__(self):
         return f'{self.kitchen_type.name} {self.color}'
+
+    def get_alt_text(self):
+        img_url = str(self.img).split('/')
+        alt_text__ = img_url[1].split('.')
+        alt_text = alt_text__[0].replace('_', ' ')
+        return alt_text
 
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
 
     def get_absolute_url(self):
-        return reverse('application:kitchen-view', kwargs={'name': self.kitchen_type.name,'color':self.color})
+        return reverse('application:kitchen-view', kwargs={'name': self.kitchen_type.name, 'color': self.color})
 
     class Meta:
-        ordering = ['-pk']
-# class Doors(models.Model):
-#     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_door')
-#     door_img = models.ImageField(upload_to='doors')
-#
-#     def __str__(self):
-#         return self.kitchen.kitchen_type.name + ' door'
-#
-#     def get_photo_url(self):
-#         if self.door_img and hasattr(self.door_img, 'url'):
-#             return self.door_img.url
-
-
-# class Cabnets(models.Model):
-#     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='kitchen_cabnets')
-#     door_color = models.CharField(max_length=128)
-#     cabnet_img = models.ImageField(upload_to='cabnets')
-#
-#     def __str__(self):
-#         return self.kitchen.kitchen_type.name + ' cabnets'
-#
-#     def get_photo_url(self):
-#         if self.cabnet_img and hasattr(self.cabnet_img, 'url'):
-#             return self.cabnet_img.url
-
-
-# class Images(models.Model):
-#     kitchen = models.ForeignKey(KitchenCategory, on_delete=models.CASCADE, related_name='kitchen_image')
-#
-#     def __str__(self):
-#         return self.kitchen.name + ' picture'
-#
+        ordering = ['pk']
 
 
 class UnitType(models.Model):
@@ -147,6 +128,15 @@ class Worktop_category(models.Model):
 
     ]
     worktop_type = models.CharField(max_length=255)
+    meta_name = models.CharField(max_length=255, default='Worktop_category', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='Worktop_category', blank=True, null=True)
+    meta_description = models.TextField(default='Worktop_category', blank=True, null=True)
+
+    slug = models.SlugField(blank=True, null=True, default='slug')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.worktop_type)
+        return super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-pk']
@@ -155,7 +145,7 @@ class Worktop_category(models.Model):
         return self.worktop_type
 
     def get_absolute_url(self):
-        return reverse('application:worktop-view', kwargs={'pk': self.id})
+        return reverse('application:worktop-view', kwargs={'slug': self.slug})
 
 
 class WorkTop(models.Model):
@@ -168,6 +158,9 @@ class WorkTop(models.Model):
     worktop_img = models.ImageField(upload_to='worktops/')
     added = models.BooleanField(default=False)
     available = models.BooleanField(default=True)
+    meta_name = models.CharField(max_length=255, default='WorkTop', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='WorkTop', blank=True, null=True)
+    meta_description = models.TextField(default='WorkTop', blank=True, null=True)
 
     # for_sample = models.CharField(max_length=10,blank=True,null=True,default='Yes')
     # sample_price = models.FloatField(blank=True,null=True,default=5)
@@ -180,7 +173,8 @@ class WorkTop(models.Model):
             return self.worktop_img.url
 
     def get_absolute_url(self):
-        return reverse('application:worktop-detail-view', kwargs={'name':self.category.worktop_type,'pk': self.pk})
+        return reverse('application:worktop-detail-view',
+                       kwargs={'name': 'worktop', 'slug': self.category.slug, 'pk': self.pk})
 
     class Meta:
         ordering = ['-pk']
@@ -188,12 +182,20 @@ class WorkTop(models.Model):
 
 class Category_Applianes(models.Model):
     name = models.CharField(max_length=255)
+    meta_name = models.CharField(max_length=255, default='Category_Applianes', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='Category_Applianes', blank=True, null=True)
+    meta_description = models.TextField(default='Category_Applianes', blank=True, null=True)
+    slug = models.SlugField(blank=True, null=True, default='slug')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('application:appliances-list', kwargs={'pk': self.id})
+        return reverse('application:appliances-list', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name_plural = 'Category_Appliances'
@@ -211,12 +213,16 @@ class Appliances(models.Model):
     appliance_category = models.CharField(max_length=255)
     added = models.BooleanField(default=False)
     available = models.BooleanField(default=True)
+    meta_name = models.CharField(max_length=255, default='Appliances', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='Appliances', blank=True, null=True)
+    meta_description = models.TextField(default='Appliances', blank=True, null=True)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('application:appliances-detail-view', kwargs={'name':self.category.name,'pk': self.id})
+        return reverse('application:worktop-detail-view',
+                       kwargs={'name': 'appliance', 'slug': self.category.slug, 'pk': self.id})
 
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
@@ -259,6 +265,8 @@ class Cart(models.Model):
     worktop = models.ForeignKey(WorkTop, on_delete=models.CASCADE, blank=True, null=True)
     appliances = models.ForeignKey(Appliances, on_delete=models.CASCADE, blank=True, null=True)
     service = models.ForeignKey(Services, on_delete=models.CASCADE, blank=True, null=True)
+    accessories = models.ForeignKey('Accessories', on_delete=models.CASCADE, blank=True, null=True)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     qty = models.IntegerField(blank=True, null=True)
     sample_worktop = models.CharField(max_length=100, default='No', blank=True, null=True)
@@ -272,6 +280,8 @@ class Cart(models.Model):
             return self.worktop.name
         elif self.appliances:
             return self.appliances.name
+        elif self.accessories:
+            return self.accessories.accessories_type.name
         else:
             return self.service.name
 
@@ -301,25 +311,20 @@ class UserInfo(models.Model):
         return self.first_name
 
 
-class WishList(models.Model):
-    worktop = models.ForeignKey(WorkTop, on_delete=models.CASCADE, blank=True, null=True)
-    appliances = models.ForeignKey(Appliances, on_delete=models.CASCADE, blank=True, null=True)
-    kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, blank=True, null=True)
-    unit = models.ForeignKey(Units, on_delete=models.CASCADE, blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ['-pk']
-
-    def __str__(self):
-        return f'{self.user.username} wishlist'
-
-
 class Blogs(models.Model):
     title = models.CharField(max_length=255)
     text = RichTextUploadingField()
     title_img = models.ImageField(upload_to='blog_img', default='hello')
     timestamp = models.DateTimeField(auto_now_add=True)
+    meta_name = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    meta_description = models.TextField(default='Accessories', blank=True, null=True)
+    slug = models.SlugField(max_length=255,blank=True,null=True,default='slug')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.title
@@ -332,23 +337,8 @@ class Blogs(models.Model):
         verbose_name_plural = 'Blogs'
         ordering = ['-timestamp']
 
-
-class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    added_on = models.DateTimeField(auto_now_add=True)
-    worktop = models.ForeignKey(WorkTop, on_delete=models.CASCADE, blank=True, null=True)
-    appliances = models.ForeignKey(Appliances, on_delete=models.CASCADE, blank=True, null=True)
-    kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, blank=True, null=True)
-    approval_choices = [
-        ('Pending', 'Pending'),
-        ('Approved', 'Approved')
-    ]
-    approval = models.CharField(max_length=15, choices=approval_choices, default='Pending')
-    rating = models.FloatField()
-    comment = models.TextField()
-
-    def __str__(self):
-        return f'{self.user.username} review'
+    def get_absolute_url(self):
+        return reverse('application:blog-detail', kwargs={'slug': self.slug, 'pk': self.pk})
 
 
 class Newsletter(models.Model):
@@ -387,6 +377,9 @@ class ContactActual(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['-pk']
+
 
 class MetaInfo(models.Model):
     home_title = models.CharField(max_length=255)
@@ -416,3 +409,197 @@ class MetaInfo(models.Model):
     contact_title = models.CharField(max_length=255)
     contact_name = models.CharField(max_length=255)
     contact_description = models.TextField()
+
+    accessories_title = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    accessories_name = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    accessories_description = models.TextField(default='Accessories', blank=True, null=True)
+
+
+class MetaStatic(models.Model):
+    home_title = models.CharField(max_length=255)
+    home_name = models.CharField(max_length=255)
+    home_description = models.TextField()
+
+    kitchen_title = models.CharField(max_length=255)
+    kitchen_name = models.CharField(max_length=255)
+    kitchen_description = models.TextField()
+
+    design_title = models.CharField(max_length=255)
+    design_name = models.CharField(max_length=255)
+    design_description = models.TextField()
+
+    install_title = models.CharField(max_length=255)
+    install_name = models.CharField(max_length=255)
+    install_description = models.TextField()
+
+    contact_title = models.CharField(max_length=255)
+    contact_name = models.CharField(max_length=255)
+    contact_description = models.TextField()
+
+    blog_title = models.CharField(max_length=255)
+    blog_name = models.CharField(max_length=255)
+    blog_description = models.TextField()
+
+    cancellation_title = models.CharField(max_length=255)
+    cancellation_name = models.CharField(max_length=255)
+    cancellation_description = models.TextField()
+
+    cookies_title = models.CharField(max_length=255)
+    cookies_name = models.CharField(max_length=255)
+    cookies_description = models.TextField()
+
+    disclaimer_title = models.CharField(max_length=255)
+    disclaimer_name = models.CharField(max_length=255)
+    disclaimer_description = models.TextField()
+
+    faq_title = models.CharField(max_length=255)
+    faq_name = models.CharField(max_length=255)
+    faq_description = models.TextField()
+
+    gdpr_title = models.CharField(max_length=255)
+    gdpr_name = models.CharField(max_length=255)
+    gdpr_description = models.TextField()
+
+    ip_title = models.CharField(max_length=255)
+    ip_name = models.CharField(max_length=255)
+    ip_description = models.TextField()
+
+    return_title = models.CharField(max_length=255)
+    return_name = models.CharField(max_length=255)
+    return_description = models.TextField()
+
+    shipping_title = models.CharField(max_length=255)
+    shipping_name = models.CharField(max_length=255)
+    shipping_description = models.TextField()
+
+    terms_title = models.CharField(max_length=255)
+    terms_name = models.CharField(max_length=255)
+    terms_description = models.TextField()
+
+    login_title = models.CharField(max_length=255,default='login')
+    login_name = models.CharField(max_length=255,default='description')
+    login_description = models.TextField(default='description')
+
+    signup_title = models.CharField(max_length=255,default='Signup')
+    signup_name = models.CharField(max_length=255,default='description')
+    signup_description = models.TextField(default='description')
+
+    install_form_title = models.CharField(max_length=255,default='description')
+    install_form_name = models.CharField(max_length=255,default='description')
+    install_form_description = models.TextField(default='description')
+
+    search_title = models.CharField(max_length=255,default='description')
+    search_name = models.CharField(max_length=255,default='description')
+    search_description = models.TextField(default='description')
+
+    wishlist_title = models.CharField(max_length=255,default='description')
+    wishlist_name = models.CharField(max_length=255,default='description')
+    wishlist_description = models.TextField(default='description')
+
+    def __str__(self):
+        return 'Meta Info for static pages'
+
+
+class AccessoriesType(models.Model):
+    name = models.CharField(max_length=128)
+    meta_name = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    meta_description = models.TextField(default='Accessories', blank=True, null=True)
+
+    slug = models.SlugField(blank=True, null=True, default='slug')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-pk']
+
+    def get_absolute_url(self):
+        return reverse('application:accessories-list', kwargs={'slug': self.slug})
+
+
+class Accessories(models.Model):
+    accessories_type = models.ForeignKey(AccessoriesType, on_delete=models.CASCADE)
+    description = models.TextField()
+    img = models.ImageField(upload_to='accessories')
+    price = models.FloatField()
+    sku = models.CharField(max_length=128)
+    meta_name = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    meta_title = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
+    meta_description = models.TextField(default='Accessories', blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.accessories_type} {self.description}'
+
+    def get_photo_url(self):
+        if self.img and hasattr(self.img, 'url'):
+            return self.img.url
+
+    def get_absolute_url(self):
+        return reverse('application:accessories-detail', kwargs={'slug': self.accessories_type.slug, 'pk': self.id})
+
+    class Meta:
+        ordering = ['-pk']
+
+
+class Brochure(models.Model):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    detail = models.TextField()
+    phone = models.BigIntegerField()
+
+    def __str__(self):
+        return self.email
+
+
+class WishList(models.Model):
+    worktop = models.ForeignKey(WorkTop, on_delete=models.CASCADE, blank=True, null=True)
+    appliances = models.ForeignKey(Appliances, on_delete=models.CASCADE, blank=True, null=True)
+    accessories = models.ForeignKey(Accessories, on_delete=models.CASCADE, blank=True, null=True)
+
+    kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, blank=True, null=True)
+    unit = models.ForeignKey(Units, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['-pk']
+
+    def __str__(self):
+        return f'{self.user.username} wishlist'
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    added_on = models.DateTimeField(auto_now_add=True)
+    worktop = models.ForeignKey(WorkTop, on_delete=models.CASCADE, blank=True, null=True)
+    appliances = models.ForeignKey(Appliances, on_delete=models.CASCADE, blank=True, null=True)
+    kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, blank=True, null=True)
+    accessories = models.ForeignKey(Accessories, on_delete=models.CASCADE, blank=True, null=True)
+    approval_choices = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved')
+    ]
+    approval = models.CharField(max_length=15, choices=approval_choices, default='Pending')
+    rating = models.FloatField()
+    comment = models.TextField()
+
+    def __str__(self):
+        return f'{self.user.username} review'
+
+
+class DemoChat(models.Model):
+    name = models.CharField(max_length=128, blank=True, null=True)
+    description = models.TextField()
+    slug = models.SlugField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    def save(self,*args,**kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args,**kwargs)

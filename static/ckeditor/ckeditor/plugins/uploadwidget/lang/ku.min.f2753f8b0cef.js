@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("uploadwidget","ku",{abort:"بارکردنەکە بڕدرا لەلایەن بەکارهێنەر.",doneOne:"پەڕگەکە بەسەرکەوتووانە بارکرا.",doneMany:"بەسەرکەوتووانە بارکرا %1 پەڕگە.",uploadOne:"پەڕگە باردەکرێت ({percentage}%)...",uploadMany:"پەڕگە باردەکرێت, {current} لە {max} ئەنجامدراوە ({percentage}%)..."});

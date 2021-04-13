@@ -14,39 +14,60 @@ from itertools import chain
 from django.db.models import Count
 import random
 from .forms import *
-import klarnacheckout
-import requests
+# import klarnacheckout
+# import requests
 # import base64
-from django.core.mail import send_mail, EmailMultiAlternatives,send_mass_mail
+from django.core.mail import send_mail, EmailMultiAlternatives, send_mass_mail
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
 from datetime import datetime, timezone, time
+from django import template
+from django.conf import settings
 
 # Create your views here.
 User = get_user_model()
+register = template.Library()
 
 
+# custom error handling pages
+# 403 error page
+def error_403(request, exception):
+    return render(request, '403.html')
+
+
+# 404 error page
+def error_404(request, exception):
+    if 'adminPanel' in request.META.get('HTTP_REFERER'):
+        error_403(request, exception)
+
+    return render(request, '403.html')
+
+
+# 500 error page
+def error_500(request):
+    return render(request, '404.html')
+
+
+# meta info on pages provided here
 def meta_info(page):
-    return MetaInfo.objects.first()
+    return MetaStatic.objects.first()
 
 
+# async taks of sending emails
 def async_task():
     now = datetime.now(tz=timezone.utc)
     all_carts = Cart.objects.select_related('user').all()
     all_user_email_list = []
     for time1 in all_carts:
-        # print(now.hour,time1.date.hour)
         first_value = now.hour
         second_value = time1.date.hour
-        if second_value>first_value:
-            first_value+=24
+        if second_value > first_value:
+            first_value += 24
 
-        x = first_value-second_value
-        # print(x)
+        x = first_value - second_value
 
         y = x
-        # print(y / 10 == int(y / 10))
-        if (y == 10 or y / 10 == int(y/10)) and x!=0:
+        if (y == 72 or y / 72 == int(y / 72)) and x != 0:
             # print(time1.user,time1.user.email)
             all_user_email_list.append(time1.user.email)
 
@@ -58,19 +79,19 @@ def async_task():
             None,
             dup_removed_emails
         )
-        send_mass_mail((email_tuple,),fail_silently=False
+        send_mass_mail((email_tuple,), fail_silently=False
+
+                       )
+
+    # send_mail(
+    #     'to check',
+    #     f'email to {dup_removed_emails}',
+    #     None,
+    #     ['hiphop.ali1041@gmail.com']
+    # )
 
 
-        )
-
-    send_mail(
-        'to check',
-        f'email to {dup_removed_emails}',
-        None,
-        ['hiphop.ali1041@gmail.com']
-    )
-
-
+# counting of cart items
 def cart_count(request):
     if request.user.is_authenticated:
         return JsonResponse(
@@ -79,6 +100,7 @@ def cart_count(request):
         return JsonResponse({'Count': 0})
 
 
+# sending emails on different actions
 def email_send(email, to):
     html_content = ''
     subject = ''
@@ -108,6 +130,16 @@ def email_send(email, to):
 mylist = []
 
 
+# random queryset
+def random_queryset():
+    one = list(WorkTop.objects.all())
+    random_sample = random.sample(one, 2)
+    three = list(Appliances.objects.all())
+    random_sample_2 = random.sample(three, 2)
+    return random_sample, random_sample_2
+
+
+# sign up view
 def signup(request):
     if request.method == 'GET':
         redirect_to = request.META.get('HTTP_REFERER')
@@ -136,7 +168,10 @@ def signup(request):
         email_send(user.email, 'register')
         msg = messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
-    return render(request, 'signup.html')
+    meta = meta_info('home')
+    ctx = {'name': meta.home_name
+        , 'description': meta.home_description, 'title': meta.home_title}
+    return render(request, 'signup.html', ctx)
 
 
 def my_redirect(url):
@@ -144,9 +179,10 @@ def my_redirect(url):
     return mylist
 
 
+# login view
 def login(request):
-    redirect_to = request.META.get('HTTP_REFERER')
     if request.method == 'GET':
+        redirect_to = request.META.get('HTTP_REFERER')
         my_redirect(redirect_to)
     if request.method == 'POST':
         try:
@@ -158,10 +194,14 @@ def login(request):
         if user is not None:
             abs_uri = request.get_host()
             log(request, user)
+            if len(mylist) == 0:
+                return redirect('application:index')
+            if mylist[0] is None:
+                return redirect('application:index')
             new_list = mylist.copy()
+            mylist.clear()
             x = new_list[0]
 
-            mylist.clear()
             if x == f"http://{abs_uri}/login/" or x == f"http://{abs_uri}/signup/" or x == f'http://{abs_uri}/password_reset_done/':
                 return redirect('application:index')
             return redirect(x)
@@ -169,36 +209,88 @@ def login(request):
             messages.warning(request, 'Enter a valid username or password!!')
             return redirect('application:login')
 
-    ctx = {'url': redirect_to}
-    ctx['worktop'] = Worktop_category.objects.all()
-    ctx['appliances'] = Category_Applianes.objects.all()
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    meta = meta_info('home')
+    ctx = {'name': meta.login_name
+        , 'description': meta.login_description, 'title': meta.login_title}
     return render(request, 'registration/login.html', ctx)
 
 
+# home page
 def index(request):
-    user_cart = cart_count(request)
+    if request.method == 'POST':
+        Brochure.objects.create(
+            first_name=request.POST['first'],
+            last_name=request.POST['last'],
+            phone=request.POST['phone'],
+            email=request.POST['email'],
+            detail=request.POST['detail']
+        )
+        html_content = render_to_string('inc/brochure_email.html')
+        text_content = strip_tags(html_content)
+
+        email = EmailMultiAlternatives(
+            'YOUR BROCHURE',
+            text_content,
+            None,
+            [request.POST['email']]
+        )
+        email.attach_alternative(html_content, 'text/html')
+        email.send()
+        messages.success(request, 'Your brochure has been sent successfully!!')
+        return redirect('application:index')
+
     meta = meta_info('home')
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'blogs': Blogs.objects.all()[:3], 'cart_count': json.loads(user_cart.content)['Count'],
-           'appliances': appliances, 'worktop': worktop, 'name': meta.home_name
-        , 'description': meta.home_description, 'title': meta.home_title}
+    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+
+    ctx = {'blog': Blogs.objects.all()[:3],
+           'name': meta.home_name
+        , 'description': meta.home_description, 'title': meta.home_title,'vapid_key': vapid_key,'user':request.user}
 
     return render(request, 'base.html', ctx)
 
 
-# Ajax request to get photos for main page carousel
-def img_urls(request, **kwargs):
-    if kwargs['name'] == 'View all':
-        kitchens = Kitchen.objects.select_related('kitchen_type').all()
-        imgs = kitchens.annotate(count=Count('kitchen_type')).order_by()
-    else:
-        kitchen_type = KitchenCategory.objects.get(name=kwargs['name'])
-        imgs = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=kitchen_type)
-    serialize_imgs = serialize('json', imgs)
-    return JsonResponse(serialize_imgs, safe=False)
+# accessories list
+
+class AccessoriesList(generic.ListView):
+    model = Accessories
+    template_name = 'accessories_list.html'
+    context_object_name = 'list'
+    paginate_by = 10
+
+    def get_queryset(self):
+        ctx = Accessories.objects.select_related('accessories_type').filter(
+            accessories_type__slug__iexact=self.kwargs['slug'])
+
+        if len(self.request.GET) > 1:
+            filter_result = AccessoriesFilter(self.request.GET,
+                                              queryset=Accessories.objects.select_related('accessories_type').filter(
+                                                  accessories_type=self.kwargs['pk']))
+            ctx = filter_result.qs
+        return ctx
+
+
+# accessories detail
+class AccessoriesDetail(generic.DetailView):
+    model = Accessories
+    template_name = 'accessories_detail.html'
+    context_object_name = 'detail'
+
+    def get_context_data(self, **kwargs):
+        ctx = super(AccessoriesDetail, self).get_context_data(**kwargs)
+        ctx['feature1'] = random_queryset()[0]
+        ctx['feature2'] = random_queryset()[1]
+        ctx['product'] = 'accessories'
+        ctx['review'] = Review.objects.select_related('accessories').filter(accessories_id=self.kwargs['pk'],
+                                                                            approval='Approved')
+
+        return ctx
+
+    def get_queryset(self):
+        print(self.kwargs)
+        x = Accessories.objects.select_related('accessories_type').filter(
+            pk=self.kwargs['pk'])
+        return x
 
 
 # all kitchen
@@ -209,10 +301,6 @@ class AllKitchenView(generic.ListView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(AllKitchenView, self).get_context_data(*args, **kwargs)
-        ctx['worktop'] = Worktop_category.objects.all()
-        ctx['appliances'] = Category_Applianes.objects.all()
-        count = cart_count(self.request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
         meta = meta_info('home')
         ctx['name'] = meta.kitchen_name
         ctx['description'] = meta.kitchen_description
@@ -229,9 +317,38 @@ class AllKitchenView(generic.ListView):
 # ajax kitchen request
 
 def get_kitchen(request, **kwargs):
-    kitchens = Kitchen.objects.select_related('kitchen_type').filter(color=kwargs['color'], available=True)
-    serialize_kitchens = serialize('json', kitchens, use_natural_foreign_keys=True)
-    return JsonResponse({'kitchens': serialize_kitchens}, safe=False)
+    kitchens = Kitchen.objects.select_related('kitchen_type').all()
+    annotated_kitchen = kitchens.values('kitchen_type__name').annotate(count=Count('kitchen_type')).order_by()
+    my_list = []
+    for i in [1, 2, 6, 7, 8, 9, 3, 4, 0, 5]:
+        my_list.append(annotated_kitchen[i])
+    for i in range(10, annotated_kitchen.count()):
+        my_list.append(annotated_kitchen[i])
+    list_dict = []
+    for item in my_list:
+        x = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type__name=item['kitchen_type__name'],
+                                                                  available=True)
+        annotated_color = x.values('color', 'kitchen_type__name').annotate(count=Count('color')).order_by()
+        inner_dict = {'name': item['kitchen_type__name'], 'description': x[0].description}
+
+        color_list = []
+        imgs_list = []
+        for i in annotated_color:
+            color_list.append(i['color'])
+            img_color = Kitchen.objects.select_related('kitchen_type').filter(
+                kitchen_type__name=i['kitchen_type__name'], color=i['color'], available=True)
+            imgs_list.append(img_color[0].img)
+        inner_dict['colors'] = color_list
+        inner_dict['imgs'] = imgs_list
+        list_dict.append(inner_dict)
+
+    ctx = {'list': list_dict}
+
+    meta = meta_info('home')
+    ctx['name'] = meta.kitchen_name
+    ctx['title'] = meta.kitchen_title
+    ctx['description'] = meta.kitchen_description
+    return render(request, 'all_kitchen.html', ctx)
 
 
 # view for kitchen display
@@ -244,18 +361,23 @@ class KitchenView(generic.ListView):
     def get_context_data(self, *args, **kwargs):
         ctx = super(KitchenView, self).get_context_data(*args, **kwargs)
 
-        ctx['worktop'] = Worktop_category.objects.all()
-        ctx['appliances'] = Category_Applianes.objects.all()
+        # actual functionality
+        color = self.kwargs['color']
+        if len(self.kwargs['color'].split("'")) > 1:
+            color = self.kwargs['color'].split("'")[1]
         ctx['kitchen_view'] = KitchenCategory.objects.get(name__iexact=self.kwargs['name'])
         ctx['search'] = UnitType.objects.all()
-        count = cart_count(self.request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
-        if 'vero' in ctx['kitchen_view'].name:
+
+        if 'vero' in str(ctx['kitchen_view'].name):
             ctx['form'] = 'form'
-        ctx['kitchen_color'] = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type=ctx['kitchen_view'])
-        ctx['current_color'] = self.kwargs['color']
-        ctx['current_pic'] = Kitchen.objects.select_related('kitchen_type').get(color=self.kwargs['color'],
-                                                                                kitchen_type=ctx['kitchen_view'])
+        all_colors = Kitchen.objects.select_related('kitchen_type').filter(
+            kitchen_type=ctx['kitchen_view'], available=True)
+        ctx['kitchen_color'] = all_colors.values('color').annotate(count=Count('color')).order_by()
+        ctx['current_color'] = color
+        ctx['current_kitchen'] = Kitchen.objects.select_related('kitchen_type').filter(
+            kitchen_type=ctx['kitchen_view'], color=color, available=True
+        )
+
         return ctx
 
     def get_queryset(self):
@@ -276,10 +398,8 @@ class WorktopListView(generic.ListView):
     context_object_name = 'list'
     paginate_by = 10
 
-    # page_kwarg = 'pk'
-
     def get_queryset(self):
-        category = Worktop_category.objects.get(pk=self.kwargs['pk'])
+        category = Worktop_category.objects.get(slug=self.kwargs['slug'])
         qs = WorkTop.objects.select_related('category').filter(category=category, available=True)
         filters = WorktopFilters(self.request.GET, queryset=qs)
         if len(self.request.GET) != 0:
@@ -290,10 +410,6 @@ class WorktopListView(generic.ListView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(WorktopListView, self).get_context_data(*args, **kwargs)
-        ctx['worktop'] = Worktop_category.objects.all()
-        ctx['appliances'] = Category_Applianes.objects.all()
-        count = cart_count(self.request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
 
         try:
             category_based_worktop = WorkTop.objects.select_related('category').filter(
@@ -308,24 +424,10 @@ class WorktopListView(generic.ListView):
             if self.get_queryset():
                 if self.get_queryset()[0] == 'stone':
                     ctx['stone'] = 'stone'
+                    ctx['meta'] = Worktop_category.objects.get(worktop_type='Stone Worktops')
 
-        # filters = WorktopFilters(self.request.GET, queryset=WorkTop.objects.select_related('category').all())
-        # ctx['search'] = filters
-        meta = meta_info('home')
-        ctx['name'] = meta.worktop_name
-        ctx['description'] = meta.worktop_description
-        ctx['title'] = meta.worktop_title
         ctx['product'] = 'worktop'
         return ctx
-
-
-# random queryset
-def random_queryset():
-    one = list(WorkTop.objects.all())
-    random_sample = random.sample(one, 2)
-    three = list(Appliances.objects.all())
-    random_sample_2 = random.sample(three, 2)
-    return random_sample, random_sample_2
 
 
 # worktop detail
@@ -336,28 +438,19 @@ class WorktopDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super(WorktopDetailView, self).get_context_data(**kwargs)
-        ctx['worktop'] = Worktop_category.objects.all()
-        ctx['appliances'] = Category_Applianes.objects.all()
-        count = cart_count(self.request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
+
         ctx['feature1'] = random_queryset()[0]
         ctx['feature2'] = random_queryset()[1]
         if self.kwargs['name'] == 'worktop':
             ctx['product'] = 'worktop'
             ctx['review'] = Review.objects.select_related('worktop').filter(worktop_id=self.kwargs['pk'],
                                                                             approval='Approved')
-            meta = meta_info('home')
-            ctx['name'] = meta.worktop_name
-            ctx['description'] = meta.worktop_description
-            ctx['title'] = meta.worktop_title
+
         elif self.kwargs['name'] == 'appliance':
             ctx['product'] = 'appliance'
             ctx['review'] = Review.objects.select_related('appliances').filter(appliances_id=self.kwargs['pk'],
                                                                                approval='Approved')
-            meta = meta_info('home')
-            ctx['name'] = meta.appliance_name
-            ctx['description'] = meta.appliance_description
-            ctx['title'] = meta.appliance_title
+
         return ctx
 
     def get_queryset(self):
@@ -376,7 +469,7 @@ class AppliancesListView(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        category = Category_Applianes.objects.get(pk=self.kwargs['pk'])
+        category = Category_Applianes.objects.get(slug=self.kwargs['slug'])
         x = Appliances.objects.select_related('category').filter(category=category, available=True)
         filters = AppliancesFilters(self.request.GET, queryset=x)
         if len(self.request.GET) != 0:
@@ -385,11 +478,6 @@ class AppliancesListView(generic.ListView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(AppliancesListView, self).get_context_data(*args, **kwargs)
-        ctx['worktop'] = Worktop_category.objects.all()
-        ctx['appliances'] = Category_Applianes.objects.all()
-        count = cart_count(self.request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
-
         try:
             category_based_appliances = Appliances.objects.select_related('category').filter(
                 category=self.get_queryset().first().category)
@@ -401,13 +489,8 @@ class AppliancesListView(generic.ListView):
             ctx['select'] = select_list
         except:
             pass
-        # filters = AppliancesFilters(self.request.GET, queryset=Appliances.objects.select_related('category').all())
-        # ctx['search'] = filters
+
         ctx['product'] = 'appliance'
-        meta = meta_info('home')
-        ctx['name'] = meta.appliance_name
-        ctx['description'] = meta.appliance_description
-        ctx['title'] = meta.appliance_title
         return ctx
 
 
@@ -462,12 +545,23 @@ def addcart(request, **kwargs):
 
             return redirect('application:cart')
 
+        elif kwargs['product'] == 'accessories':
+            accessory = Accessories.objects.select_related('accessories_type').get(pk=kwargs['pk'])
+            try:
+                my_cart = Cart.objects.get(user=request.user, accessories=accessory, checkedout=False)
+                x = my_cart.qty
+                my_cart.qty = x + kwargs['qty']
+                my_cart.save()
+            except:
+                # accessories cart
+                my_cart = Cart.objects.create(user=request.user, accessories=accessory, qty=kwargs['qty'])
+            return JsonResponse({'add': 'added'})
+
         else:
             # kitchen cart
             color = kwargs['product']
             name = kwargs['name']
             qty = kwargs['qty']
-            print(color, name, qty)
             # try:
             kitchen = Kitchen.objects.select_related('kitchen_type').get(
                 kitchen_type=KitchenCategory.objects.get(name__iexact=name), color__iexact=color)
@@ -476,8 +570,10 @@ def addcart(request, **kwargs):
             # cat = KitchenCategory.objects.get(name__iexact=kwargs['name'])
             # return redirect(reverse_lazy('application:kitchen-view', kwargs={'pk': cat.pk}))
             unit = Units.objects.select_related('kitchen').get(pk=kwargs['pk'])
-
-            pre_order = Combining.objects.select_related('kitchen').filter(user=request.user, kitchen=kitchen)
+            print(color, kitchen, name)
+            pre_order = Combining.objects.select_related('kitchen').filter(user=request.user, kitchen=kitchen,
+                                                                           kitchen__color=color)
+            print(pre_order)
             if pre_order:
                 already_exist = Units_intermediate.objects.select_related('unit', 'combine').filter(unit_id=unit.pk)
                 if already_exist:
@@ -488,6 +584,7 @@ def addcart(request, **kwargs):
                     pre_order[0].save()
                     unit_inter.save()
             else:
+                print('create')
                 pre_order = Combining.objects.create(kitchen=kitchen, user=request.user)
                 unit_inter = Units_intermediate.objects.create(unit=unit, combine=pre_order, qty=qty)
                 pre_order.save()
@@ -512,6 +609,13 @@ def addcart(request, **kwargs):
             my_cart.qty = kwargs['qty']
             my_cart.save()
             return JsonResponse({'update': 'update'})
+        elif kwargs['product'] == 'accessories':
+            accessory = Accessories.objects.select_related('accessories_type').get(pk=kwargs['pk'])
+            my_cart = Cart.objects.select_related('accessories', 'user').get(user=request.user, accessories=accessory,
+                                                                             checkedout=False)
+            my_cart.qty = kwargs['qty']
+            my_cart.save()
+            return JsonResponse({'update': 'update'})
 
     elif kwargs['process'] == 'delete':
         if kwargs['product'] == 'worktop':
@@ -532,6 +636,12 @@ def addcart(request, **kwargs):
             my_cart.delete()
             return JsonResponse({'removed': 'removed'})
 
+        elif kwargs['product'] == 'accessories':
+            accessory = Accessories.objects.select_related('accessories_type').get(pk=kwargs['pk'])
+            my_cart = Cart.objects.filter(user=request.user, accessories=accessory)
+            my_cart.delete()
+            return JsonResponse({'removed': 'removed'})
+
         else:
             intermediate_model = Combining.objects.get(pk=kwargs['pk'])
             intermediate_model.delete()
@@ -541,13 +651,12 @@ def addcart(request, **kwargs):
 def cart(request):
     if not request.user.is_authenticated:
         return redirect('application:login')
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
     cart = Cart.objects.select_related('kitchen_order', 'appliances', 'worktop', 'user').filter(user=request.user,
                                                                                                 checkedout=False)
     price = 0
     worktop_cart = []
     appliances_cart = []
+    accessories_cart = []
     for_check1 = True
     for_check2 = True
     sample_price = 0
@@ -564,44 +673,53 @@ def cart(request):
         if item.appliances:
             price += item.appliances.price * item.qty
             appliances_cart.append(item)
+        if item.accessories:
+            VAT = (item.accessories.price * 20) / 100
+            included_VAT = VAT + item.accessories.price
+            price += included_VAT * item.qty
+            accessories_cart.append(item)
         if item.kitchen_order:
             if item.kitchen_order.units_intermediate_set.all():
                 for i in item.kitchen_order.units_intermediate_set.all():
-                    price += i.unit.price * i.qty
+                    VAT = (i.unit.price * 20) / 100
+                    included_VAT = VAT + i.unit.price
+                    price += included_VAT * i.qty
             else:
                 sample_price += 4.99
         if item.service:
             service = 'service'
-            sample_price += 50
+            sample_price += 0
             for_check2 = False
     if price < 300 and price != 0:
         price += 30
     price = price + sample_price
 
-    ctx = {'cart': cart, 'service': service, 'worktop_cart': worktop_cart, 'appliances_cart': appliances_cart,
-           'appliances': appliances, 'worktop': worktop, 'total': price, 'feature1': random_queryset()[0],
+    ctx = {'cart': cart, 'service': service, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
+           'appliances_cart': appliances_cart,
+           'total': price, 'feature1': random_queryset()[0],
            'feature2': random_queryset()[1]}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+
     return render(request, 'cart.html', ctx)
 
 
 # contact form page
 def contact(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
     if request.method == 'POST':
         messages.info(request,
                       'An email with your given info was sent to one of our customer care representative. We will contact you as soon as possible.')
+        detail_contact = f"{request.POST['detail']}/{datetime.now()} "
+        order_number = 'N/A'
+        if request.POST['order']:
+            order_number = request.POST['order']
         contact_instance = ContactActual.objects.create(
             name=request.POST['name'],
             email=request.POST['email'],
             phone=request.POST['phone'],
-            order_number=request.POST['order'],
-            detail=request.POST['detail'],
+            order_number=order_number,
+            detail=detail_contact,
             reason=request.POST.getlist('check1')
         )
-        html_content = render_to_string('inc/my_contact.html',{'detail':contact_instance})
+        html_content = render_to_string('inc/my_contact.html', {'detail': contact_instance})
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(
             'Contact form',
@@ -609,45 +727,36 @@ def contact(request):
             None,
             ['service@tkckitchens.co.uk']
         )
-        email.attach_alternative(html_content,'text/html')
+        email.attach_alternative(html_content, 'text/html')
         email.send()
         return redirect('application:contact')
     meta = meta_info('home')
-    ctx = {'appliances': appliances, 'worktop': worktop, 'cart_count': cart_count(request),
-           'name': meta.contact_name
+    ctx = {
+        'name': meta.contact_name
         , 'description': meta.contact_description, 'title': meta.contact_title
-           }
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    }
+
     return render(request, 'contact_us.html', ctx)
 
 
 # installation page
 def installation(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
     meta = meta_info('home')
 
-    ctx = {'appliances': appliances, 'worktop': worktop, 'name': meta.install_name
+    ctx = {'name': meta.install_name
         , 'description': meta.install_description, 'title': meta.install_title
            }
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
 
     return render(request, 'inc/installation.html', ctx)
 
 
 # design page
 def design(request):
-    worktop = Worktop_category.objects.all()
     meta = meta_info('home')
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop,
-           'name': meta.design_name
+    ctx = {
+        'name': meta.design_name
         , 'description': meta.design_description, 'title': meta.design_title
-           }
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    }
 
     return render(request, 'inc/design.html', ctx)
 
@@ -656,8 +765,7 @@ def design(request):
 def wishlist(request, **kwargs):
     if not request.user.is_authenticated:
         return redirect('application:login')
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
+
     if kwargs:
         if kwargs['product'] == 'worktop':
             # worktop wishlist
@@ -671,19 +779,24 @@ def wishlist(request, **kwargs):
             WishList.objects.create(user=request.user, appliances=appliance)
             return redirect('application:list_wishlist')
         else:
-            # kitchen cart
-            pass
+            accessory = Accessories.objects.select_related('accessories_type').get(pk=kwargs['pk'])
+            WishList.objects.create(user=request.user, accessories=accessory)
+            return redirect('application:list_wishlist')
     else:
         my_wishlist = WishList.objects.select_related('worktop', 'kitchen', 'unit', 'appliances').filter(
             user=request.user)
-        ctx = {'wishlist': my_wishlist, 'appliances': appliances, 'worktop': worktop}
-        count = cart_count(request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
-
+        ctx = {'wishlist': my_wishlist}
+        meta = meta_info('home')
+        ctx['title'] = meta.wishlist_title
+        ctx['name'] = meta.wishlist_name
+        ctx['description'] = meta.wishlist_description
         return render(request, 'wishlist.html', ctx)
 
 
 def add_review(request, **kwargs):
+    if not request.user.is_authenticated:
+        return redirect('application:login')
+
     if request.method == 'POST':
 
         # appliance review addition
@@ -693,7 +806,8 @@ def add_review(request, **kwargs):
                 user=request.user, rating=request.POST['rating'], comment=request.POST['comment'], appliances=appliance,
                 approval='Pending')
             return redirect(
-                reverse_lazy('application:appliances-detail-view', kwargs={'name': 'appliance', 'pk': appliance.pk}))
+                reverse_lazy('application:appliances-detail-view',
+                             kwargs={'name': 'appliance', 'slug': appliance.category.slug, 'pk': appliance.pk}))
 
         # worktop review addition
         elif request.POST['name'] == 'worktop':
@@ -703,21 +817,32 @@ def add_review(request, **kwargs):
                 approval='Pending'
             )
             return redirect(
-                reverse_lazy('application:worktop-detail-view', kwargs={'name': 'worktop', 'pk': kwargs['pk']}))
+                reverse_lazy('application:worktop-detail-view',
+                             kwargs={'name': 'worktop', 'slug': worktop.category.slug, 'pk': kwargs['pk']}))
+        elif request.POST['name'] == 'accessories':
+            accessories = Accessories.objects.select_related('accessories_type').get(pk=kwargs['pk'])
+            Review.objects.create(
+                user=request.user, rating=request.POST['rating'], comment=request.POST['comment'],
+                accessories=accessories,
+                approval='Pending'
+            )
+            return redirect(
+                reverse_lazy('application:accessories-detail',
+                             kwargs={'slug': accessories.accessories_type.slug, 'pk': accessories.pk}))
 
 
 def search(request, **kwargs):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
     if request.method == 'POST':
         data = request.POST['search']
         # data = json.loads(request.body)
         qs1 = WorkTop.objects.filter(Q(name__icontains=data) | Q(description__icontains=data))
         qs2 = Appliances.objects.filter(Q(name__icontains=data) | Q(description__icontains=data))
-        ctx = {'qs1': qs1, 'qs2': qs2, 'appliances': appliances, 'worktop': worktop}
-        count = cart_count(request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
-
+        qs3 = Accessories.objects.filter(Q(description__icontains=data))
+        ctx = {'qs1': qs1, 'qs2': qs2, 'qs3': qs3}
+        meta = meta_info('home')
+        ctx['title'] = meta.search_title
+        ctx['name'] = meta.search_name
+        ctx['description'] = meta.search_description
         return render(request, 'search.html', ctx)
 
 
@@ -728,11 +853,10 @@ class BlogList(generic.ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super(BlogList, self).get_context_data(**kwargs)
-        ctx['worktop'] = Worktop_category.objects.all()
-        ctx['appliances'] = Category_Applianes.objects.all()
-        count = cart_count(self.request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
-
+        meta = meta_info('home')
+        ctx['name'] = meta.blog_name
+        ctx['title'] = meta.blog_title
+        ctx['description'] = meta.blog_description
         return ctx
 
 
@@ -740,15 +864,6 @@ class BlogDetail(generic.DetailView):
     model = Blogs
     template_name = 'blog_detail.html'
     context_object_name = 'detail'
-
-    def get_context_data(self, **kwargs):
-        ctx = super(BlogDetail, self).get_context_data(**kwargs)
-        ctx['worktop'] = Worktop_category.objects.all()
-        ctx['appliances'] = Category_Applianes.objects.all()
-        count = cart_count(self.request)
-        ctx['cart_count'] = json.loads(count.content)['Count']
-
-        return ctx
 
 
 def newsletter(request):
@@ -764,97 +879,90 @@ def newsletter(request):
 
 def terms(request):
     worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
-
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.terms_name
+    ctx['title'] = meta.terms_title
+    ctx['description'] = meta.terms_description
     return render(request, 'TERMS OF SERVICE 5 (40).html', ctx)
 
 
 def disclaimer(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
-
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.disclaimer_name
+    ctx['title'] = meta.disclaimer_title
+    ctx['description'] = meta.disclaimer_description
     return render(request, 'Disclaimer1 (37).html', ctx)
 
 
 def cancel(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
-
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.cancellation_name
+    ctx['title'] = meta.cancellation_title
+    ctx['description'] = meta.cancellation_description
     return render(request, 'CANCELLATION POLICY (16).html', ctx)
 
 
 def intellectual(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    ctx = {}
 
+    meta = meta_info('home')
+    ctx['name'] = meta.ip_name
+    ctx['title'] = meta.ip_title
+    ctx['description'] = meta.ip_description
     return render(request, 'Intellectual Property Notification (8).html', ctx)
 
 
 def Gdp(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
-
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.gdpr_name
+    ctx['title'] = meta.gdpr_title
+    ctx['description'] = meta.gdpr_description
     return render(request, 'GDPR Privacy Policy2 (44).html', ctx)
 
 
 def FAQ(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.faq_name
+    ctx['title'] = meta.faq_title
+    ctx['description'] = meta.faq_description
     return render(request, 'FAQ.html', ctx)
 
 
 def Return(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.return_name
+    ctx['title'] = meta.return_title
+    ctx['description'] = meta.return_description
     return render(request, 'Return and Refund Policy (2) (6).html', ctx)
 
 
 def ship(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
-
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.shipping_name
+    ctx['title'] = meta.shipping_title
+    ctx['description'] = meta.shipping_description
     return render(request, 'Shipping and Delivery Policy 1 (22).html', ctx)
 
 
 def cook(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
-    ctx = {'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
-
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.cookies_name
+    ctx['title'] = meta.cookies_title
+    ctx['description'] = meta.cookies_description
     return render(request, 'Cookies Policy3 (42).html', ctx)
 
 
 def install_contact(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
     if request.method == 'POST':
-        details = f"{request.POST['detail']} from the {request.META.get('HTTP_REFERER')}"
+        details = f"{request.POST['detail']} from the {request.META.get('HTTP_REFERER')} /{datetime.now()}"
         contact_instance = ContactUs.objects.create(
             name=request.POST['name'],
             email=request.POST['email'],
@@ -868,7 +976,7 @@ def install_contact(request):
 
         )
         email_send(request.POST['email'], 'install')
-        html_content = render_to_string('inc/my_install_email.html',{'detail':contact_instance})
+        html_content = render_to_string('inc/my_install_email.html', {'detail': contact_instance})
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(
             'Installation Service',
@@ -876,15 +984,14 @@ def install_contact(request):
             None,
             ['service@tkckitchens.co.uk']
         )
-        email.attach_alternative(html_content,'text/html')
+        email.attach_alternative(html_content, 'text/html')
         email.send()
         messages.info(request,
                       'Your form has been submitted. One of our customer care representative will contact you soon!')
         return redirect(request.META.get('HTTP_REFERER'))
-
-    ctx = {'appliances': appliances, 'worktop': worktop, 'cart_count': cart_count(request)}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    meta = meta_info('home')
+    ctx = {'name': meta.install_form_name, 'title': meta.install_form_title,
+           'description': meta.install_form_description}
     return render(request, 'installation_contact.html', ctx)
 
 
@@ -902,8 +1009,6 @@ def unit_change(request, **kwargs):
 
 # checkout view
 def checkout(request):
-    worktop = Worktop_category.objects.all()
-    appliances = Category_Applianes.objects.all()
     form = UserInfoForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -922,9 +1027,7 @@ def checkout(request):
             )
             request.session['user_info_pk'] = info.pk
             return redirect('application:create-order')
-    ctx = {'form': form, 'appliances': appliances, 'worktop': worktop}
-    count = cart_count(request)
-    ctx['cart_count'] = json.loads(count.content)['Count']
+    ctx = {'form': form}
     myuser = User.objects.get(username=request.user)
     ctx['email'] = myuser.email
     return render(request, 'checkout.html', ctx)
@@ -934,15 +1037,21 @@ def temp_checkout(request, **kwargs):
     info = UserInfo.objects.get(pk=request.session.get('user_info_pk'))
     complete_order = CompleteOrder.objects.create(user=info)
     my_cart = Cart.objects.select_related('user').filter(user=request.user, checkedout=False)
-    # print(my_cart.checkedout,my_cart)
     complete_order.order.add(*my_cart)
     Cart.objects.filter(user=request.user, checkedout=False).update(checkedout=True)
     email_send(info.email_address, 'order')
-    count = cart_count(request)
-    ctx = {'cart_count': json.loads(count.content)['Count']}
-    ctx['worktop'] = Worktop_category.objects.all()
-    ctx['appliances'] = Category_Applianes.objects.all()
-    return render(request, 'temp_checkout.html', ctx)
+    html_content = render_to_string('inc/order_detail_email.html', {'detail': complete_order})
+    text_content = strip_tags(html_content)
+    email = EmailMultiAlternatives(
+        'Order Created',
+        text_content,
+        None,
+        ['service@tkckitchens.co.uk', 'hiphop.ali1041@gmail.com']
+    )
+    email.attach_alternative(html_content, 'text/html')
+    email.send()
+    return render(request, 'temp_checkout.html')
+
 
 # def create_order_klarna(request, **kwargs):
 #     worktop = Worktop_category.objects.all()
@@ -1181,3 +1290,7 @@ def temp_checkout(request, **kwargs):
 #     complete_order.order.add(*my_cart)
 #     Cart.objects.filter(user=request.user, checkedout=False).update(checkedout=True)
 #     return render(request, 'klarna_confirm.html', ctx)
+
+
+def google_verification(request):
+    return render(request, 'google.html')

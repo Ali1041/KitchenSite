@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-    {% block meta %}
-        <title>TKC KITCHENS</title>
-
-    {% endblock %}
+{% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
+{% endblock %}
 {% block content %}
     {% if wishlist %}
     <div class="container my-3" id="container_remove">
@@ -31,11 +31,11 @@
                         class="btn btn-success">
                             Add to cart
                         </a></td>
-                        <td><a href="{% url 'application:worktop-detail-view' 'worktop' item.worktop.pk %}">Detail</a></td>
+                        <td><a href="{% url 'application:worktop-detail-view' 'worktop' item.worktop.category.slug item.worktop.pk %}">Detail</a></td>
 
 
                         {% elif item.appliances %}
-                        <td><img src="{{ item.appliances.get_photo_url }}" alt=""></td>
+                        <td><img src="{{ item.appliances.get_photo_url }}" height="45px" width="40px" alt=""></td>
                         <td>{{ item.appliances|truncatewords:3 }}</td>
                         <td>{{ item.appliances.description|truncatewords:3 }}</td>
                         <td>{{ item.appliances.price }}</td>
@@ -45,7 +45,21 @@
                                 Add to cart
                             </a>
                         </td>
-                            <td><a href="{% url 'application:worktop-detail-view' 'appliance' item.appliances.pk %}">Detail</a></td>
+                            <td><a href="{% url 'application:worktop-detail-view' 'appliance' item.appliances.category.slug item.appliances.pk %}">Detail</a></td>
+
+
+                        {% elif item.accessories %}
+                        <td><img src="{{ item.accessories.get_photo_url }}" height="45px" width="40px" alt=""></td>
+                        <td>{{ item.accessories.accessories_type|truncatewords:3 }}</td>
+                        <td>{{ item.accessories.description|truncatewords:3 }}</td>
+                        <td>{{ item.accessories.price }}</td>
+                        <td>
+                            <a onclick="the_cart(event,{{ item.appliances.pk }},'create','accessories')"
+                               class="btn btn-success">
+                                Add to cart
+                            </a>
+                        </td>
+                            <td><a href="{% url 'application:accessories-detail' item.accessories.slug item.accessories.pk %}">Detail</a></td>
 
                         {% endif %}
 

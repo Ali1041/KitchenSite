@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("codesnippet","sl",{button:"Vstavi odsek kode",codeContents:"Koda vsebina",emptySnippetError:"Odrezek kode ne more biti prazen.",language:"Jezik",title:"Odrezek kode",pathName:"odrezek kode"});

@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","hr",{button:"Namjesti jezik",remove:"Makni jezik"});

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load compress %}
     {% block meta %}
         <meta name="{{ name }}" content="{{ description }}">
         <title>{{ title }}</title>
@@ -8,7 +9,7 @@
     <div>
         <div class="container">
             <h3 class="text-center" style="color:rgb(46, 154, 135)">Our Kitchen Ranges</h3>
-            <h5 class="text-center my-2">Select a color to see all the kitchens for that color</h5>
+            <h5 class="text-center my-2">Select required color to view kitchens</h5>
             <div class="row m-0 justify-content-around" id="row">
             {% for color in list %}
                 <div class="col-2 my-2">
@@ -20,7 +21,7 @@
             {% endfor %}
             </div>
         </div>
-        <div class="container my-3" style="display: none" id="impDiv">
+        <div class="container my-3 px-1" style="display: none" id="impDiv">
             <div class="my-3 text-center">
                 <h4>Selected color is: <span id="color"></span></h4>
                 <p class="text-center" id="fetch">Fetching your kitchen. Please wait....</p>
@@ -28,103 +29,138 @@
 
             <div id="loop">
                 <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
-                    <div class="text-center">
-                        <img src="" alt="" id="k_img" height="600px">
+                    <div class="p-2 text-center" style="width: 80%;margin: auto" id="container_remove">
+                        <h4></h4>
+                        <p></p>
                     </div>
 
+                    <div class="text-center">
+                        <img src="" alt="" id="k_img" height="600px">
+                        <div id="imgsDiv" class="d-flex justify-content-around my-2" style="width: 70%;margin: auto">
+
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-around my-2 " id="display_b" style="width: 70%;margin: auto">
+                        <p class="align-self-center text-center"><b>Color Available: </b></p>
+                        <div class="d-flex justify-content-between" id="new" >
+
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-success">View Kitchen</button>
+
+                    </div>
+                </a>
+
+                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
                     <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
                         <h4></h4>
                         <p></p>
                     </div>
-                </a>
 
-                <a class="my-5 justify-content-around "  style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
                     <div class="text-center">
                         <img src="" alt="" id="k_img" height="600px">
                     </div>
 
-                    <div class="p-2 text-center" id="container_remove" style="width: 70%;margin: auto">
-                        <h4></h4>
-                        <p></p>
-                    </div>
-                </a>
 
-                <a class="my-5 justify-content-around "  style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
-                    <div class="text-center">
-                        <img src="" alt="" id="k_img" height="600px">
-                    </div>
-
-                    <div class="p-2 text-center" id="container_remove" style="width: 70%;margin: auto">
-                        <h4></h4>
-                        <p></p>
-                    </div>
-                </a>
-
-                <a class="my-5 justify-content-around "  style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
-                    <div class="text-center">
-                        <img src="" alt="" id="k_img" height="600px">
-                    </div>
-
-                    <div class="p-2 text-center" id="container_remove" style="width: 70%;margin: auto">
-                        <h4></h4>
-                        <p></p>
-                    </div>
                 </a>
 
                 <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
+                    <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
+                        <h4></h4>
+                        <p></p>
+                    </div>
+
                     <div class="text-center">
                         <img src="" alt="" id="k_img" height="600px">
                     </div>
 
-                    <div class="p-2 text-center" id="container_remove" style="width: 70%;margin: auto">
+
+                </a>
+
+                                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
+                    <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
                         <h4></h4>
                         <p></p>
                     </div>
-                </a>
 
-                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
                     <div class="text-center">
                         <img src="" alt="" id="k_img" height="600px">
                     </div>
 
-                    <div class="p-2 text-center" id="container_remove" style="width: 70%;margin: auto">
+
+                </a>
+
+
+                                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
+                    <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
                         <h4></h4>
                         <p></p>
                     </div>
-                </a>
 
-                <a class="my-5 justify-content-around "  style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
                     <div class="text-center">
                         <img src="" alt="" id="k_img" height="600px">
                     </div>
 
-                    <div class="p-2 text-center" id="container_remove" style="width: 70%;margin: auto">
+
+                </a>
+
+
+                                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
+                    <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
                         <h4></h4>
                         <p></p>
                     </div>
-                </a>
 
-                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
                     <div class="text-center">
                         <img src="" alt="" id="k_img" height="600px">
                     </div>
 
-                    <div class="p-2 text-center" id="container_remove"  style="width: 70%;margin: auto">
+
+                </a>
+
+
+                                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
+                    <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
                         <h4></h4>
                         <p></p>
                     </div>
-                </a>
 
-                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
                     <div class="text-center">
                         <img src="" alt="" id="k_img" height="600px">
                     </div>
 
-                    <div class="p-2 text-center" id="container_remove" style="width: 70%;margin: auto">
+
+                </a>
+
+
+                                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
+                    <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
                         <h4></h4>
                         <p></p>
                     </div>
+
+                    <div class="text-center">
+                        <img src="" alt="" id="k_img" height="600px">
+                    </div>
+
+
                 </a>
+
+
+                                <a class="my-5 justify-content-around " style="display: none;color: inherit;text-decoration: none;outline: none;border: none">
+                    <div class="p-2 text-center" style="width: 70%;margin: auto" id="container_remove">
+                        <h4></h4>
+                        <p></p>
+                    </div>
+
+                    <div class="text-center">
+                        <img src="" alt="" id="k_img" height="600px">
+                    </div>
+
+
+                </a>
+
 
             </div>
 
@@ -156,6 +192,8 @@
             const spanColor = document.getElementById('color')
             const displayKitchenDiv = document.getElementById('impDiv')
             const fetching = document.getElementById('fetch')
+            const div =document.getElementById('new')
+            const imgsDiv = document.getElementById('imgsDiv')
             fetching.style.display = 'block'
             displayKitchenDiv.style.display = 'block'
             spanColor.innerHTML = e.target.nextElementSibling.innerHTML
@@ -168,16 +206,34 @@
             })
             .then((result)=>{
                 fetching.style.display = 'none'
-                const actualResult = JSON.parse(result.kitchens)
+                const actualResult = result.kitchens
+                const color = result.color
+                const listcolor = Object.values(color[0])
+                listcolor[0].forEach((item)=>{
+                    const p = document.createElement('p')
+                    p.style.width = 30+'px'
+                    p.style.height = 30+'px'
+                    p.style.backgroundColor = `var(--${item})`
+                    div.append(p)
+                })
+                listcolor[1].forEach((item)=>{
+                    const img = document.createElement('img')
+                    img.src = item
+                    img.style.width = 70+'px'
+                    img.style.height = 70+'px'
+                    imgsDiv.append(img)
+                })
+
                 actualResult.forEach((item,index)=>{
                     loopDiv[index].style.display = 'block'
-                    const img = loopDiv[index].children[0].firstElementChild
-                    const textDiv = loopDiv[index].children[1]
-                    img.src = 'https://storage.googleapis.com/kitchensite/'+item.fields.img
-                    textDiv.children[0].innerHTML = item.fields.kitchen_type
+                    const img = loopDiv[index].children[1].firstElementChild
+                    const textDiv = loopDiv[index].children[0]
+                    img.src = listcolor[1][0]
+                    textDiv.children[0].innerHTML = item.kitchen_type__name
                     textDiv.children[0].style.color = 'rgb(46, 154, 135)'
-                    textDiv.children[1].innerHTML =item.fields.description
-                    loopDiv[index].href =`${base_url}/kitchen-view/${item.fields.kitchen_type}/${e.target.nextElementSibling.innerHTML}`
+                    textDiv.children[1].innerHTML =item.description
+
+                    loopDiv[index].href =`${base_url}/kitchen-view/${item.kitchen_type__name}/${e.target.nextElementSibling.innerHTML}`
 
                     move_down()
                 })

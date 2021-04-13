@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /adminPanel/
+Disallow: /cart/
+Sitemap: https://tkckitchens.co.uk/sitemap.xml

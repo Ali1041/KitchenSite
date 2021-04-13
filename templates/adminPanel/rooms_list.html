@@ -1,0 +1,35 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+
+	<div class="container">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Created at</th>
+					<th>Details</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in list %}
+				<tr>
+					<td>{{ item.name }}</td>
+					<td>{{ item.description }}</td>
+					<td><a class="btn btn-success" href="{% url 'adminPanel:room' item.slug %}">See Chat Room</a></td>
+				</tr>
+
+
+				{% endfor %}
+
+
+
+			</tbody>
+		</table>
+
+
+
+	</div>
+
+
+{% endblock %}
