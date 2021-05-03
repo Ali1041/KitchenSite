@@ -47,29 +47,17 @@
 
         </div>
         {% if not form %}
-        <div class="d-flex justify-content-between menu">
+        <div >
 
-            <div style="width:30%" id="search_in" class="p-3 align-self-center move" >
-                <form  id="filter" class="text-center" >
-                    <select name="unit_type" id="" class="form-control  mb-2">
-                        <option value="" >Select a unit</option>
-                        {% for item in search %}
-                            <option value="{{ item.pk }}">{{ item }}</option>
-                        {% endfor %}
-                    </select>
-                    <button class="btn btn-success">Apply filter</button>
-                    <a href="{% url 'application:kitchen-view' kitchen_view.name current_color %}" class="btn btn-secondary">Remove filter</a>
-                </form>
-            </div>
 
-            <div class="align-self-start text-center p-3 move3">
+            <div class="text-center p-3">
 {#                <a href="{% url 'application:add-to-cart' 'sample' current_color kitchen_view.pk 1 'create' %}" class="btn btn-success">Order a sample</a>#}
                 <a href="{% url 'application:contact' %}" class="btn btn-success" >Order a free sample</a>
             </div>
 
 
-            <div class=" p-3 align-self-start " id="search_in" style="width: 30%">
-                    <div class="btn-group border p-2 move2" style="width: 100%;border-radius: 6px">
+            <div class="mx-auto p-3" id="search_in" style="width: 30%">
+                    <div class="btn-group border p-2 " style="width: 100%;border-radius: 6px">
                         <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;height: 30px;width: 30px;background-color: var(--{{ current_color }})">
                         </p>
             <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
@@ -79,7 +67,7 @@
 
           <div class="dropdown-menu p-0 w-100">
               {% for item in kitchen_color %}
-                    <div class="dropdown-item dropHover a_btn d-flex" onclick="change_url(`{{ item.color }}`)" style="cursor:pointer">
+                    <div class="dropdown-item a_btn d-flex" onclick="change_url(`{{ item.color }}`)" style="cursor:pointer">
                     <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;display: inline-block;height: 30px;width: 30px;background-color: var(--{{ item.color }})">
                         </p>
                         <h6 class="align-self-center">
@@ -170,8 +158,30 @@
                 <span style="font-weight: 700">Units starting from £113, Log in to select units, view prices and get access to our latest offers. </span><a class="btn btn-success" href="{% url 'application:login' %}">Login Here or Register Now</a>
             </div>
         {% endif %}
+	        <div class="d-flex justify-content-between" id="display_b">
+	        <div style="width:30%" id="search_in" class="p-3 align-self-center" >
+                <form  id="filter" class="text-center" >
+                    <select name="unit_type" id="" class="form-control  mb-2">
+                        <option value="" >Select a unit</option>
+                        {% for item in search %}
+                            <option value="{{ item.pk }}">{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-success">Apply filter</button>
+                    <a href="{% url 'application:kitchen-view' kitchen_view.name current_color %}" class="btn btn-secondary">Remove filter</a>
+                </form>
+            </div>
 
-            <div class="container">
+				<div class="align-self-center my-2">
+					<form action="{% url 'application:kitchen-view' item.kitchen_type item.color %}" method="GET" class="ml-auto w-100 d-flex">
+						<input type="text" class="form-control" required name="name__icontains" placeholder="Search units..">
+						<button class="btn btn-success"><i class="fas fa-search"></i></button>
+					</form>
+				</div>
+	        </div>
+
+
+            <div class="container text-center">
                 <span class="step-links">
         {% if page_obj.has_previous %}
             <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
@@ -204,7 +214,7 @@
 
             {% for item in units %}
                 <tr>
-                    <td><img src="{{ item.get_photo_url }}" loading="lazy" width="70px" height="70px" alt=""></td>
+                    <td><img class="pointer" src="{{ item.get_photo_url }}" onmouseover="displayImage(event)" onmouseleave="removeImage(event)" loading="lazy" width="70px" height="70px" alt="{{ item.name }}"></td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.unit_type }}</td>
                     <td>{{ item.description }}</td>
@@ -357,6 +367,10 @@ Policy
         Added to cart!!
     </div>
 
+	<div id="fixed" style="position: fixed;top: 20%;left: 20%;display: none">
+		<img src="" height="350px" alt="">
+	</div>
+
 {% endblock %}
 {% block script %}
     <script>
@@ -408,6 +422,17 @@ Policy
 			    window.scrollTo({top:400,behavior:"smooth"})
 			})
 
+            function displayImage(e){
+	            const fixed = document.getElementById('fixed')
+	            fixed.style.display = 'block'
+	            fixed.firstElementChild.src = e.target.src
+
+            }
+            function removeImage(e){
+                const fixed = document.getElementById('fixed')
+	            fixed.style.display = 'none'
+
+            }
     </script>
 
 {% endblock %}

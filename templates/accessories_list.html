@@ -14,7 +14,7 @@
 		<div>
            <div class="bg-light p-2 mb-3">
             <form method="GET" id="remove_form" onsubmit="" style="width: 80%;margin: auto"
-                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:accessories-list' list.first.accessories_type.pk %}">
+                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:accessories-list' list.first.accessories_type.slug %}">
 {#                {{ search.form }}#}
                 <label class="align-self-center">Min value: £ <span id="output_min">0</span></label>
                 <input type="range" name="price__gte" id="search_in" class="menu bottom" value="0" oninput="change(event)" step="any" max="1000" min="0">
@@ -22,7 +22,7 @@
                 <input type="range" name="price__lte" id="search_in" class="menu bottom" value="1000" step="any" max="1000" min="0" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
-                <a href="{% url 'application:accessories-list' list.first.accessories_type.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
+                <a href="{% url 'application:accessories-list' list.first.accessories_type.slug %}" class="align-self-center btn btn-secondary">Remove Filters</a>
             </form>
 
         </div>

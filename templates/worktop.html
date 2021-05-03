@@ -29,7 +29,7 @@
         {% else %}
         <div class="bg-light p-2 mb-3">
             <form method="GET" id="remove_form" onsubmit="" style="width: 80%;margin: auto"
-                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:worktop-view' list.first.category.pk %}">
+                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:worktop-view' list.first.category.slug  %}">
                 <select name="name__iexact" id="search_in" class="form-control" style="width: 17%">
                     <option value="">Select Name</option>
                     {% for i in select %}
@@ -43,7 +43,7 @@
                 <input type="range" name="price__lte" id="search_in" class="menu bottom" value="1000" step="any" max="1000" min="100" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
-                <a href="{% url 'application:worktop-view' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
+                <a href="{% url 'application:worktop-view' list.first.category.slug %}" class="align-self-center btn btn-secondary">Remove Filters</a>
             </form>
 
         </div>
@@ -119,7 +119,7 @@
 {#    Filter form of appliances        #}
             <div class="bg-light p-2 mb-3">
             <form method="GET" id="remove_form" style="width: 80%;margin: auto"
-                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:appliances-list' list.first.category.pk %}">
+                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:appliances-list' list.first.category.slug %}">
 {#                {{ search.form }}#}
                 <select name="appliance_category__iexact" id="search_in" class="form-control bottom" style="width: 17%">
                     <option value="">Select a category</option>
@@ -133,7 +133,7 @@
                 <input type="range" name="price__lte" class="menu bottom" id="search_in" value="500" step="any" max="500" min="100" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
-                <a href="{% url 'application:appliances-list' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
+                <a href="{% url 'application:appliances-list' list.first.category.slug %}" class="align-self-center btn btn-secondary">Remove Filters</a>
             </form>
 
         </div>

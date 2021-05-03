@@ -79,7 +79,7 @@ def async_task():
             None,
             dup_removed_emails
         )
-        send_mass_mail((email_tuple,), fail_silently=False
+        send_mass_mail((email_tuple,), fail_silently=True
 
                        )
 
@@ -169,8 +169,8 @@ def signup(request):
         msg = messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
     meta = meta_info('home')
-    ctx = {'name': meta.home_name
-        , 'description': meta.home_description, 'title': meta.home_title}
+    ctx = {'name': meta.signup_name
+        , 'description': meta.signup_description, 'title': meta.signup_title}
     return render(request, 'signup.html', ctx)
 
 
@@ -200,7 +200,8 @@ def login(request):
                 return redirect('application:index')
             new_list = mylist.copy()
             mylist.clear()
-            x = new_list[0]
+            x = new_list[-1]
+            print(x,new_list)
 
             if x == f"http://{abs_uri}/login/" or x == f"http://{abs_uri}/signup/" or x == f'http://{abs_uri}/password_reset_done/':
                 return redirect('application:index')
@@ -232,7 +233,7 @@ def index(request):
             'YOUR BROCHURE',
             text_content,
             None,
-            [request.POST['email']]
+            [request.POST['email'],'kashif@tkckitchens.co.uk']
         )
         email.attach_alternative(html_content, 'text/html')
         email.send()
@@ -245,7 +246,7 @@ def index(request):
 
     ctx = {'blog': Blogs.objects.all()[:3],
            'name': meta.home_name
-        , 'description': meta.home_description, 'title': meta.home_title,'vapid_key': vapid_key,'user':request.user}
+        , 'description': meta.home_description, 'title': meta.home_title, 'vapid_key': vapid_key, 'user': request.user}
 
     return render(request, 'base.html', ctx)
 
@@ -265,7 +266,7 @@ class AccessoriesList(generic.ListView):
         if len(self.request.GET) > 1:
             filter_result = AccessoriesFilter(self.request.GET,
                                               queryset=Accessories.objects.select_related('accessories_type').filter(
-                                                  accessories_type=self.kwargs['pk']))
+                                                  accessories_type__slug__iexact=self.kwargs['slug']))
             ctx = filter_result.qs
         return ctx
 
@@ -562,30 +563,23 @@ def addcart(request, **kwargs):
             color = kwargs['product']
             name = kwargs['name']
             qty = kwargs['qty']
-            # try:
             kitchen = Kitchen.objects.select_related('kitchen_type').get(
                 kitchen_type=KitchenCategory.objects.get(name__iexact=name), color__iexact=color)
-            # except:
-            #     pass
-            # cat = KitchenCategory.objects.get(name__iexact=kwargs['name'])
-            # return redirect(reverse_lazy('application:kitchen-view', kwargs={'pk': cat.pk}))
+
             unit = Units.objects.select_related('kitchen').get(pk=kwargs['pk'])
-            print(color, kitchen, name)
             pre_order = Combining.objects.select_related('kitchen').filter(user=request.user, kitchen=kitchen,
-                                                                           kitchen__color=color)
-            print(pre_order)
+                                                                           kitchen__color=color, checkout=False)
             if pre_order:
                 already_exist = Units_intermediate.objects.select_related('unit', 'combine').filter(unit_id=unit.pk)
                 if already_exist:
-                    already_exist[0].qty = qty + already_exist[0].qty
+                    already_exist[0].qty = qty
                     already_exist[0].save()
                 else:
                     unit_inter = Units_intermediate.objects.create(unit=unit, qty=qty, combine=pre_order[0])
                     pre_order[0].save()
                     unit_inter.save()
             else:
-                print('create')
-                pre_order = Combining.objects.create(kitchen=kitchen, user=request.user)
+                pre_order = Combining.objects.create(kitchen=kitchen, user=request.user,checkout=False)
                 unit_inter = Units_intermediate.objects.create(unit=unit, combine=pre_order, qty=qty)
                 pre_order.save()
                 unit_inter.save()
@@ -657,8 +651,6 @@ def cart(request):
     worktop_cart = []
     appliances_cart = []
     accessories_cart = []
-    for_check1 = True
-    for_check2 = True
     sample_price = 0
     service = ''
     for item in cart:
@@ -725,7 +717,7 @@ def contact(request):
             'Contact form',
             text_content,
             None,
-            ['service@tkckitchens.co.uk']
+            ['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk']
         )
         email.attach_alternative(html_content, 'text/html')
         email.send()
@@ -982,7 +974,7 @@ def install_contact(request):
             'Installation Service',
             text_content,
             None,
-            ['service@tkckitchens.co.uk']
+            ['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk']
         )
         email.attach_alternative(html_content, 'text/html')
         email.send()
@@ -1035,10 +1027,15 @@ def checkout(request):
 
 def temp_checkout(request, **kwargs):
     info = UserInfo.objects.get(pk=request.session.get('user_info_pk'))
-    complete_order = CompleteOrder.objects.create(user=info)
     my_cart = Cart.objects.select_related('user').filter(user=request.user, checkedout=False)
+    kitchen_ids = my_cart.values('kitchen_order__kitchen_id')
+
+    complete_order = CompleteOrder.objects.create(user=info)
     complete_order.order.add(*my_cart)
     Cart.objects.filter(user=request.user, checkedout=False).update(checkedout=True)
+    for id in kitchen_ids:
+        Combining.objects.select_related('user','kitchen').filter(user=request.user,kitchen=Kitchen.objects.get(id=id['kitchen_order__kitchen_id'])).update(checkout=True)
+
     email_send(info.email_address, 'order')
     html_content = render_to_string('inc/order_detail_email.html', {'detail': complete_order})
     text_content = strip_tags(html_content)
@@ -1046,7 +1043,7 @@ def temp_checkout(request, **kwargs):
         'Order Created',
         text_content,
         None,
-        ['service@tkckitchens.co.uk', 'hiphop.ali1041@gmail.com']
+        ['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk']
     )
     email.attach_alternative(html_content, 'text/html')
     email.send()

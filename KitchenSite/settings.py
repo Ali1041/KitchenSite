@@ -199,7 +199,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-DEBUG = False
+DEBUG = True
 # cloud_sql_proxy.exe -instances="tkc-kitchen:europe-west2:application-instance"=tcp:3307
 if DEBUG:
     SESSION_COOKIE_SECURE = False
@@ -212,6 +212,9 @@ else:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
 DEFAULT_FILE_STORAGE = 'KitchenSite.gcloud.GoogleCloudMediaFileStorage'
 GS_PROJECT_ID = 'tkc-kitchen'
 GS_BUCKET_NAME = 'kitchensite'
@@ -227,8 +230,8 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 
 LOGOUT_REDIRECT_URL = 'application:login'
 
-TWILIO_ACCOUNT_SID = 'AC271497c44f145c263aa90809a2f460dd'
-TWILIO_API_KEY = 'SK3d3f1b19f4d694da8fce3eb61118ebab'
-TWILIO_API_SECRET = 'Xryo3bOqeIZbNuOq950Dn80FOKBGPIQU'
-TWILIO_CHAT_SERVICE_SID = 'IS9c61f796d4a9493a8af3f0abe374bd1b'
-NOTIFY = 'ISda051134072af5c96595f32bff482372'
+TWILIO_ACCOUNT_SID = 'AC139de7871b3120400728bebe68fe6864'
+TWILIO_API_KEY = 'SKd067efbde5098aa8713db9fe31d415a3'
+TWILIO_API_SECRET = 'uNn12EYfrdsPBgSw0HcEaUK4LLt3jKE6'
+TWILIO_CHAT_SERVICE_SID = 'IS27993f1aeaa64ffabe6dd0b55b8eb46d'
+# NOTIFY = 'ISda051134072af5c96595f32bff482372'

@@ -2,8 +2,6 @@ import django_filters
 from .models import *
 from django.db.models import Count
 class WorktopFilters(django_filters.FilterSet):
-    # name = django_filters.ModelChoiceFilter(
-    #     queryset=WorkTop.objects.select_related('category').values('name').annotate(name__count=Count('name')))
     class Meta:
         model = WorkTop
         fields = {
@@ -25,7 +23,12 @@ class AppliancesFilters(django_filters.FilterSet):
 class UnitFilter(django_filters.FilterSet):
     class Meta:
         model = Units
-        fields = ['unit_type']
+        fields = {
+            'unit_type':['exact'],
+            'name':['icontains'],
+            'description':['icontains']
+
+            }
 
 
 class AccessoriesFilter(django_filters.FilterSet):

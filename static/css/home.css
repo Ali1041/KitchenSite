@@ -106,11 +106,17 @@ h1{
         box-shadow: 1px 1px forestgreen;
 
 }
+.pointer{
+    cursor: pointer;
+}
 
 @media only screen and (min-width: 100px) and (max-width: 768px){
     body{
         /*font-size: 1.5rem;*/
         width: 100vw;
+    }
+    .remove-border{
+        border: none!important;
     }
 
     .mtb{

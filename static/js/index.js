@@ -4,31 +4,30 @@
         initialiseState(reg)
 
     } else {
-        showNotAllowed("You can't send push notifications ☹️😢")
+        showNotAllowed("You can't send push notifications.")
     }
 }
 
 const initialiseState = (reg) => {
     if (!reg.showNotification) {
-        showNotAllowed('Showing notifications isn\'t supported ☹️😢');
+        showNotAllowed('Showing notifications isn\'t supported');
         return
     }
     if (Notification.permission === 'denied') {
-        showNotAllowed('You prevented us from showing notifications ☹️🤔');
+        showNotAllowed('You prevented us from showing notifications');
         return
     }
     if (!'PushManager' in window) {
-        showNotAllowed("Push isn't allowed in your browser 🤔");
+        showNotAllowed("Push isn't allowed in your browser");
         return
     }
     subscribe(reg);
 }
 
 const showNotAllowed = (message) => {
-    const button = document.querySelector('form>button');
-    button.innerHTML = `${message}`;
-    button.setAttribute('disabled', 'true');
+    alert(`${message}`)
 };
+
 function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
@@ -101,12 +100,17 @@ registerSw()
 
 	function closeChat(e){
 	    document.getElementById('chatDiv').style.display = 'none'
+
 	}
 	    setTimeout(()=>{
         document.getElementById('pop-up').style.display = 'block'
     },10000)
 	function closePopup(e){
+    const chatDiv = document.getElementById('chat-face')
 	    document.getElementById('pop-up').style.display = 'none'
+        chatDiv.style.top = 5+'px'
+        chatDiv.style.bottom = 0+'px'
+        chatDiv.style.right = 20+'px'
 	}
 
       function cart_count(e){
@@ -186,3 +190,6 @@ registerSw()
         })
 
     }
+
+      let ChatEnable = false
+    // export default ChatEnable

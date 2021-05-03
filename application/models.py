@@ -236,7 +236,7 @@ class Combining(models.Model):
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='complete_kitchen')
     units = models.ManyToManyField(Units, through='Units_intermediate')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    checkout = models.BooleanField(default=True,blank=True,null=True)
     # door = models.ForeignKey(Doors, on_delete=models.CASCADE, blank=True, null=True)
     # cabnet = models.ForeignKey(Cabnets, on_delete=models.CASCADE, blank=True, null=True)
 
