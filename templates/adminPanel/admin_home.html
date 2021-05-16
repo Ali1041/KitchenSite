@@ -8,8 +8,12 @@
 <html lang="en">
 <head>
     <script src="https://kit.fontawesome.com/359826513d.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
     <title>Admin</title>
+	    <meta name="vapid-key" content="{{ vapid_key }}">
+    {% if user.id %}
+        <meta name="user_id" content="{{ user.id }}">
+    {% endif %}
         <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin.css' %}">
@@ -28,7 +32,7 @@
 
 
             <div><i class="fas fa-envelope align-self-center"></i>
-                <span class="m-0 p-2">customer.service@tkckitchens.co.uk</span></div>
+                <span class="m-0 p-2">service@tkckitchens.co.uk</span></div>
 
 
 
@@ -89,8 +93,11 @@
                 <div>
                     <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'application:index' %}">Back to main </a>
                     <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:admin-all-orders' %}">All orders</a>
-                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:all-users' %}">All users</a>
-                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:contact_list' %}">Contact List</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:user' %}">All users</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:contact_list' %}">Installation List</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:actual-list' %}">Contact List</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:accessories' %}">Kitchen Accessories</a>
+                    <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="{% url 'adminPanel:brochure-list' %}">Brochure</a>
 
                     <a class="d-block text-center mb-2 a_btn" style="text-decoration: none;color: white" href="">Logout</a>
 
@@ -133,14 +140,131 @@
             <a href="{% url 'adminPanel:bulk' %}" class="btn btn-success">Add bulk data</a>
         </div>
 
+	        <div class="text-center my-3">
+	    <a class="btn btn-primary" href="{% url 'adminPanel:all_rooms' %}">See All chat rooms</a>
+    </div>
+
 
         {% endblock %}
 
     </div>
+    <div class="text-center my-2">
+	    <a href="{% url 'adminPanel:push' %}" class="btn btn-warning text-white">Push notification</a>
+    </div>
+
     {% include 'inc/footer.html' %}
 </body>
+<script >
+	const registerSw = async () => {
+    if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.register('sw.js');
+        initialiseState(reg)
+
+    } else {
+        showNotAllowed("You can't send push notifications ☹️😢")
+    }
+}
+
+const initialiseState = (reg) => {
+    if (!reg.showNotification) {
+        showNotAllowed('Showing notifications isn\'t supported ☹️😢');
+        return
+    }
+    if (Notification.permission === 'denied') {
+        showNotAllowed('You prevented us from showing notifications ☹️🤔');
+        return
+    }
+    if (!'PushManager' in window) {
+        showNotAllowed("Push isn't allowed in your browser 🤔");
+        return
+    }
+    subscribe(reg);
+}
+
+const showNotAllowed = (message) => {
+    const button = document.querySelector('form>button');
+    button.innerHTML = `${message}`;
+    button.setAttribute('disabled', 'true');
+};
+function urlB64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    const outputData = outputArray.map((output, index) => rawData.charCodeAt(index));
+
+    return outputData;
+}
+
+const subscribe = async (reg) => {
+    const subscription = await reg.pushManager.getSubscription();
+    if (subscription) {
+        sendSubData(subscription);
+        return;
+    }
+
+    const vapidMeta = document.querySelector('meta[name="vapid-key"]');
+    const key = vapidMeta.content;
+    const options = {
+        userVisibleOnly: true,
+        // if key exists, create applicationServerKey property
+        ...(key && {applicationServerKey: urlB64ToUint8Array(key)})
+    };
+
+    const sub = await reg.pushManager.subscribe(options);
+    sendSubData(sub)
+};
+
+const sendSubData = async (subscription) => {
+    const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase();
+    const data = {
+        status_type: 'subscribe',
+        subscription: subscription.toJSON(),
+        browser: browser,
+    };
+
+    const res = await fetch('/webpush/save_information', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'content-type': 'application/json'
+        },
+        credentials: "include"
+    });
+
+    handleResponse(res);
+};
+
+const handleResponse = (res) => {
+    console.log(res.status);
+};
+
+registerSw()
+</script>
 
 <script>
+
+	function openChat(e){
+	    fetch(`${location.origin}/adminPanel/create-room/`)
+		.then((res)=>{
+		    {#console.log(res.json())#}
+		    return res.json()
+		})
+		.then((result)=>{
+		    console.log(result)
+		    console.log(result.Msg)
+		})
+
+	    e.target.parentElement.nextElementSibling.style.display = 'block'
+	}
+
+	function closeChat(e){
+	    document.getElementById('chatDiv').style.display = 'none'
+	}
+
     const sidebar=document.getElementById('side-bar')
     const icon = document.getElementById('icon')
     function my_func(e){
@@ -151,5 +275,11 @@
         sidebar.classList.remove('fade-in')
         sidebar.classList.add('fade-out')
     }
+    setTimeout(()=>{
+        document.getElementById('pop-up').style.display = 'block'
+    },10000)
+	function closePopup(e){
+	    document.getElementById('pop-up').style.display = 'none'
+	}
 </script>
 </html>

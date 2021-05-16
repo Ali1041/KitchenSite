@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
-
+{% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
+{% endblock %}
 {% block content %}
     {% if wishlist %}
     <div class="container my-3" id="container_remove">
     <h3 class="my-3">My Wishlist</h3>
+    <p id="info"></p>
         <table class="table table-striped table-responsive1" >
             <thead>
                 <tr>
@@ -11,7 +15,7 @@
                     <th>Product</th>
                     <th>Description</th>
                     <th>Price(£)</th>
-                    <th id="more">Cart</th>
+                    <th class="wishlistth">Cart</th>
                     <th>Option</th>
                 </tr>
             </thead>
@@ -27,11 +31,11 @@
                         class="btn btn-success">
                             Add to cart
                         </a></td>
-                        <td><a href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">Detail</a></td>
+                        <td><a href="{% url 'application:worktop-detail-view' 'worktop' item.worktop.category.slug item.worktop.pk %}">Detail</a></td>
 
 
                         {% elif item.appliances %}
-                        <td><img src="{{ item.appliances.get_photo_url }}" alt=""></td>
+                        <td><img src="{{ item.appliances.get_photo_url }}" height="45px" width="40px" alt=""></td>
                         <td>{{ item.appliances|truncatewords:3 }}</td>
                         <td>{{ item.appliances.description|truncatewords:3 }}</td>
                         <td>{{ item.appliances.price }}</td>
@@ -41,7 +45,21 @@
                                 Add to cart
                             </a>
                         </td>
-                            <td><a href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">Detail</a></td>
+                            <td><a href="{% url 'application:worktop-detail-view' 'appliance' item.appliances.category.slug item.appliances.pk %}">Detail</a></td>
+
+
+                        {% elif item.accessories %}
+                        <td><img src="{{ item.accessories.get_photo_url }}" height="45px" width="40px" alt=""></td>
+                        <td>{{ item.accessories.accessories_type|truncatewords:3 }}</td>
+                        <td>{{ item.accessories.description|truncatewords:3 }}</td>
+                        <td>{{ item.accessories.price }}</td>
+                        <td>
+                            <a onclick="the_cart(event,{{ item.appliances.pk }},'create','accessories')"
+                               class="btn btn-success">
+                                Add to cart
+                            </a>
+                        </td>
+                            <td><a href="{% url 'application:accessories-detail' item.accessories.slug item.accessories.pk %}">Detail</a></td>
 
                         {% endif %}
 
@@ -67,23 +85,25 @@
         </div>
     {% endif %}
     <script>
+
         function the_cart(e,pk,process,pro){
             console.log(pk,process,pro)
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            {# http://127.0.0.1:8000/  https://tkc-kitchen.nw.r.appspot.com #}
+            const base_url = `${origin}/add-to-cart`
             fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
 
             .then((res)=>{
                 return res.json()
             })
             .then((result)=>{
-                console.log(result)
                 const p =document.getElementById('info')
-                p.style.color = 'red'
-                p.innerHTML = 'Removed from cart!!!'
+                p.style.color = 'green'
+                p.innerHTML = 'Added to cart!!!'
                 setTimeout(()=>{
                     p.innerHTML = ''
                     location.reload()
-                },3000)
+                },1500)
+                cart_count('e')
             })
         }
 

@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","gl",{button:"Estabelezer o idioma",remove:"Retirar o idioma"});

@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","km",{button:"កំណត់​ភាសា",remove:"លុប​ភាសា"});

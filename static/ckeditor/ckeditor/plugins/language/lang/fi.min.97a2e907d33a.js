@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","fi",{button:"Aseta kieli",remove:"Poista kieli"});

@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","eo",{button:"Instali lingvon",remove:"Forigi lingvon"});

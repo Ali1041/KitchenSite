@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","bg",{button:"Задай език",remove:"Премахни език"});

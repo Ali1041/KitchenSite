@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
+    {% block meta %}
+        <meta name="{{ name }}" content="{{ description }}">
+        <title>{{ title }}</title>
 
+    {% endblock %}
 {% block content %}
 
 <HTML>
@@ -10,20 +14,6 @@
 <STYLE type="text/css">
 
 body {margin-top: 0px;margin-left: 0px;}
-
-#page_1 {position:relative; overflow: hidden;margin: 106px 0px 12px 96px;padding: 0px;border: none;width: 720px;}
-#page_1 #id1_1 {border:none;margin: 0px 0px 0px 0px;padding: 0px;border:none;width: 720px;overflow: hidden;}
-#page_1 #id1_2 {border:none;margin: 72px 0px 0px 176px;padding: 0px;border:none;width: 544px;overflow: hidden;}
-
-
-
-
-
-#page_2 {position:relative; overflow: hidden;margin: 96px 0px 12px 96px;padding: 0px;border: none;width: 720px;}
-#page_2 #id2_1 {border:none;margin: 0px 0px 0px 0px;padding: 0px;border:none;width: 720px;overflow: hidden;}
-#page_2 #id2_2 {border:none;margin: 813px 0px 0px 176px;padding: 0px;border:none;width: 544px;overflow: hidden;}
-
-
 
 
 
@@ -55,25 +45,27 @@ body {margin-top: 0px;margin-left: 0px;}
 </HEAD>
 
 <BODY>
+<div class="container my-3" id="contain">
+
 <DIV id="page_1">
 
 
 <DIV id="id1_1">
-<P class="p0 ft0">COOKIES POLICY</P>
-<P class="p1 ft1">BY CONTINUING TO USE OUR SITE AND SERVICES, YOU ARE AGREEING TO THE USE OF COOKIES AND SIMILAR TECHNOLOGIES FOR THE PURPOSES WE DESCRIBE IN THIS COOKIES POLICY. IF YOU DO NOT ACCEPT THE USE OF COOKIES AND SIMILAR TECHNOLOGIES, DO NOT USE THIS SITE.</P>
-<P class="p2 ft1">Cookies</P>
-<P class="p3 ft2">A cookie is a small text file that a website saves on your computer or mobile device when you visit the site. In general, cookies have two main purposes: to improve your browsing experience by remembering your actions and preferences and to help us analyze our website traffic.</P>
-<P class="p4 ft1">What to do with Cookies?</P>
-<P class="p5 ft2">We use cookies to help us analyze traffic to the Website, to help us improve website performance and usability, and to make the Website more secure. <NOBR>Third-party</NOBR> cookies help us use Google Analytics to count, track, and analyze visits to the Website. This helps us understand how people are using our websites and where we need to make improvements. These <NOBR>third-party</NOBR> cookies do not specifically identify you.</P>
-<P class="p4 ft1">Types & Category of Cookies used</P>
-<P class="p6 ft2">List the category of cookies used in <SPAN class="ft1">https://www.tkckitchens.co.uk</SPAN>. For example:</P>
-<P class="p7 ft1">a) Authentication</P>
-<P class="p8 ft2">If you sign in to <SPAN class="ft1">https://www.tkckitchens.co.uk</SPAN>, cookies help us show users the right information and personalize the experience to the users.</P>
-<P class="p7 ft1">b) Security</P>
-<P class="p5 ft2">We use cookies to enable and support our security features, and to help us detect malicious activity violations of our Terms and Conditions.</P>
-<P class="p7 ft1">c) Performance, Analytics, Research & Advertising</P>
-<P class="p5 ft2">Cookies help us learn how well our site and web products perform in different locations. We also use these to understand, improve, and research products, features, and services, including when you access this site <SPAN class="ft1">www.tkckitchens.co.uk </SPAN>from other websites, applications, or devices such as your work computer or your mobile device. We also use</P>
-<P class="p9 ft2"><NOBR>third-party</NOBR> cookies to improve and personalize our marketing messages/communications with you.</P>
+<h1 class="p0 ft0"id="zero">COOKIES POLICY</h1>
+<P class="p1 ft1"id="zero">BY CONTINUING TO USE OUR SITE AND SERVICES, YOU ARE AGREEING TO THE USE OF COOKIES AND SIMILAR TECHNOLOGIES FOR THE PURPOSES WE DESCRIBE IN THIS COOKIES POLICY. IF YOU DO NOT ACCEPT THE USE OF COOKIES AND SIMILAR TECHNOLOGIES, DO NOT USE THIS SITE.</P>
+<P class="p2 ft1"id="zero">Cookies</P>
+<P class="p3 ft2"id="zero">A cookie is a small text file that a website saves on your computer or mobile device when you visit the site. In general, cookies have two main purposes: to improve your browsing experience by remembering your actions and preferences and to help us analyze our website traffic.</P>
+<P class="p4 ft1"id="zero">What to do with Cookies?</P>
+<P class="p5 ft2"id="zero">We use cookies to help us analyze traffic to the Website, to help us improve website performance and usability, and to make the Website more secure. <NOBR>Third-party</NOBR> cookies help us use Google Analytics to count, track, and analyze visits to the Website. This helps us understand how people are using our websites and where we need to make improvements. These <NOBR>third-party</NOBR> cookies do not specifically identify you.</P>
+<P class="p4 ft1"id="zero">Types & Category of Cookies used</P>
+<P class="p6 ft2"id="zero">List the category of cookies used in <SPAN class="ft1">https://www.tkckitchens.co.uk</SPAN>. For example:</P>
+<P class="p7 ft1"id="zero">a) Authentication</P>
+<P class="p8 ft2"id="zero">If you sign in to <SPAN class="ft1">https://www.tkckitchens.co.uk</SPAN>, cookies help us show users the right information and personalize the experience to the users.</P>
+<P class="p7 ft1"id="zero">b) Security</P>
+<P class="p5 ft2"id="zero">We use cookies to enable and support our security features, and to help us detect malicious activity violations of our Terms and Conditions.</P>
+<P class="p7 ft1"id="zero">c) Performance, Analytics, Research & Advertising</P>
+<P class="p5 ft2"id="zero">Cookies help us learn how well our site and web products perform in different locations. We also use these to understand, improve, and research products, features, and services, including when you access this site <SPAN class="ft1">www.tkckitchens.co.uk </SPAN>from other websites, applications, or devices such as your work computer or your mobile device. We also use</P>
+<P class="p9 ft2"id="zero"><NOBR>third-party</NOBR> cookies to improve and personalize our marketing messages/communications with you.</P>
 </DIV>
 
 </DIV>
@@ -81,10 +73,12 @@ body {margin-top: 0px;margin-left: 0px;}
 
 
 <DIV id="id2_1">
-<P class="p0 ft1">Control cookies</P>
-<P class="p3 ft2">You are always free to delete cookies that are already on your computer through your browser settings, and you can set most browsers to prevent them from being added to your computer. However, this may prevent you from using certain features on the Website.</P>
+<P class="p0 ft1"id="zero">Control cookies</P>
+<P class="p3 ft2"id="zero">You are always free to delete cookies that are already on your computer through your browser settings, and you can set most browsers to prevent them from being added to your computer. However, this may prevent you from using certain features on the Website.</P>
 </DIV>
 </DIV>
+    </div>
+
 </BODY>
 </HTML>
 

@@ -1,0 +1,49 @@
+{% extends 'adminPanel/admin_home.html' %}
+{% block content %}
+
+
+	<div class="modal fade" id="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Add Type</h3>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="{% url 'adminPanel:accessories_type' %}">
+						{% csrf_token %}
+						<label for="" class="d-block">
+							Add Kitchen Accessories Type
+							<input placeholder="Kitchen Accessories" type="text" name="name" class="form-control">
+							<button class="btn btn-success mt-3">Add</button>
+						</label>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+    <div class="container my-4">
+	    <button class="btn btn-success mb-3" data-target="#modal" data-toggle="modal">Add Kitchen Accessories Type</button>
+        <a href="{% url 'adminPanel:index' %}" class="btn btn-secondary mb-3">Back</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in list %}
+                    <tr>
+                        <td>{{ item.name }} </td>
+                        <td><a href="{% url 'adminPanel:detail_accessories' item.pk %}" class="btn btn-success">Detail</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

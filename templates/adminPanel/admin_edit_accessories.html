@@ -1,0 +1,35 @@
+{% extends 'adminPanel/admin_home.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+    <div style="width: 40%;margin: auto" class="p-5 border border-rounded my-3">
+        <form action="{% url 'adminPanel:edit-accessories' accessory_instance.pk %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4 class="text-center">Edit Accessories</h4>
+	        {% bootstrap_form form %}
+{#            <label for="" class="d-block">#}
+{#                Description#}
+{#                <input type="text" required name="description" class="form-control" value="{{ form.description }}">#}
+{#            </label>#}
+{##}
+{#            <label for="" class="d-block">#}
+{#                Price#}
+{#                <input type="text" required name="price" class="form-control" value="{{ form.price }}">#}
+{#            </label>#}
+{##}
+{#            <label class="d-block" for="">SKU#}
+{#	            <input type="text" required name="sku" class="form-control" value="{{ form.sku }}">#}
+{##}
+{#            </label>#}
+{##}
+{##}
+{#            <label for="" class="d-block">#}
+{#                Upload Image#}
+{#                <input type="file" name="img" value="{{ item.img }}">#}
+{#            </label>#}
+
+            <button class="btn btn-success w-100 mb-2" >Add</button>
+        </form>
+    </div>
+
+{% endblock %}

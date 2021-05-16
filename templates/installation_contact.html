@@ -1,68 +1,94 @@
 {% extends 'base.html'%}
+    {% block meta %}
+        <title>{{ title }}</title>
+	    <meta name="{{ name }}" content="{{ description }}">
 
+    {% endblock %}
 {% block content %}
 
-    <div style="width: 40%;margin: auto" class="border p-5" id="search_in">
-        <form action="{% url 'application:installation_contact' %}" method="POST">
+    <div style="width: 80%;margin: auto" class="border p-5 my-3 bg-light" id="search_in">
+        <form action="{% url 'application:installation_contact' %}" class="w-100" method="POST">
             {% csrf_token %}
-            <h3 class="text-center">Installation form</h3>
-            <label for="" class="d-block">
+            {% if messages %}
+            {% for msg in messages %}
+            <p class="alert alert-primary" role="alert">{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+            <h1 class="text-center mb-5">Kitchen Installation Service</h1>
+            <p class="text-center"><b>Please fill the below details and our representative will get in touch with you in 24 hours.</b></p>
+            <div class="d-flex justify-content-between" id="display_b">
+	            <div class="w-50 align-self-start   " id="search_in">
+            <label for="" class="d-block ">
                 Name
-                <input placeholder="Name" type="text" name="name" class="form-control">
+                <input placeholder="Name" required type="text" name="name" class="form-control ">
             </label>
 
             <label for="" class="d-block">
                 Email Address
-                <input placeholder="Email" type="email" name="email" class="form-control">
+                <input placeholder="Email" required type="email" name="email" class="form-control">
             </label>
 
             <label for="" class="d-block">
                 Phone Number
-                <input placeholder="Phone Number" type="number" name="phone" class="form-control">
+                <input placeholder="Phone Number" required type="number" name="phone" class="form-control">
             </label>
 
             <label for="" class="d-block">
                 Site Address
-                <input placeholder="Site Address" type="text" name="address" class="form-control">
+                <input placeholder="Site Address" required type="text" name="address" class="form-control">
             </label>
-
-            <label for="" class="d-block my-4">
-                Is room ready to measure?<br/>
-                <input type="radio" name="measure" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" name="measure" value="False"><span class="ml-2">No</span>
-            </label>
-
-            <label for="" class="d-block my-4">
-                Do you want us to remove the old kitchen?<br/>
-                <input type="radio" name="old" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" name="old" value="False"><span class="ml-2">No</span>
-            </label>
-
-            <label for="" class="d-block my-4">
-                Do you require Plastering, Plumbing & Electrics?<br/>
-                <input type="radio" name="ee" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" name="ee" value="False"><span class="ml-2">No</span>
-            </label>
-
-            <label for="" class="d-block my-4">
-                What is your budget on the project Including Cabinets, Worktops, Appliances, Accessories and Installation?<br/>
-                <input type="radio" name="price" value="12,000-"><span class="ml-2">£ 10,000-12,000</span><br/>
-                <input type="radio" name="price" value="14,000-"><span class="ml-2">£ 12,000-14,000</span><br/>
-                <input type="radio" name="price" value="16,000-"><span class="ml-2">£ 14,000-16,000</span><br/>
-                <input type="radio" name="price" value="18,000-"><span class="ml-2">£ 16,000-18,000</span><br/>
-
-                <input type="radio" name="price" value="20,000+" ><span class="ml-2">£ 20,000+</span>
-            </label>
-
-
-            <label for="" class="d-block">
+		                        <label for="" class="d-block">
                 Anything else you want to tell us?
                 <textarea placeholder="Additional Detail" class="form-control" name="detail"></textarea>
             </label>
-            <button class="btn btn-success">Submit</button>
+				</div>
+	            <div class="align-self-start text-left" style="width: 40%;margin: auto" id="search_in">
+            <label for="" class="d-block m-0">
+                Is room ready to measure?<br/>
+                <input type="radio" required name="measure" value="True"><span class="ml-2">Yes</span><br/>
+                <input type="radio" required name="measure" value="False"><span class="ml-2">No</span>
+            </label>
+
+            <label for="" class="d-block m-0">
+                Do you want us to remove the old kitchen?<br/>
+                <input type="radio" required name="old" value="True"><span class="ml-2">Yes</span><br/>
+                <input type="radio" required name="old" value="False"><span class="ml-2">No</span>
+            </label>
+
+            <label for="" class="d-block m-0">
+                Do you require Plastering, Plumbing & Electrics?<br/>
+                <input type="radio" required name="ee" value="True"><span class="ml-2">Yes</span><br/>
+                <input type="radio" required name="ee" value="False"><span class="ml-2">No</span>
+            </label>
+
+            <label for="" class="d-block m-0">
+                What is your budget on the project Including Cabinets, Worktops, Appliances, Accessories and Installation?<br/>
+                <input type="radio" required name="price" value="12,000-"><span class="ml-2">£ 10,000-12,000</span><br/>
+                <input type="radio" required name="price" value="14,000-"><span class="ml-2">£ 12,000-14,000</span><br/>
+                <input type="radio" required name="price" value="16,000-"><span class="ml-2">£ 14,000-16,000</span><br/>
+                <input type="radio" required name="price" value="18,000-"><span class="ml-2">£ 16,000-18,000</span><br/>
+
+                <input type="radio" required name="price" value="20,000+" ><span class="ml-2">£ 20,000+</span>
+            </label>
+				</div>
+			</div>
+
+            <div class="text-center">
+                <button class="btn btn-success ">Submit</button>
+            </div>
+        <div class="text-center">
+	                <small>For further information about how we use your personal data please see our <a href="{% url 'application:GDPR' %}">
+	        GDPR
+Policy
+        </a> and <a href="{% url 'application:terms' %}">Terms &amp; conditions.</a></small>
+        </div>
+
         </form>
     </div>
 
 
+
+{% endblock %}
+{% block script %}
 
 {% endblock %}

@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load social_share %}
+{% block meta %}
+        <meta name="{{ detail.meta_name }}" content="{{ detail.meta_description }}">
+        <title>{{ detail.meta_title }}</title>
+
+    {% endblock %}
 {% block content %}
 
     <div class="modal" id="reviewModal">
@@ -12,11 +18,11 @@
                         <input type="text" hidden value="{{ product }}" name="name">
                         <label for="" class="d-block">
                             Your Comment
-                            <input type="text" name="comment" class="form-control">
+                            <input placeholder="Comment" type="text" name="comment" class="form-control">
                         </label>
                         <label for="" class="d-block">
                             Rating out of 5
-                            <input type="number" min="0" max="5" name="rating" class="form-control">
+                            <input placeholder="Rating" type="number" min="0" max="5" name="rating" class="form-control">
                         </label>
                 </div>
                 <div class="modal-footer">                     
@@ -73,11 +79,18 @@
             <div style="width: 30%;margin: auto" id="search_in" class="d-flex justify-content-around p-3 border-top border-bottom my-3">
 
                 <span>Share</span>
-                <img src="{% static 'Svg/facebook-f-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center">
-                <img src="{% static 'Svg/twitter-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center">
-                <img src="{% static 'Svg/pinterest-p-brands.svg' %}" height="15px" alt="" style="cursor:pointer;" class="align-self-center">
+                {% post_to_facebook request.build_absolute_uri %}
+                <img src="{% static 'Svg/facebook-f-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center inside_link">
+                {% post_to_twitter request.build_absolute_uri %}
+                <img src="{% static 'Svg/twitter-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center inside_link">
+                {% save_to_pinterest request.build_absolute_uri %}
+                <img src="{% static 'Svg/pinterest-p-brands.svg' %}" height="15px" alt="" style="cursor:pointer;" class="align-self-center inside_link">
+
 
             </div>
+	        <div style="width: 30%;margin: auto" id="search_in" class="d-flex justify-content-around p-3 my-3">
+		        <a href="{% url 'application:all-kitchen' %}" class="btn btn-success">View Our Latest Fitted Kitchens</a>
+	        </div>
 
     
 
@@ -153,7 +166,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
@@ -163,7 +176,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
@@ -181,6 +194,23 @@
 {% endblock %}
 {% block script %}
     <script>
+
+        const face = document.getElementsByClassName('facebook-this')
+        const twit = document.getElementsByClassName('tweet-this')
+        const pin = document.getElementsByClassName('pinterest-this')
+
+        const imgs = document.getElementsByClassName('inside_link')
+        face[0].children[0].innerHTML = ''
+        face[0].children[0].append(imgs[0])
+        face[0].style.alignSelf = 'center'
+
+        twit[0].children[0].innerHTML = ''
+        twit[0].children[0].append(imgs[1])
+        twit[0].style.alignSelf = 'center'
+
+        pin[0].children[0].innerHTML = ''
+        pin[0].children[0].append(imgs[2])
+        pin[0].style.alignSelf = 'center'
         function operation(e){
             {#console.log(e.target.nextElementSibling.value!==1,e.target.nextElementSibling.value)#}
             if (e.target.value==='-'&& e.target.nextElementSibling.value!=='1'){
@@ -195,7 +225,7 @@
         }
 
         function add_cart(e){
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            const base_url = `${origin}/add-to-cart`
             const product = `{{ product }}`
             const item_name =`{{ detail }}`
             const process = 'create'
@@ -207,7 +237,6 @@
                 return res.url
             })
             .then((result)=>{
-                console.log(result)
                 const check = result.split('/')
                 if (check[3]==='login'){
                     location.replace(result)
@@ -222,6 +251,7 @@
                     }, 3000)
                 }
             })
+            cart_count('e')
         }
     </script>
 

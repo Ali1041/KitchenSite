@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /adminPanel/
+Disallow: /cart/
+Disallow: /add-to-wishlist/
+Disallow: /add-review/
+Disallow: /add-to-cart/
+Sitemap: https://tkckitchens.co.uk/sitemap.xml

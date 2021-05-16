@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="21657a69-ca15-4fa4-a5e8-fdace87d06f8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1onDIHDvDm0ZnWxL3GfQQ5OPaRe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="ToolWindowEvent Log.ShowToolbar" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../new/bookingengine" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.HTML" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\DELL\Documents\All projects\KitchenSite\templates\adminPanel" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Django Server.KitchenSite">
+    <configuration name="KitchenSite" type="Python.AppEngineServer" factoryName="App Engine server">
+      <module name="KitchenSite" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="host" value="127.0.0.1" />
+      <option name="browserUrl" value="" />
+      <option name="additionalOptions" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="KitchenSite" type="Python.DjangoServer" factoryName="Django server">
+      <module name="KitchenSite" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\DELL\Envs\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Envs/KitchenVenv" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="App Engine server.KitchenSite" />
+      <item itemvalue="Django Server.KitchenSite" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="21657a69-ca15-4fa4-a5e8-fdace87d06f8" name="Default Changelist" comment="" />
+      <created>1613913384037</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1613913384037</updated>
+      <workItem from="1613913386008" duration="790000" />
+      <workItem from="1614065228592" duration="1098000" />
+      <workItem from="1614071030452" duration="8615000" />
+      <workItem from="1614105240249" duration="15000" />
+      <workItem from="1614139406990" duration="242000" />
+      <workItem from="1614155665043" duration="16000" />
+      <workItem from="1614161909673" duration="110000" />
+      <workItem from="1614164423569" duration="1403000" />
+      <workItem from="1614175379891" duration="24000" />
+      <workItem from="1614187871432" duration="4123000" />
+      <workItem from="1614242125139" duration="15100000" />
+      <workItem from="1614281051722" duration="1448000" />
+      <workItem from="1614332596283" duration="749000" />
+      <workItem from="1614343923080" duration="1568000" />
+      <workItem from="1614367290724" duration="12000" />
+      <workItem from="1614617290154" duration="5304000" />
+      <workItem from="1614625703058" duration="1477000" />
+      <workItem from="1614673624527" duration="9737000" />
+      <workItem from="1614692978720" duration="15134000" />
+      <workItem from="1614760622344" duration="17147000" />
+      <workItem from="1614848098292" duration="1314000" />
+      <workItem from="1614857570869" duration="10410000" />
+      <workItem from="1614883545928" duration="3601000" />
+      <workItem from="1614934650818" duration="3372000" />
+      <workItem from="1615102054900" duration="51000" />
+      <workItem from="1615179831902" duration="8318000" />
+      <workItem from="1615190589769" duration="4455000" />
+      <workItem from="1615209651114" duration="4392000" />
+      <workItem from="1615292160709" duration="17660000" />
+      <workItem from="1615349355014" duration="2194000" />
+      <workItem from="1615367752564" duration="16908000" />
+      <workItem from="1615389314971" duration="12018000" />
+      <workItem from="1615461843512" duration="9243000" />
+      <workItem from="1615555298863" duration="12259000" />
+      <workItem from="1615615735193" duration="3687000" />
+      <workItem from="1615627125663" duration="4805000" />
+      <workItem from="1615634321177" duration="5718000" />
+      <workItem from="1615661030109" duration="1320000" />
+      <workItem from="1615700652577" duration="1727000" />
+      <workItem from="1615706709945" duration="604000" />
+      <workItem from="1615715810798" duration="2588000" />
+      <workItem from="1615728741555" duration="20000" />
+      <workItem from="1615747661562" duration="1946000" />
+      <workItem from="1615789309588" duration="1806000" />
+      <workItem from="1615800616989" duration="4835000" />
+      <workItem from="1615814665229" duration="168000" />
+      <workItem from="1615830835010" duration="689000" />
+      <workItem from="1615883388714" duration="8399000" />
+      <workItem from="1615896016270" duration="11000" />
+      <workItem from="1616144479361" duration="13000" />
+      <workItem from="1616145746044" duration="4000" />
+      <workItem from="1616164221032" duration="15000" />
+      <workItem from="1616421461134" duration="11957000" />
+      <workItem from="1616511690786" duration="4686000" />
+      <workItem from="1616590395591" duration="9498000" />
+      <workItem from="1616660222419" duration="306000" />
+      <workItem from="1616674314377" duration="928000" />
+      <workItem from="1616678895745" duration="10485000" />
+      <workItem from="1616751628883" duration="12211000" />
+      <workItem from="1616786007549" duration="4746000" />
+      <workItem from="1616799303664" duration="1304000" />
+      <workItem from="1616835693996" duration="7025000" />
+      <workItem from="1616846838863" duration="5163000" />
+      <workItem from="1616924841316" duration="7057000" />
+      <workItem from="1616966055232" duration="654000" />
+      <workItem from="1616969999908" duration="6912000" />
+      <workItem from="1617035494649" duration="1842000" />
+      <workItem from="1617098560731" duration="6918000" />
+      <workItem from="1617190790857" duration="1002000" />
+      <workItem from="1617223058267" duration="615000" />
+      <workItem from="1617231364435" duration="12000" />
+      <workItem from="1617338962477" duration="157000" />
+      <workItem from="1617372226285" duration="16000" />
+      <workItem from="1617533553571" duration="407000" />
+      <workItem from="1617537050290" duration="5315000" />
+      <workItem from="1617554466912" duration="7000" />
+      <workItem from="1617615769799" duration="4308000" />
+      <workItem from="1617642933396" duration="6110000" />
+      <workItem from="1617703473241" duration="14587000" />
+      <workItem from="1617742301991" duration="6000" />
+      <workItem from="1617743509295" duration="193000" />
+      <workItem from="1617748697697" duration="1617000" />
+      <workItem from="1617750612332" duration="27000" />
+      <workItem from="1617790267947" duration="15925000" />
+      <workItem from="1617833392000" duration="6000" />
+      <workItem from="1617876259557" duration="2180000" />
+      <workItem from="1617887116013" duration="5410000" />
+      <workItem from="1617904593230" duration="4914000" />
+      <workItem from="1617922024083" duration="12000" />
+      <workItem from="1617988354418" duration="10321000" />
+      <workItem from="1618054708796" duration="68000" />
+      <workItem from="1618071215427" duration="2867000" />
+      <workItem from="1618088093856" duration="9254000" />
+      <workItem from="1618102294731" duration="2833000" />
+      <workItem from="1618182036437" duration="5083000" />
+      <workItem from="1618219003133" duration="57000" />
+      <workItem from="1618224167053" duration="2506000" />
+      <workItem from="1618266343209" duration="1304000" />
+      <workItem from="1618272638293" duration="5945000" />
+      <workItem from="1618332942964" duration="2655000" />
+      <workItem from="1618339094688" duration="7304000" />
+      <workItem from="1618434753693" duration="5859000" />
+      <workItem from="1618447373899" duration="342000" />
+      <workItem from="1618457323031" duration="139000" />
+      <workItem from="1618488840086" duration="5000" />
+      <workItem from="1618515520640" duration="38000" />
+      <workItem from="1618517545863" duration="2124000" />
+      <workItem from="1618593146635" duration="6836000" />
+      <workItem from="1618615742755" duration="7000" />
+      <workItem from="1618747297915" duration="576000" />
+      <workItem from="1618777164286" duration="850000" />
+      <workItem from="1618818461313" duration="1727000" />
+      <workItem from="1618853303766" duration="20000" />
+      <workItem from="1618864234324" duration="848000" />
+      <workItem from="1618896171674" duration="3529000" />
+      <workItem from="1618908444349" duration="163000" />
+      <workItem from="1618983402324" duration="654000" />
+      <workItem from="1619073151824" duration="8000" />
+      <workItem from="1619243933817" duration="885000" />
+      <workItem from="1619245749203" duration="11000" />
+      <workItem from="1619521503834" duration="918000" />
+      <workItem from="1619611905414" duration="587000" />
+      <workItem from="1619613102163" duration="2377000" />
+      <workItem from="1619684884429" duration="1925000" />
+      <workItem from="1619780624365" duration="70000" />
+      <workItem from="1620072002707" duration="5143000" />
+      <workItem from="1620115325233" duration="8000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>

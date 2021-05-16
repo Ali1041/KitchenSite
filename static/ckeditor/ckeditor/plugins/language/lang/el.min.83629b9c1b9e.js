@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("language","el",{button:"Θέση γλώσσας",remove:"Αφαίρεση γλώσσας"});

@@ -1,4 +1,8 @@
 from django import template
+from application.models import *
+from application.views import cart_count
+import json
+from django.contrib.sites.models import Site
 
 register = template.Library()
 
@@ -14,3 +18,30 @@ def new_url(value, field_name, urlencode=None):
         url = f'{url}&{join_encode}'
 
     return url
+
+# worktop template tag
+@register.simple_tag
+def my_worktops():
+    return Worktop_category.objects.all()
+
+# appliances template tag
+@register.simple_tag
+def my_appliances():
+    return Category_Applianes.objects.all()
+
+# accessories template tag
+@register.simple_tag
+def my_accessories():
+    return AccessoriesType.objects.all()
+
+# cart count template tag
+@register.simple_tag
+def my_cart(request):
+    user_cart = cart_count(request)
+    return json.loads(user_cart.content)['Count']
+
+# canonical tag url
+@register.simple_tag
+def canonical_tag(request):
+    current_site = Site.objects.get_current()
+    return f'https://{current_site.domain}{request.path}'

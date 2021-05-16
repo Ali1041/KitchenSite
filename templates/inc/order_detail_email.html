@@ -1,0 +1,49 @@
+{% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+
+{% bootstrap_javascript %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+
+    <script  src="https://kit.fontawesome.com/359826513d.js" crossorigin="anonymous"></script>
+    <title>Kitchen</title>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+</head>
+<body>
+    <h2>Order Created</h2>
+    <p>See Details below</p>
+        <div class="card p-3 shadow my-2" style="width: 60%;margin: auto">
+            <h5 class="card-title text-center" style="color: rgb(46, 154, 135)">Customer Info</h5>
+            <div class="card-body row m-0">
+                <p class="col-md-4">Name: <b>{{ detail.user.first_name }} {{ detail.user.last_name }}</b></p>
+                <p class="col-md-4">Email: <b>{{ detail.user.email_address }}</b></p>
+                <p class="col-md-4">Phone: <b>{{ detail.user.phone_number }}</b></p>
+                <h3>Created Order:  </h3>
+				{% for item in detail.order.all %}
+	            {% if item.kitchen_order %}
+		            <p><b>{{ item.kitchen_order }}</b></p>
+				{% elif item.accessories %}
+
+		            <p><b>{{ item.accessories }}</b></p>
+
+				{% elif item.worktop %}
+
+		            <p><b>{{ item.worktop }}</b></p>
+
+				{% elif item.appliances %}
+		            <p><b>{{ item.appliances }}</b></p>
+
+				{% endif %}
+
+	            {% endfor %}
+            </div>
+        </div>
+</body>
+</html>

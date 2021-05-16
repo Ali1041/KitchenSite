@@ -13,3 +13,73 @@
 .fade-in{
     transform: translateX(0);
 }
+.pop-up{
+    position:fixed;
+    bottom:80px;
+    right: 150px;
+    z-index: 1;
+    width: fit-content;
+    border: 1px solid forestgreen;
+    border-radius: 6px;
+}
+.pop-up::after{
+    content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+    border-bottom: 10px solid transparent;
+	border-top: 10px solid transparent;
+	border-left: 15px solid forestgreen;
+	top: 40%;
+	right: -9%;
+}
+.link-style{
+    text-decoration: underline;
+    color: dodgerblue;
+    cursor: pointer;
+}
+.chat-position{
+    position:fixed;
+    bottom:145px;
+    right: 50px;
+    height: 75vh;
+}
+.w-chat{
+    width: 30%;
+}
+.bg-gradient{
+    background-image: linear-gradient(forestgreen,lightgreen);
+}
+.chat-div{
+    width: fit-content;
+    position: fixed;
+
+    bottom: 100px;
+    right: 50px;
+    cursor: pointer;
+
+}
+.chat-div img{
+        border-radius: 50%;
+
+}
+.chat-div p {
+    font-weight: 600;
+}
+@media only screen and (min-width: 100px) and (max-width: 768px){
+    .w-chat{
+        width: 80%;
+    }
+    .chat-position{
+        bottom:10px;
+        right: 18px;
+        height: fit-content;
+    }
+    .new-p-1{
+        padding: 7px!important;
+    }
+    .chat-img{
+        height: 50px;
+        width: 60px;
+    }
+}

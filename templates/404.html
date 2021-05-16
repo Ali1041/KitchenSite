@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>TKC Kitchens-404</title>
+
+	{% load bootstrap4 %}
+
+{% bootstrap_css %}
+{% bootstrap_jquery %}
+{% bootstrap_javascript %}
+
+
+</head>
+<body>
+<div style="height: 100vh" class="d-flex justify-content-center">
+	<div class="align-self-center text-center">
+		<h3 style="color:rgb(46, 154, 135)">Oops! Looks like the page is missing or not yet added!!!</h3>
+		<p style="font-weight: 700">Cant find what you are looking for?</p>
+		<a class="btn btn-success" href="{% url 'application:contact' %}">Contact us</a>
+		<a class="btn btn-success" href="{% url 'application:index' %}">Home</a>
+	</div>
+</div>
+
+</body>
+
+</html>

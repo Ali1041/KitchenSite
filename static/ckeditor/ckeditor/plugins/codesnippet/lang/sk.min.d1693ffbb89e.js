@@ -1,0 +1,2 @@
+﻿
+CKEDITOR.plugins.setLang("codesnippet","sk",{button:"Vložte kód Snippet-u",codeContents:"Obsah kódu",emptySnippetError:"Snippet kódu nesmie byť prázdny.",language:"Jazyk",title:"Snippet kódu",pathName:"snippet kódu"});

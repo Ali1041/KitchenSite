@@ -1,0 +1,21 @@
+{% extends 'adminPanel/admin_home.html' %}
+
+{% block content %}
+	<div class="container">
+		<a href="{% url 'adminPanel:detail_accessories' detail.accessories_type.pk %}" class="btn btn-secondary">Back</a>
+		<a href="{% url 'adminPanel:edit-accessories' detail.pk %}" class="btn btn-success">Edit</a>
+		<div style="width: fit-content;margin: auto">
+			<img src="{{ detail.get_photo_url }}" height="500px" alt="">
+		</div>
+
+		<div>
+			<p>Name: <b>{{ detail.accessories_type }}</b></p>
+			<p>Description: <b>{{ detail.description }}</b></p>
+			<p>SKU: <b>{{ detail.sku }}</b></p>
+			<p>Price: <b>{{ detail.price }}</b></p>
+		</div>
+
+	</div>
+
+
+{% endblock %}

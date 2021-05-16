@@ -1,6 +1,30 @@
 {% extends 'base.html' %}
-
+    {% block meta %}
+        <title>TKC KITCHENS - Cart</title>
+	    <meta name="description" content="Your cart">
+    {% endblock %}
 {% block content %}
+
+	<div class="modal" id="cartModal">
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Confirmation required</h3>
+
+				</div>
+				<div class="modal-body">
+					<p>Are you sure you want to delete this item?</p>
+					<button id="yes" class="btn btn-danger">Yes</button>
+					<button id="no" class="btn btn-secondary">No</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
     {% if cart %}
     <div class='container my-4' id="container_remove">
 
@@ -9,10 +33,10 @@
         {% if item.kitchen_order %}
             <p id="info_kitchen"></p>
             <div class=" my-2">
-                <div class="my-5 card shadow p-3 border-rounded">
+                <div class="my-2 card shadow p-3 border-rounded">
                 <div class="card-title d-flex justify-content-between">
                     <h3 class="m-0">{{ item.kitchen_order.kitchen }}</h3>
-                    <a onclick="remove_cart(event,{{ item.kitchen_order.pk }},'delete',`{{ item.kitchen_order.kitchen.color }}`)" style="color: white;text-decoration: none" class="btn btn-danger">X</a>
+                    <a onclick="stateChange(event,{{ item.kitchen_order.pk }},'delete',`{{ item.kitchen_order.kitchen.color }}`)" style="color: white;text-decoration: none" class="btn btn-danger">X</a>
                 </div>
                     <div class="card-body">
                     <div class="text-center my-2">
@@ -27,6 +51,7 @@
                                         <tr>
                                             <th>Image</th>
                                             <th>Name</th>
+	                                        <th>Size</th>
                                             <th>Unit type</th>
                                             <th>SKU</th>
                                             <th>Price</th>
@@ -39,6 +64,7 @@
                                             <tr>
                                                 <td><img src="{{ i.unit.get_photo_url }}" height="45px" width="40px" alt=""></td>
                                                 <td>{{ i.unit }}</td>
+	                                            <td>{{ i.unit.description }}</td>
                                                 <td>{{ i.unit.unit_type }}</td>
                                                 <td>{{ i.unit.sku }}</td>
                                                 <td>{{ i.unit.price }}</td>
@@ -54,13 +80,16 @@
                                     </tbody>
                                 </table>
                         {% else %}
-                            <h5>No units. A sample of this kitchen of price £ 4.99 will be sent to your location.</h5>
+                            <h5>Sample of this kitchen will be sent to your location</h5>
+                            <p>Price of sample: £5</p>
                         {% endif %}
                         <p class="m-0"><b>Door color:</b> {{ item.kitchen_order.kitchen.door_color }}</p>
-                        <p><b>Cabnet color:</b> {{ item.kitchen_order.kitchen.cabnet }}</p>
-                        <p>All our cabnets come with doors unless specified.Doors come undrilled and we can drill the side you require i.e left or right handed, but you have to specify this later.</p>
-                        <p>Doors will be provided with cabinets</p>
-                        <p>Handles will also be provided as per the images.</p>
+                        <ul>
+	                        <li><p><b>All our cabinets come with doors unless specified.Doors come un-drilled and we can drill the side you require i.e left or right handed, but you have to specify this later.</b></p></li>
+	                        <li><p><b>Doors will be provided with cabinets.</b></p>
+                        </li>
+	                        <li><p><b>Handles will also be provided as per the images.</b></p></li>
+                        </ul>
                     </div>
                 </div>
             <div>
@@ -94,7 +123,7 @@
                     <tr>
                         <td><img src="{{ item.worktop.get_photo_url }}" height="30px" alt=""></td>
                         <td>{{ item.worktop }}</td>
-                        <td>{{ item.worktop.description|truncatewords:3 }}</td>
+                        <td>  {{ item.worktop.description|truncatewords:3 }}</td>
                         <td>{{ item.worktop.size }}</td>
                         {% ifequal item.sample_worktop 'Yes' %}
                             <td style="width: 20%" id="search_in">
@@ -104,7 +133,7 @@
                                    value="{{ item.qty }}" name="qty"></td>
 
 
-                        <td>5.0</td>
+                        <td>5.0 <b>Sample</b></td>
                         {% else %}
                             <td style="width: 20%" id="search_in">
                                 <input type="number" onchange="changing(event,`{{ item.worktop.pk }}`,'worktop','update')"
@@ -118,8 +147,7 @@
                         {% endifequal %}
 
                         <td class="text-center"><a class="m-0 text-center" style="text-decoration: none;width: fit-content;color: red;cursor: pointer"
-                        onclick="remove_cart(event,{{ item.worktop.pk }},'delete','worktop')
-                                       ">x</a></td>
+                        onclick="stateChange(event,{{ item.worktop.pk }},'delete','worktop')">x</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -156,7 +184,7 @@
                         <td>{{ item.appliances.price }}</td>
 
                         <td class="text-center"><a id="search_in"
-                        onclick="remove_cart(event,{{ item.appliances.pk }},'delete','appliance')"
+                        onclick="stateChange(event,{{ item.appliances.pk }},'delete','appliance')"
                                 class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a></td>
 
                     </tr>
@@ -167,6 +195,47 @@
 
     {% endif %}
 
+{# accessories  #}
+
+	    {% if accessories_cart %}
+        <h3>Accessories:</h3>
+        <p id="info_acc"></p>
+
+        <table class="table table-striped table-responsive1">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price(£)</th>
+                    <th class="text-center">Option</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in accessories_cart %}
+                    <tr>
+                        <td><img src="{{ item.accessories.get_photo_url }}" height="30px" alt=""></td>
+                        <td>{{ item.accessories.accessories_type|truncatewords:4 }}</td>
+                        <td>{{ item.accessories.description|truncatewords:3 }}</td>
+                            <td style="width: 20%" id="search_in">
+
+                                <input type="number" class="form-control" id="search_in" min="1" style="width: 60%!important;"
+                                       onchange="changing(event,`{{ item.accessories.pk }}`,'accessories','update')"
+                                   value="{{ item.qty }}" name="qty"></td>
+                        <td>{{ item.accessories.price }}</td>
+
+                        <td class="text-center"><a id="search_in"
+                        onclick="stateChange(event,{{ item.accessories.pk }},'delete','accessories')"
+                                class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a></td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+    {% endif %}
 
 
 {#  kitchen cart table  #}
@@ -190,8 +259,7 @@
     </div>
         </div>
     <div class="container my-2">
-    <h3>Grand total(including VAT): £ {{ total|floatformat:"2" }}</h3>
-                <small class="d-block">Note:For orders below £ 300, £ 30 are delivery charges.</small>
+    <h3 id="less">Grand total(Including VAT and Delivery Charges): £ {{ total|floatformat:"2" }}</h3>
 
         <a href="{% url 'application:checkout' %}" class="btn btn-success">Proceed to checkout</a>
     </div>
@@ -203,7 +271,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
@@ -213,7 +281,7 @@
             <div class="card col-lg-3 p-0 ">
                 <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
                 <div class="card-body">
-                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.pk %}">{{ item }}</a></h5>
+                    <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
                 </div>
             </div>
@@ -225,10 +293,13 @@
 
     {% else %}
         <div class="alert alert-primary text-center my-3" role="alert">
-            No item in the cart. <a href="{% url 'application:index' %}">Start adding now!!</a>
+            No item in the cart. <a href="{% url 'application:index' %}">Start Shopping!!</a>
         </div>
     {% endif %}
+{% endblock %}
+{% block script %}
     <script>
+
         function unit_change(e,pk,status){
              const p =document.getElementById('unit_info')
             let qty = 1
@@ -237,8 +308,7 @@
 
             }
 
-            const base_url = 'http://127.0.0.1:8000'
-            fetch(`${base_url}/unit-change/${pk}/${status}/${qty}/`)
+            fetch(`${origin}/unit-change/${pk}/${status}/${qty}/`)
             .then((res)=>{
                 return res.json()
             })
@@ -259,17 +329,32 @@
             })
         }
 
+			let modalValue = false
 
+        function stateChange(e,pk,process,pro){
+            $('#cartModal').show()
+
+	        document.getElementById('yes').addEventListener('click',()=>{
+	            modalValue = true
+		        remove_cart(e,pk,process,pro)
+	        })
+	        document.getElementById('no').addEventListener('click',()=>{
+	            $('#cartModal').hide()
+	        })
+        }
         function remove_cart(e,pk,process,pro){
-            console.log(pro)
-            const base_url = 'http://127.0.0.1:8000/add-to-cart';
+
+            const base_url = `${origin}/add-to-cart`;
             let p='';
 
-            fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
-            .then((res)=>{
+
+				console.log(modalValue)
+
+				    fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
+					    .then((res)=>{
                 return res.json()
             })
-            .then((result)=>{
+					    .then((result)=>{
                 if (pro==='worktop'){
                  p =document.getElementById('info_worktop')
 
@@ -277,6 +362,9 @@
                 else if (pro==='appliance'){
                  p =document.getElementById('info_app')
 
+                }
+                else if (pro==='accessories'){
+                    p = document.getElementById('info_acc')
                 }
                 else if (pro==='service'){
                  p =document.getElementById('info_service')
@@ -293,11 +381,17 @@
                     location.reload()
                 },1500)
             })
+
+
+
+
+
+
         }
 
         function changing(e,pk,name,status){
             const qty = e.target.value
-            const base_url = 'http://127.0.0.1:8000/add-to-cart'
+            const base_url = `${origin}/add-to-cart`
             let p=''
             fetch(`${base_url}/${name}/any/${pk}/${qty}/${status}`)
             .then((res)=>{
@@ -317,6 +411,9 @@
                  p =document.getElementById('info_service')
 
                 }
+                else if (name==='accessories'){
+                    p = document.getElementById('info_acc')
+                }
                 else if(name==='kitchen'){
                  p =document.getElementById('info_kitchen')
 
@@ -330,4 +427,6 @@
             })
         }
     </script>
+
+
 {% endblock %}

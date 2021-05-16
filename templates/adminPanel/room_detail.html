@@ -1,0 +1,46 @@
+{#{% extends 'base.html' %}#}
+{% load static %}
+
+{#{% block content %}#}
+<style>
+	.msgbox{
+		outline: none;
+		border: 1px solid forestgreen;
+		border-radius: 4px;
+		padding: 5px;
+	}
+	.msgbox:focus{
+		box-shadow: 1px 1px forestgreen,1px 1px forestgreen;
+	}
+</style>
+
+<body>
+
+
+	<section >
+	        <div id="top" class=" p-2 my-2"></div>
+          <div id="messages" class="my-2 px-2"></div>
+          <form id="message-form" class="border-top my-3 d-flex justify-content-between px-2">
+            <div class="field w-100 ">
+              <div class="control">
+                <textarea class="w-100 msgbox" style="border: none" disabled id="message-input" placeholder="Start typing...." rows="3" cols="15" autofocus>Wait a few sec while we connect you to the representative...
+                </textarea>
+              </div>
+            </div>
+	          <div class=" align-self-center ml-2">
+		          <button type="submit" class=" btn btn-success">Send</button>
+
+	          </div>
+          </form>
+        </section>
+
+{{ request.user.username|json_script:'username' }}
+{{ room.name|json_script:'room' }}
+  <script src="https://media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>
+  <script src="https://media.twiliocdn.com/sdk/js/chat/v2.0/twilio-chat.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+  <script type="module" src="{% static 'js/chat.js' %}">
+
+  </script>
+</body>
+{#{% endblock %}#}

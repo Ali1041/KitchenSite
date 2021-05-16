@@ -3,12 +3,25 @@
 {% bootstrap_css %}
 {% bootstrap_jquery %}
 {% bootstrap_javascript %}
+    {% block meta %}
+        <title>TKC KITCHENS</title>
+
+    {% endblock %}
 {% block content %}
     <div  style="width:40%;margin: auto" id="search_in">
         <form action="" class="p-5 border border-rounded" method="POST">
-            <h3 class="text-center">Checkout Info</h3>
+            <h3 class="text-center">Checkout</h3>
             {% csrf_token %}
             {% bootstrap_form form %}
+{#            <label for="" class="d-block">#}
+{#                Door Number#}
+{#                <input type="text" placeholder="Door Number" class="form-control" name="street_address">#}
+{#            </label>#}
+{##}
+{#            <label for="" class="d-block">#}
+{#                Street Name#}
+{#                <input type="text" placeholder="Street Name" class="form-control" name="street_address">#}
+{#            </label>#}
             <button class="btn btn-success w-100">Process order</button>
         </form>
     </div>
@@ -18,5 +31,10 @@
 
 {% endblock %}
 {% block script %}
-
+    <script>
+        const email = document.getElementById('id_email_address')
+        let aEmail = `{{ email }}`
+        console.log(aEmail)
+        email.value = aEmail
+    </script>
 {% endblock %}
