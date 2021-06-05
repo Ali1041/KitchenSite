@@ -3,14 +3,28 @@
         <meta name="{{ detail.meta_name }}" content="{{ detail.meta_description }}">
         <title>{{ detail.meta_title }}</title>
 {% endblock %}
+{% block og %}
+		<meta name=”twitter:url” content="{{ can_tag }}" />
+	<meta property="og:url" content="{{ can_tag }}" />
+	<meta property="og:title" content="{{ detail }}" />
+	<meta property="og:image" content="https://tkckitchens.co.uk/static/imgs/favicon.png" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="{{ detail.text|truncatewords_html:150 }}" />
+	<meta property="og:locale" content="en_GB" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{ detail }}" />
+	<meta name="twitter:description" content="{{ detail.text|truncatewords_html:150 }} "/>
+	<meta name="twitter:image" content="https://tkckitchens.co.uk/static/imgs/favicon.png" />
+
+{% endblock %}
 
 {% block content %}
     <div class="container my-3">
         <div style="width: 65%;margin: auto" class="my-3" id="search_in">
-            <img src="{{ detail.get_photo_url }}" id="k_img" height="500px" width="100%" alt="">
+            <img src="{{ detail.get_photo_url }}" id="k_img" height="500px" width="100%" alt="{{ detail }} image">
         </div>
         <div>
-            <h4 class="text-center mb-2">{{ detail.title }}</h4>
+            <h1 class="text-center mb-2">{{ detail.title }}</h1>
             <hr/>
             <p id="contain">{{ detail.text|safe }}</p>
         </div>
@@ -34,6 +48,7 @@
                     imgs_blog[i].style.width = 60+'%'
                     continue
                 }
+            imgs_blog[i].setAttribute('alt','Modern Kitchen image')
             imgs_blog[i].setAttribute('id','k_img')
             imgs_blog[i].style.width = 100+'%'
             }

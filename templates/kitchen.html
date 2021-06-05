@@ -7,8 +7,22 @@
         <meta name="{{ current_kitchen.first.kitchen_type.meta_name }}" content="{{ current_kitchen.first.kitchen_type.meta_description }}">
         <title>{{ current_kitchen.first.kitchen_type.meta_title }}</title>
     {% endblock %}
-{% block content %}
+	{% block og %}
+	<meta property="og:title" content="{{ current_kitchen.first.kitchen_type.meta_title }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="{{ current_kitchen.first.kitchen_type.meta_description }}" />
+	<meta property="og:locale" content="en_GB" />
+	<meta property="og:image" content="{{ current_kitchen.first.get_photo_url }}" />
+	<meta property="og:url" content="{{ can_tag }}" />
 
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{ current_kitchen.first.kitchen_type.meta_title }}" />
+	<meta name="twitter:description" content="{{ current_kitchen.first.kitchen_type.meta_description }}" />
+	<meta name="twitter:image" content="{{ current_kitchen.first.get_photo_url }}" />
+	<meta name=”twitter:url” content="{{ can_tag }}" />
+	{% endblock %}
+{% block content %}
 
 
 
@@ -17,7 +31,7 @@
 
 
     <div class="my-5 container" id="container_remove">
-        <h2 class="text-center"><span style="color: rgb(46, 154, 135)">{{ item }}</span></h2>
+        <h1 class="text-center"><span style="color: rgb(46, 154, 135)">{{ item }}</span></h1>
         <div style="width: 100%;margin: auto">
 
             <div id="carouselExampleControls" class="carousel slide " style="width: fit-content;margin: auto" data-ride="carousel">
@@ -35,7 +49,7 @@
                 <p class="m-0 align-self-center text-center w-25" id="search_in"><b>Colors Available: </b></p>
                 <div class="d-flex justify-content-between ml-3 w-75" id="search_in">
                 {% for item in kitchen_color %}
-                    <p class="m-0 align-self-center" onclick="change_url(`{{ item.color }}`)" style="cursor: pointer;border: 1px solid lightgrey;width: 30px;height: 30px;background-color: var(--{{ item.color }})"></p>
+                    <p class="m-0 align-self-center" onclick="change_url(`{{ item.color }}`,`{{ kitchen_view.name }}`)" style="cursor: pointer;border: 1px solid lightgrey;width: 30px;height: 30px;background-color: var(--{{ item.color }})"></p>
 
                 {% endfor %}
                 </div>
@@ -67,7 +81,7 @@
 
           <div class="dropdown-menu p-0 w-100">
               {% for item in kitchen_color %}
-                    <div class="dropdown-item a_btn d-flex" onclick="change_url(`{{ item.color }}`)" style="cursor:pointer">
+                    <div class="dropdown-item a_btn d-flex" onclick="change_url(`{{ item.color }}`,`{{ kitchen_view.name }}`)" style="cursor:pointer">
                     <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;display: inline-block;height: 30px;width: 30px;background-color: var(--{{ item.color }})">
                         </p>
                         <h6 class="align-self-center">
@@ -159,8 +173,8 @@
             </div>
         {% endif %}
 	        <div class="d-flex justify-content-between" id="display_b">
-	        <div style="width:30%" id="search_in" class="p-3 align-self-center" >
-                <form  id="filter" class="text-center" >
+	        <div style="width:30%" id="search_in" class="align-self-start" >
+                <form  id="filter" class="text-center" action="{% url 'application:kitchen-view' kitchen_view.name current_color   %}" >
                     <select name="unit_type" id="" class="form-control  mb-2">
                         <option value="" >Select a unit</option>
                         {% for item in search %}
@@ -172,11 +186,14 @@
                 </form>
             </div>
 
-				<div class="align-self-center my-2">
-					<form action="{% url 'application:kitchen-view' item.kitchen_type item.color %}" method="GET" class="ml-auto w-100 d-flex">
-						<input type="text" class="form-control" required name="name__icontains" placeholder="Search units..">
+				<div class="align-self-start" id="abs"  >
+					<form class="ml-auto w-100 d-flex">
+						<input type="text" class="form-control" oninput="searchUnits(event)" onblur="removeDiv(event)" required name="name__icontains" placeholder="Search units..">
 						<button class="btn btn-success"><i class="fas fa-search"></i></button>
 					</form>
+					<div style="" class="bg-white p-2" id="add-units">
+
+					</div>
 				</div>
 	        </div>
 
@@ -213,7 +230,7 @@
             <tbody id="table">
 
             {% for item in units %}
-                <tr>
+                <tr id="unit">
                     <td><img class="pointer" src="{{ item.get_photo_url }}" onmouseover="displayImage(event)" onmouseleave="removeImage(event)" loading="lazy" width="70px" height="70px" alt="{{ item.name }}"></td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.unit_type }}</td>
@@ -367,72 +384,62 @@ Policy
         Added to cart!!
     </div>
 
-	<div id="fixed" style="position: fixed;top: 20%;left: 20%;display: none">
-		<img src="" height="350px" alt="">
+	<div id="fixed" class="bg-white" style="position: fixed;top: 20%;left: 20%;display: none">
+		<p class="m-0 btn btn-danger text-right d-none">x</p>
+		<img src="" height="350px" alt="Image">
 	</div>
-
+{{ current_kitchen.first.kitchen_type.name|json_script:'name' }}
+	{{ current_kitchen.first.color|json_script:'color' }}
+	{{ request.user.username|json_script:'username' }}
 {% endblock %}
 {% block script %}
+	<script type="text/javascript" src="{% static 'js/kitchen.js' %}"></script>
     <script>
+	    const dropdown = document.getElementById('add-units')
+		const kitchenName = JSON.parse(document.getElementById('name').textContent);
+		const color = JSON.parse(document.getElementById('color').textContent);
+		const username = JSON.parse(document.getElementById('username').textContent);
 
-            const active = document.getElementsByClassName('get')
-            active[0].classList.add('active')
-            const select = document.getElementById('select').innerText
-            const value = select.split(' ')
-            const div = document.getElementById('cart')
-            function stop(e, status, kit, pk, pro) {
-                {#e.target.removeEventListener()#}
 
-                const qty = e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value
-                const base_url = `${origin}/add-to-cart`
-                let url = `${base_url}/${value[2]}/${kit}/${pk}/${qty}/${pro}/`
-                fetch(url)
-                    .then((res) => {
-                        return res.json()
-                    })
-                    .then((result) => {
-                        div.style.bottom = 10 + '%'
+            function searchUnits(e){
+                fetch(`${location.origin}/search-units/${e.target.value}/${kitchenName}/`)
+	            .then((res)=>{
+	                return res.json()
+	            })
+	            .then((result)=>{
+		            const resultArray = JSON.parse(result.response)
+		            dropdown.style.display = 'block'
+		            dropdown.innerHTML = ''
+					resultArray.forEach((item)=>{
+						const a = document.createElement('a')
+						a.innerText = item.fields.name +' : '+item.fields.description
+						a.classList.add('p-2','d-block')
+						a.setAttribute('href',`${location.origin}/kitchen-view/unit/${kitchenName}/${color}/${item.pk}/`)
+						a.addEventListener('click',()=>{
+						    console.log('clicked item')
+						    location.assign(`${location.origin}/kitchen-view/unit/${kitchenName}/${color}/${item.pk}/`)
+						})
+						dropdown.append(a)
+					})
+	            })
+	            .catch((err,res)=>{
+	                dropdown.style.display = 'block';
+		            dropdown.style.minHeight = 'fit-content';
+	                dropdown.innerHTML = 'No results';
+	            })
+            }
+            function removeDiv(e){
+                setTimeout(()=>{
+                    dropdown.style.display = 'none'
 
-                        setTimeout(() => {
-                            div.style.bottom = -10 + '%'
-                        }, 1500)
-                        e.target.style.color = 'lightgray'
-                        const ls = localStorage.getItem('pk')
-                        if (ls === pk) {
-                            const val = parseInt(qty) + 1
-                            e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value = val
-                        }
-                        localStorage.setItem('pk', pk)
-                        cart_count('e')
-
-                        return result
-                    })
-
+                },500)
             }
 
-            function change_url(e) {
 
-                const color = e;
-                const kitchen = `{{ kitchen_view.name }}`
-                const base_url = `${origin}/kitchen-view`
-                location.replace(`${base_url}/${kitchen}/${color}/`)
-            }
 
-			window.addEventListener('load',()=>{
-			    window.scrollTo({top:400,behavior:"smooth"})
-			})
 
-            function displayImage(e){
-	            const fixed = document.getElementById('fixed')
-	            fixed.style.display = 'block'
-	            fixed.firstElementChild.src = e.target.src
 
-            }
-            function removeImage(e){
-                const fixed = document.getElementById('fixed')
-	            fixed.style.display = 'none'
 
-            }
     </script>
 
 {% endblock %}

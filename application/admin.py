@@ -21,6 +21,11 @@ class AdminUnits(admin.ModelAdmin):
     list_filter = ('unit_type', 'name', 'kitchen')
     search_fields = ('unit_type', 'name', 'kitchen')
 
+class AdminAccessory(admin.ModelAdmin):
+    list_display = ('accessories_type',)
+    list_filter = ('accessories_type',  )
+    search_fields = ('accessories_type',)
+
 
 admin.site.register(Kitchen, AdminKitchen)
 admin.site.register(WorkTop, AdminWorktop)
@@ -43,6 +48,6 @@ admin.site.register(ContactUs)
 admin.site.register(ContactActual)
 admin.site.register(MetaStatic)
 admin.site.register(AccessoriesType)
-admin.site.register(Accessories)
+admin.site.register(Accessories,AdminAccessory)
 admin.site.register(DemoChat)
 admin.site.register(Review)

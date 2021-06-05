@@ -86,32 +86,49 @@ const handleResponse = (res) => {
 
 registerSw()
 
+    function subscribe1(e){
+            e.preventDefault()
+            const email=e.target.previousElementSibling.value
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        function validateEmail(email) {
+              const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+              return re.test(email);
+            }
 
-	function openChat(e){
-	    fetch(`${location.origin}/create-room/`)
-		.then((res)=>{
-		    return res.json()
-		})
-		.then((result)=>{
-		})
+        if (validateEmail(email)){
+            const p = document.getElementById('msg')
+            p.style.color = 'green'
+            const base_url = `${origin}/subscribe/`
+            fetch(base_url,{
+                method:'POST',
+                body:JSON.stringify({'email':e.target.previousElementSibling.value}),
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken':csrftoken
+                }
+            })
+            .then((res)=>{
+                return res.json()
+            })
+            .then((result)=>{
+                if (result.added==='added'){
+                    p.innerHTML = 'Thank you.You have subscribed successfully to our newsletter!!'
+                }
+                else{
+                    p.innerHTML = 'Thank you.You are already subscribed to the list!!'
+                }
+                e.target.previousElementSibling.value = ''
+            })
+        }
+        else{
+                p.innerHTML = 'Try again!!!'
+                setTimeout(()=>{
+                    p.innerHTML = ''
+                },3000)
 
-	    e.target.parentElement.nextElementSibling.style.display = 'block'
-	}
+        }
+    }
 
-	function closeChat(e){
-	    document.getElementById('chatDiv').style.display = 'none'
-
-	}
-	    setTimeout(()=>{
-        document.getElementById('pop-up').style.display = 'block'
-    },10000)
-	function closePopup(e){
-    const chatDiv = document.getElementById('chat-face')
-	    document.getElementById('pop-up').style.display = 'none'
-        chatDiv.style.top = 5+'px'
-        chatDiv.style.bottom = 0+'px'
-        chatDiv.style.right = 20+'px'
-	}
 
       function cart_count(e){
             const num = document.getElementsByClassName('cart_count')
@@ -156,6 +173,11 @@ registerSw()
             pay.style.width = 90 + '%'
 
     }
+      const headTop = document.getElementsByTagName('head')
+            const scriptFont = document.createElement('script')
+          scriptFont.src = "https://kit.fontawesome.com/359826513d.js"
+          scriptFont.crossorigin = "anonymous"
+          headTop[0].append(scriptFont)
 
       function search(e){
         function getCookie(name) {
@@ -191,5 +213,3 @@ registerSw()
 
     }
 
-      let ChatEnable = false
-    // export default ChatEnable

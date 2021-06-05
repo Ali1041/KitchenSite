@@ -33,7 +33,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ALLOWED_HOSTS = ['tkc-kitchen.nw.r.appspot.com', '127.0.0.1', 'tkckitchens.co.uk', 'www.tkckitchens.co.uk', '*']
+ALLOWED_HOSTS = ['tkc-kitchen.nw.r.appspot.com', '127.0.0.1', 'tkckitchens.co.uk', 'www.tkckitchens.co.uk',]
 
 # Application definition
 
@@ -61,9 +61,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'webpush',
     'compressor',
-    'crispy_forms'
+    'crispy_forms',
+    'tawkto',
 ]
 
+TAWKTO_ID_SITE = '609415aab1d5182476b65aae'
+TAWKTO_API_KEY = 'cd414feaa0eaaa11f0a234cbdadd472efbad0c9d'
 SITE_ID = 1
 CKEDITOR_UPLOAD_PREFIX = 'media/uploads/'
 CKEDITOR_UPLOAD_PATH = "media/uploads/"
@@ -84,7 +87,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://tkc-kitchen.nw.r.appspot.com",
     "https://www.tkckitchens.co.uk",
     "https://tkckitchens.co.uk",
-    "http://127.0.0.1:9000"
 ]
 
 ROOT_URLCONF = 'KitchenSite.urls'
@@ -185,8 +187,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles'),)
 COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
-# COMPRESS_URL = os.path.join(BASE_DIR,'/static/')
-# COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 COMPRESS_FILTERS = {
@@ -199,7 +199,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-DEBUG = True
+DEBUG = False
 # cloud_sql_proxy.exe -instances="tkc-kitchen:europe-west2:application-instance"=tcp:3307
 if DEBUG:
     SESSION_COOKIE_SECURE = False
@@ -229,9 +229,3 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 )
 
 LOGOUT_REDIRECT_URL = 'application:login'
-
-TWILIO_ACCOUNT_SID = 'AC139de7871b3120400728bebe68fe6864'
-TWILIO_API_KEY = 'SKd067efbde5098aa8713db9fe31d415a3'
-TWILIO_API_SECRET = 'uNn12EYfrdsPBgSw0HcEaUK4LLt3jKE6'
-TWILIO_CHAT_SERVICE_SID = 'IS27993f1aeaa64ffabe6dd0b55b8eb46d'
-# NOTIFY = 'ISda051134072af5c96595f32bff482372'

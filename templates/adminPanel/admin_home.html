@@ -144,13 +144,19 @@
 	    <a class="btn btn-primary" href="{% url 'adminPanel:all_rooms' %}">See All chat rooms</a>
     </div>
 
-
+ <div class="text-center my-2 ">
+	    <form action="{% url 'adminPanel:push' %}" class="mx-auto w-50" method="POST">
+		    {% csrf_token %}
+		    <h3>Push notifications</h3>
+		    <input type="text" name="title" class="form-control" placeholder="Title">
+		    <textarea name="text" id="" cols="30" rows="10" placeholder="Text" class="form-control my-2"></textarea>
+	        <button class="btn btn-warning text-white" type="submit">Push notification</button>
+	    </form>
+    </div>
         {% endblock %}
 
     </div>
-    <div class="text-center my-2">
-	    <a href="{% url 'adminPanel:push' %}" class="btn btn-warning text-white">Push notification</a>
-    </div>
+
 
     {% include 'inc/footer.html' %}
 </body>
