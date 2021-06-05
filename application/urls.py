@@ -73,3 +73,4 @@ urlpatterns = [
     path('token/', token, name='token'),
     path('send_push/', send_push, name='push'),
 ]
+

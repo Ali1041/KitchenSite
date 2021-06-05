@@ -115,35 +115,16 @@ import pymysql
 
 pymysql.version_info = (1, 4, 6, 'final', 0)
 pymysql.install_as_MySQLdb()
-if os.getenv('GAE_APPLICATION', None):
-    # Running on production App Engine, so connect to Google Cloud SQL using
-    # the unix socket at /cloudsql/<your-cloudsql-connection string>
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/tkc-kitchen:europe-west2:application-instance',
-            'USER': 'ali',
-            'PASSWORD': config('password'),
-            'NAME': 'main',
-        }
-    }
-else:
-    # Running locally so connect to either a local MySQL instance or connect to
-    # Cloud SQL via the proxy. To start the proxy via command line:
-    #
-    #     $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
-    #
-    # See https://cloud.google.com/sql/docs/mysql-connect-proxy
-    DATABASES = {
+DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'HOST': '127.0.0.1',
-            'PORT': '3307',
+            'USER': 'root',
+            'PASSWORD': 'tkc-kitchen',
             'NAME': 'main',
-            'USER': 'ali',
-            'PASSWORD': config('password'),
         }
     }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -198,7 +179,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-DEBUG = False
+DEBUG = True
 # cloud_sql_proxy.exe -instances="tkc-kitchen:europe-west2:application-instance"=tcp:3307
 if DEBUG:
     SESSION_COOKIE_SECURE = False
