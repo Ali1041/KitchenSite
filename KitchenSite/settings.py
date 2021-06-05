@@ -115,13 +115,23 @@ import pymysql
 
 pymysql.version_info = (1, 4, 6, 'final', 0)
 pymysql.install_as_MySQLdb()
-DATABASES = {
+DEBUG = True
+
+if DEBUG == False:
+    DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'HOST': '127.0.0.1',
+                'USER': 'root',
+                'PASSWORD': 'tkc-kitchen',
+                'NAME': 'main',
+            }
+        }
+else:
+    DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'HOST': '127.0.0.1',
-            'USER': 'root',
-            'PASSWORD': 'tkc-kitchen',
-            'NAME': 'main',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
 
@@ -179,7 +189,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-DEBUG = True
 # cloud_sql_proxy.exe -instances="tkc-kitchen:europe-west2:application-instance"=tcp:3307
 if DEBUG:
     SESSION_COOKIE_SECURE = False
