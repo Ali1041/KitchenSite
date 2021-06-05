@@ -77,6 +77,9 @@ class Kitchen(models.Model):
     class Meta:
         ordering = ['pk']
 
+class UnitTypeManager(models.Manager):
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
 
 class UnitType(models.Model):
     UNIT_TYPES = [
@@ -92,9 +95,21 @@ class UnitType(models.Model):
     ]
     name = models.CharField(max_length=255)
 
+    objects = UnitTypeManager()
+    def natural_key(self):
+        return (self.name,)
+
+    def get_by_natural_key(self):
+        return (self.name,)
     def __str__(self):
         return self.name
+    class Meta:
+        unique_together = [['name']]
 
+
+class UnitManager(models.Manager):
+    def get_by_natural_key(self, unit_type):
+        return self.get(unit_type=unit_type)
 
 class Units(models.Model):
     name = models.CharField(max_length=255)
@@ -114,8 +129,15 @@ class Units(models.Model):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
 
+    def natural_key(self):
+        return (self.unit_type.name,)
+
+    def get_by_natural_key(self):
+        return (self.unit_type.name,)
+
     class Meta:
         ordering = ['-pk']
+        unique_together = [['unit_type']]
 
 
 class Worktop_category(models.Model):

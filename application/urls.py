@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .views import *
 from django.contrib.auth.views import LogoutView
-from adminPanel.views import token,send_push,create_room
+from adminPanel.views import token, send_push, create_room
 
 app_name = 'application'
 
@@ -22,6 +22,8 @@ urlpatterns = [
     path('kitchen-view/<str:name>/<str:color>/', KitchenView.as_view(), name='kitchen-view'),
     path('get-kitchens/<str:color>/', get_kitchen, name='get-kitchen'),
     path('unit-change/<int:pk>/<str:name>/<int:qty>/', unit_change, name='unit-change'),
+    path('search-units/<str:search>/<str:name>/', search_units, name='search-units'),
+    path('kitchen-view/unit/<str:name>/<str:color>/<int:unit>/', KitchenView.as_view(), name='unit-view'),
 
     # worktop
     path('worktop/<slug:slug>/', WorktopListView.as_view(), name='worktop-view'),
@@ -29,7 +31,8 @@ urlpatterns = [
 
     # appliances
     path('appliances/<slug:slug>/', AppliancesListView.as_view(), name='appliances-list'),
-    path('appliances-detail/<str:name>/<slug:slug>/<int:pk>/', WorktopDetailView.as_view(), name='appliances-detail-view'),
+    path('appliances-detail/<str:name>/<slug:slug>/<int:pk>/', WorktopDetailView.as_view(),
+         name='appliances-detail-view'),
 
     # cart
     path('add-to-cart/<str:product>/<str:name>/<int:pk>/<int:qty>/<str:process>/', addcart, name='add-to-cart'),
@@ -54,10 +57,7 @@ urlpatterns = [
     path('Cookies/', cook, name='cookies'),
     path('intellectual-property-notification/', intellectual, name='intelectual'),
     path('disclaimer/', disclaimer, name='disclaimer'),
-
-    # path('doors/cabnets/<int:pk>/<str:name>/', choose, name='choose'),
     path('subscribe/', newsletter, name='newsletter'),
-
     path('HireinstallationService/', install_contact, name='installation_contact'),
 
     # checkout
@@ -72,6 +72,4 @@ urlpatterns = [
     # Chat api integrations urls
     path('token/', token, name='token'),
     path('send_push/', send_push, name='push'),
-    path('create-room/', create_room, name='create_room'),
-
 ]

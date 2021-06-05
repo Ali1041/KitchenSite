@@ -6,6 +6,20 @@
         <meta name="{{ detail.meta_name }}" content="{{ detail.meta_description }}">
         <title>{{ detail.meta_title }}</title>
 {% endblock %}
+{% block og %}
+		<meta name=”twitter:url” content="{{ can_tag }}" />
+	<meta property="og:url" content="{{ can_tag }}" />
+	<meta property="og:title" content="{{ detail }}" />
+	<meta property="og:image" content="{{ detail.get_photo_url }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="{{ detail.description }}" />
+	<meta property="og:locale" content="en_GB" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{ detail }}" />
+	<meta name="twitter:description" content={{ detail.description }} />
+	<meta name="twitter:image" content="{{ detail.get_photo_url }}" />
+
+{% endblock %}
 
 {% block content %}
 
@@ -44,7 +58,7 @@
         <div class="row m-0" >
             <div class="col-md-6">
                 <div>
-                    <img src="{{ detail.get_photo_url }}" class="img1" height="400px" style="max-width: 100%" alt="">
+                    <img src="{{ detail.get_photo_url }}" class="img1" height="400px" style="max-width: 100%" alt="{{ detail }} image">
                 </div>
             </div>
             <div class="col-md-6">
@@ -59,7 +73,7 @@
                     </div>
                     <p id="p" class="m-0 p-2" style="color: green"></p>
                     <button class="btn btn-success mt-2" onclick="add_cart(event)">Add to cart</button>
-                    <a href="{% url 'application:wishlist' product detail.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt=""></a>
+                    <a href="{% url 'application:wishlist' product detail.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt="wishlist svg"></a>
 
             </div>
 
@@ -76,11 +90,11 @@
 
                 <span>Share</span>
                 {% post_to_facebook request.build_absolute_uri %}
-                <img src="{% static 'Svg/facebook-f-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center inside_link">
+                <img src="{% static 'Svg/facebook-f-brands.svg' %}" style="cursor:pointer;" height="15px" alt="facebook" class="align-self-center inside_link">
                 {% post_to_twitter request.build_absolute_uri %}
-                <img src="{% static 'Svg/twitter-brands.svg' %}" style="cursor:pointer;" height="15px" alt="" class="align-self-center inside_link">
+                <img src="{% static 'Svg/twitter-brands.svg' %}" style="cursor:pointer;" height="15px" alt="twitter" class="align-self-center inside_link">
                 {% save_to_pinterest request.build_absolute_uri %}
-                <img src="{% static 'Svg/pinterest-p-brands.svg' %}" height="15px" alt="" style="cursor:pointer;" class="align-self-center inside_link">
+                <img src="{% static 'Svg/pinterest-p-brands.svg' %}" height="15px" alt="pinterest" style="cursor:pointer;" class="align-self-center inside_link">
 
 
             </div>
@@ -93,7 +107,7 @@
     <div class="border-top border-bottom my-3 p-3 d-flex justify-content-between menu ">
 
         <div class="d-flex menu">
-            <div  class="align-self-center text-center"><img src="{% static 'Svg/plane-solid.svg' %}" height="40px" alt="">
+            <div  class="align-self-center text-center"><img src="{% static 'Svg/plane-solid.svg' %}" height="40px" alt="Plane svg">
 </div>
             <div class="align-self-center ml-2 text-center">
                 <h3 class="m-0" style="color:rgb(46, 154, 135);">Free Shipping</h3>
@@ -103,7 +117,7 @@
 
 
         <div class="d-flex menu">
-            <div  class="align-self-center text-center"><img src="{% static 'Svg/dollar-sign-solid.svg' %}" class="align-self-center" height="40px" alt=""></div>
+            <div  class="align-self-center text-center"><img src="{% static 'Svg/dollar-sign-solid.svg' %}" class="align-self-center" height="40px" alt="Cash svg"></div>
 
             <div class="align-self-center ml-2 text-center">
                 <h3 class="m-0 " style="color:rgb(46, 154, 135);">Cash On Delivery</h3>
@@ -113,7 +127,7 @@
 
 
         <div class="d-flex menu">
-            <div  class="align-self-center text-center"><img src="{% static 'Svg/recycle-solid.svg' %}" class="align-self-center" alt="" height="40px"></div>
+            <div  class="align-self-center text-center"><img src="{% static 'Svg/recycle-solid.svg' %}" class="align-self-center" alt="Guarantee Svg" height="40px"></div>
 
             <div class="align-self-center ml-2 text-center">
                 <h3 class="m-0" style="color:rgb(46, 154, 135);">Money Safe</h3>
@@ -160,7 +174,7 @@
         <div class="row m-0">
         {% for item in feature1 %}
             <div class="card col-lg-3 p-0 ">
-                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
+                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="{{ item }} image">
                 <div class="card-body">
                     <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>
@@ -170,7 +184,7 @@
         {% endfor %}
                 {% for item in feature2 %}
             <div class="card col-lg-3 p-0 ">
-                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="">
+                <img src="{{ item.get_photo_url }}" loading="lazy" class="card-img-top img" height="300px" alt="{{ item }} image">
                 <div class="card-body">
                     <h5 class="text-center"><a style="color:rgb(46, 154, 135);" href="{% url 'application:worktop-detail-view' 'appliance' item.category.slug item.pk %}">{{ item }}</a></h5>
                     <p class="text-center">£ {{ item.price|floatformat:"0" }}</p>

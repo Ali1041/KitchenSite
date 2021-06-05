@@ -166,7 +166,7 @@ def signup(request):
         user.set_password(pas1)
         user.save()
         email_send(user.email, 'register')
-        msg = messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
+        messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
     meta = meta_info('home')
     ctx = {'name': meta.signup_name
@@ -201,7 +201,6 @@ def login(request):
             new_list = mylist.copy()
             mylist.clear()
             x = new_list[-1]
-            print(x,new_list)
 
             if x == f"http://{abs_uri}/login/" or x == f"http://{abs_uri}/signup/" or x == f'http://{abs_uri}/password_reset_done/':
                 return redirect('application:index')
@@ -233,7 +232,7 @@ def index(request):
             'YOUR BROCHURE',
             text_content,
             None,
-            [request.POST['email'],'kashif@tkckitchens.co.uk']
+            [request.POST['email'], 'kashif@tkckitchens.co.uk']
         )
         email.attach_alternative(html_content, 'text/html')
         email.send()
@@ -288,10 +287,8 @@ class AccessoriesDetail(generic.DetailView):
         return ctx
 
     def get_queryset(self):
-        print(self.kwargs)
-        x = Accessories.objects.select_related('accessories_type').filter(
+        return Accessories.objects.select_related('accessories_type').filter(
             pk=self.kwargs['pk'])
-        return x
 
 
 # all kitchen
@@ -383,13 +380,30 @@ class KitchenView(generic.ListView):
 
     def get_queryset(self):
         kitchen_view = KitchenCategory.objects.get(name__iexact=self.kwargs['name'])
+        if len(self.kwargs) == 3:
+            return Units.objects.select_related('kitchen', 'unit_type').filter(pk=self.kwargs['unit'], available=True)
+        else:
+            units = Units.objects.select_related('kitchen', 'unit_type').filter(kitchen=kitchen_view, available=True)
+            filters = UnitFilter(self.request.GET,
+                                 queryset=Units.objects.select_related('kitchen').filter(kitchen=kitchen_view))
+            if len(self.request.GET) != 0:
+                units = filters.qs
+            return units
 
-        units = Units.objects.select_related('kitchen', 'unit_type').filter(kitchen=kitchen_view, available=True)
-        filters = UnitFilter(self.request.GET,
-                             queryset=Units.objects.select_related('kitchen').filter(kitchen=kitchen_view))
-        if len(self.request.GET) != 0:
-            units = filters.qs
-        return units
+
+# AJAX units
+def search_units(request, **kwargs):
+    units_instances = Units.objects.filter(Q(name__icontains=kwargs.get('search'))
+                                           | Q(description__icontains=kwargs.get('search')) |
+                                           Q(unit_type__name__icontains=kwargs.get('search')),
+                                           kitchen__name=kwargs['name'])
+    if units_instances:
+        serialized_instances = serialize('json', units_instances,
+                                         fields=('pk', 'name', 'description', 'price', 'sku', 'img', 'unit_type')
+                                         , use_natural_foreign_keys=True)
+        return JsonResponse({'response': serialized_instances})
+    else:
+        return JsonResponse({'response': 'No results'})
 
 
 # Worktop list
@@ -579,7 +593,7 @@ def addcart(request, **kwargs):
                     pre_order[0].save()
                     unit_inter.save()
             else:
-                pre_order = Combining.objects.create(kitchen=kitchen, user=request.user,checkout=False)
+                pre_order = Combining.objects.create(kitchen=kitchen, user=request.user, checkout=False)
                 unit_inter = Units_intermediate.objects.create(unit=unit, combine=pre_order, qty=qty)
                 pre_order.save()
                 unit_inter.save()
@@ -858,16 +872,32 @@ class BlogDetail(generic.DetailView):
     context_object_name = 'detail'
 
 
-def newsletter(request):
-    if request.body:
-        data = json.loads(request.body)
-        already_exist = Newsletter.objects.filter(email=data['email'])
-        if already_exist:
-            return JsonResponse({'added': 'not added'})
-        Newsletter.objects.create(email=data['email'])
-        email_send(data['email'], 'newsletter')
-        return JsonResponse({'added': 'added'})
+def newsletter_subscribe(request):
+    print(request.body)
+    data = json.loads(request.body)
+    print(data)
+    already_exist = Newsletter.objects.filter(email=data['email'])
+    if already_exist:
+        return JsonResponse({'added': 'not added'})
+    Newsletter.objects.create(email=data['email'])
+    email_send(data['email'], 'newsletter')
 
+
+def newsletter(request):
+    if request.body and not request.POST:
+        newsletter_subscribe(request)
+        return JsonResponse({'added': 'added'})
+    if request.method == 'GET':
+        return render(request,'subscribe.html')
+    if request.POST:
+        already_exist = Newsletter.objects.filter(email=request.POST['email'])
+        if already_exist:
+            messages.warning(request,'You have already subscribed')
+            return redirect('application:newsletter')
+        Newsletter.objects.create(email=request.POST['email'])
+        email_send(request.POST['email'], 'newsletter')
+        messages.success(request, 'You have now subscribed')
+        return redirect('application:newsletter')
 
 def terms(request):
     worktop = Worktop_category.objects.all()
@@ -1034,7 +1064,8 @@ def temp_checkout(request, **kwargs):
     complete_order.order.add(*my_cart)
     Cart.objects.filter(user=request.user, checkedout=False).update(checkedout=True)
     for id in kitchen_ids:
-        Combining.objects.select_related('user','kitchen').filter(user=request.user,kitchen=Kitchen.objects.get(id=id['kitchen_order__kitchen_id'])).update(checkout=True)
+        Combining.objects.select_related('user', 'kitchen').filter(user=request.user, kitchen=Kitchen.objects.get(
+            id=id['kitchen_order__kitchen_id'])).update(checkout=True)
 
     email_send(info.email_address, 'order')
     html_content = render_to_string('inc/order_detail_email.html', {'detail': complete_order})

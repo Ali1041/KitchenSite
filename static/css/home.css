@@ -109,12 +109,34 @@ h1{
 .pointer{
     cursor: pointer;
 }
+#abs{
+    position: relative;top: 0;left: 0
+}
+#add-units{
+    max-height: 45vh;position: absolute;top:40px;left: 0;overflow: auto;display: none;;cursor: pointer;
+}
+#add-units p:hover {
+    background-color: whitesmoke;
+}
+.min-width div img{
+    min-width: 100%;
+}
+.menu{
+    display: none!important;
+}
+.desktop{
+    display: block;
+    position: sticky;top: 0;z-index: 2
+}
 
 @media only screen and (min-width: 100px) and (max-width: 768px){
     body{
         /*font-size: 1.5rem;*/
         width: 100vw;
     }
+    .display_b{
+    display: none!important;
+}
     .remove-border{
         border: none!important;
     }
@@ -124,6 +146,10 @@ h1{
     }
     .mtb1{
         margin: 7px 0!important;
+    }
+    .d-none{
+        display: block!important;
+        width: fit-content;
     }
     .height-cut{
         height: 200px!important;
@@ -157,8 +183,11 @@ h1{
     .menu{
         display: block!important;
     }
+    .desktop{
+    display: none;
+}
     .counter{
-        width: 120% !important;
+        width: 110% !important;
     }
     .complete-line{
         width: 90%!important;
@@ -285,4 +314,37 @@ h1{
         .input{
         width: 100%!important;
     }
+    .display_b{
+    display: none!important;
 }
+    #k_img{
+        height: 450px!important;
+        max-width: 100%!important;
+    }
+    .video{
+        height: 400px!important;
+    }
+    .menu{
+        display: block!important;
+    }
+        .desktop{
+    display: none;
+}
+    #second_bar{
+        display: none!important;
+    }
+}
+@media only screen and (min-width: 1008px) and (max-width: 1100px) {
+#k_img{
+    height: 650px!important;
+}
+    .video{
+        height: 400px!important;
+    }
+}
+@media only screen and (min-width: 1111px)  {
+    .m-width{
+width: min-content;    }
+}
+
+

@@ -23,7 +23,7 @@
                 {% for item in wishlist %}
                     <tr>
                         {% if item.worktop %}
-                        <td><img src="{{ item.worktop.get_photo_url }}" height="45px" width="40px" alt=""></td>
+                        <td><img src="{{ item.worktop.get_photo_url }}" height="45px" width="40px" alt="{{ item }} image"></td>
                         <td>{{ item.worktop|truncatewords:3 }}</td>
                         <td>{{ item.worktop.description|truncatewords:3 }}</td>
                         <td>{{ item.worktop.price }}</td>
@@ -35,7 +35,7 @@
 
 
                         {% elif item.appliances %}
-                        <td><img src="{{ item.appliances.get_photo_url }}" height="45px" width="40px" alt=""></td>
+                        <td><img src="{{ item.appliances.get_photo_url }}" height="45px" width="40px" alt="{{ item }} image"></td>
                         <td>{{ item.appliances|truncatewords:3 }}</td>
                         <td>{{ item.appliances.description|truncatewords:3 }}</td>
                         <td>{{ item.appliances.price }}</td>
@@ -49,7 +49,7 @@
 
 
                         {% elif item.accessories %}
-                        <td><img src="{{ item.accessories.get_photo_url }}" height="45px" width="40px" alt=""></td>
+                        <td><img src="{{ item.accessories.get_photo_url }}" height="45px" width="40px" alt="{{ item }} image"></td>
                         <td>{{ item.accessories.accessories_type|truncatewords:3 }}</td>
                         <td>{{ item.accessories.description|truncatewords:3 }}</td>
                         <td>{{ item.accessories.price }}</td>
@@ -87,7 +87,6 @@
     <script>
 
         function the_cart(e,pk,process,pro){
-            console.log(pk,process,pro)
             {# http://127.0.0.1:8000/  https://tkc-kitchen.nw.r.appspot.com #}
             const base_url = `${origin}/add-to-cart`
             fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)

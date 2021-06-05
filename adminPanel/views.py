@@ -30,7 +30,7 @@ def superuser(any_func):
         if not args[0].user.is_superuser:
             return error_403(args[0], 'none')
         else:
-            return any_func(args[0])
+            return any_func(args[0],**kwargs)
 
     return inner
 
@@ -446,6 +446,7 @@ class BlogsList(generic.ListView):
 def create_blog(request, **kwargs):
     form = BlogForm
     ctx = {'form': BlogForm}
+
     if len(kwargs) != 1:
         blog = get_object_or_404(Blogs, id=kwargs['pk'])
         form = BlogForm(request.POST or None, request.FILES or None, instance=blog)
@@ -493,18 +494,16 @@ def bulk_add(request):
 def file_reading(request):
     file = UploadFile.objects.first()
     x = openpyxl.load_workbook(default_storage.open(file.file.name))
-    print(request.POST.get('name'),'as')
     if request.POST.get('name') == 'appliance':
         worksheet = x[request.POST['category']]
         cat = Category_Applianes.objects.get(name=request.POST['category'])
-        print(worksheet.max_row)
         for i in range(3, worksheet.max_row):
             if worksheet.cell(row=i, column=3).value is not None:
                 img_loader = SheetImageLoader(worksheet)
                 img = img_loader.get(f'G{i}')
                 img_io = BytesIO()
                 new_img = File(img_io, name=f'{cat}_{i}')
-                if img.mode in 'RGBA':
+                if img.mode in 'RGBA' or img.mode in 'P':
                     img = img.convert('RGB')
                 img.save(img_io, 'JPEG', optimize=True)
                 app = Appliances.objects.create(
@@ -821,16 +820,16 @@ def token(request):
     return JsonResponse(response)
 
 
-@csrf_exempt
 def send_push(request):
-    try:
-        body = 'The body of notification'
-        data = 'data pf notification'
+    if request.method == 'POST':
+        try:
+            body = 'The body of notification'
+            data = request.POST['text']
 
-        user = request.user
-        payload = {'head': 'TKC Kitchens - Chat', 'body': data}
-        send_user_notification(user=user, payload=payload, ttl=1000)
+            user = request.user
+            payload = {'head': request.POST['title'], 'body': data}
+            send_user_notification(user=user, payload=payload, ttl=1000)
 
-        return JsonResponse(status=200, data={"message": "Web push successful"})
-    except TypeError:
-        return JsonResponse(status=500, data={"message": "An error occurred"})
+            return JsonResponse(status=200, data={"message": "Web push notifications successful"})
+        except TypeError:
+            return JsonResponse(status=500, data={"message": "An error occurred"})

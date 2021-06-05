@@ -48,7 +48,7 @@ urlpatterns = [
     # blogs
     path('admin-blogs/',BlogsList.as_view(),name='admin-blog'),
     path('admin-add-blog/<str:to>/',create_blog,name='admin-add-blog'),
-    path('admin-edit-blog/<str:to>/<int:pk>/',create_blog,name='edit-blog'),
+    path('edit-blog/<str:to>/<int:pk>/',create_blog,name='edit-blog'),
     path('admin-detail/<int:pk>/',DetailBlog.as_view(),name='detail-blog'),
 
     # bulk data
