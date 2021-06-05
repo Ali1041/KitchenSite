@@ -2,49 +2,47 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="21657a69-ca15-4fa4-a5e8-fdace87d06f8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KitchenSite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KitchenSite/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0002_auto_20210121_2118.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0003_contactus.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0004_contactus_detail.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0005_auto_20210126_2012.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0006_auto_20210127_1900.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0007_auto_20210128_2348.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0008_auto_20210128_2349.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0009_cart_checkedout.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0010_auto_20210201_2020.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0011_auto_20210205_0300.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0012_auto_20210205_0336.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0013_auto_20210207_1852.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0014_auto_20210207_1852.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0015_contactactual.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0016_kitchen_available.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0017_auto_20210209_0404.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0018_auto_20210210_0214.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0019_metainfo.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0020_cart_date.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0021_auto_20210309_2006.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0022_accessories_sku.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0023_brochure.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0024_review_accessories.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0025_wishlist_accessories.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0026_cart_accessories.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0027_auto_20210312_2142.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0028_auto_20210314_2353.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0029_metastatic.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0030_worktop_category_slug.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0031_kitchen_img_alt_text.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0032_auto_20210323_0146.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0033_demochat.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0034_auto_20210404_1724.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0035_auto_20210405_2330.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0036_auto_20210405_2340.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0037_blogs_slug.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0038_auto_20210406_2110.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0039_combining_checkout.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/migrations/0040_auto_20210415_0249.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0002_auto_20210121_2118.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0003_contactus.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0004_contactus_detail.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0005_auto_20210126_2012.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0006_auto_20210127_1900.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0007_auto_20210128_2348.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0008_auto_20210128_2349.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0009_cart_checkedout.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0010_auto_20210201_2020.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0011_auto_20210205_0300.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0012_auto_20210205_0336.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0013_auto_20210207_1852.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0014_auto_20210207_1852.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0015_contactactual.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0016_kitchen_available.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0017_auto_20210209_0404.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0018_auto_20210210_0214.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0019_metainfo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0020_cart_date.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0021_auto_20210309_2006.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0022_accessories_sku.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0023_brochure.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0024_review_accessories.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0025_wishlist_accessories.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0026_cart_accessories.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0027_auto_20210312_2142.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0028_auto_20210314_2353.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0029_metastatic.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0030_worktop_category_slug.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0031_kitchen_img_alt_text.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0032_auto_20210323_0146.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0033_demochat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0034_auto_20210404_1724.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0035_auto_20210405_2330.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0036_auto_20210405_2340.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0037_blogs_slug.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0038_auto_20210406_2110.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0039_combining_checkout.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/migrations/0040_auto_20210415_0249.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -318,7 +316,7 @@
       <workItem from="1622732821507" duration="600000" />
       <workItem from="1622799628181" duration="1199000" />
       <workItem from="1622831391401" duration="488000" />
-      <workItem from="1622873693234" duration="8862000" />
+      <workItem from="1622873693234" duration="9369000" />
     </task>
     <servers />
   </component>
