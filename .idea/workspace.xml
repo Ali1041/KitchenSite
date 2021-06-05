@@ -4,115 +4,6 @@
     <list default="true" id="21657a69-ca15-4fa4-a5e8-fdace87d06f8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KitchenSite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KitchenSite/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adminPanel/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/adminPanel/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adminPanel/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/adminPanel/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.2575b4650c52.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.60d3bfd4cd35.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.6105f78766bc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.676b96e0e1de.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.6a879ecf1d4d.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.6ba9694757e3.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.6c6db37b3ac9.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.7f21e1354da9.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.9e96c68aedea.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.9ef139f241d9.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.aa877b1d2f78.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.af4c24e9cff1.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.ba92482201bc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.bb127952bac3.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.e5e30f15c541.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CACHE/manifest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/home.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/home.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/imgs/New_High_Gloss_anthracite_Kitchens ascot.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/imgs/New_High_Gloss_anthracite_Kitchens lucent gloss.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/imgs/New_High_Gloss_new Kitchens glacier.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/imgs/favicon.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/imgs/favicon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/imgs/new slim frame light grey kitchen - Copy.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/base.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/footer logos banner (1) - Copy.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/Brand New Traditional kitchen in Mussel oak.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/New Traditional fitted Kitchens in indigo.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/Payment.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/design1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/email_all.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/email_face.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/email_insta.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/ezgif.com-gif-maker.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/favicon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/install16.JPG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/install21.JPG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/install4.JPG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/list classified.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/login.PNG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/logoes.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m22.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m23.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m24.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m25.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/m4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/main1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/main2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/imgs/main3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/Cartmel.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/Lucente Matt gloss.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/Modern Kitchen interior 720p 30fps.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/Oxford.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/Pull out larder.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/Vero Introduction1.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/Vivo Matt Gloss.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/base.mov" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/cambridge and windsor.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/install4.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/kitcehn fittings 720p 30fps.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/kitchen-carpenter-handmade-fitting 720p 30fps.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/main.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/modern-kitchen-designs.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/newmarket video for the kitchen page.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/newmarket.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/videos/tkc kitchen.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/404.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/CANCELLATION POLICY (16).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/CANCELLATION POLICY (16).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Cookies Policy3 (42).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Cookies Policy3 (42).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Disclaimer1 (37).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Disclaimer1 (37).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/FAQ.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/FAQ.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/GDPR Privacy Policy2 (44).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/GDPR Privacy Policy2 (44).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Intellectual Property Notification (8).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Intellectual Property Notification (8).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Return and Refund Policy (2) (6).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Return and Refund Policy (2) (6).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Shipping and Delivery Policy 1 (22).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Shipping and Delivery Policy 1 (22).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/TERMS OF SERVICE 5 (40).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/TERMS OF SERVICE 5 (40).html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accessories_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accessories_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accessories_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accessories_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/adminPanel/admin_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminPanel/admin_home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/adminPanel/blog_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/adminPanel/blog_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/all_kitchen.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/all_kitchen.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/blog.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/blog.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/blog_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/blog_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inc/email.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inc/email.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inc/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inc/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inc/installation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inc/installation.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inc/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inc/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inc/navbar2.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inc/navbar2.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/kitchen.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/kitchen.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/robots.txt" beforeDir="false" afterPath="$PROJECT_DIR$/templates/robots.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/signup.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/wishlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wishlist.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/worktop.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/worktop.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/worktop_app_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/worktop_app_detail.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -386,6 +277,7 @@
       <workItem from="1622732821507" duration="600000" />
       <workItem from="1622799628181" duration="1199000" />
       <workItem from="1622831391401" duration="488000" />
+      <workItem from="1622873693234" duration="1896000" />
     </task>
     <servers />
   </component>

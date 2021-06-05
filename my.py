@@ -1,0 +1,3 @@
+AWS_ACCESS_KEY_ID='AKIA2JMLKL23FA3WTV52'
+AWS_SECRET_ACCESS_KEY='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'
+SECRET_KEY='dh5*yuyy80%y!!$0b)ig!_motwxeou0#r&m*tcnf3nmb4aoiv&'
