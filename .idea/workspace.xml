@@ -4,6 +4,8 @@
     <list default="true" id="21657a69-ca15-4fa4-a5e8-fdace87d06f8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KitchenSite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KitchenSite/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,7 +279,7 @@
       <workItem from="1622732821507" duration="600000" />
       <workItem from="1622799628181" duration="1199000" />
       <workItem from="1622831391401" duration="488000" />
-      <workItem from="1622873693234" duration="1896000" />
+      <workItem from="1622873693234" duration="7697000" />
     </task>
     <servers />
   </component>

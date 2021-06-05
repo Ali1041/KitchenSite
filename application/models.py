@@ -103,8 +103,7 @@ class UnitType(models.Model):
         return (self.name,)
     def __str__(self):
         return self.name
-    class Meta:
-        unique_together = [['name']]
+
 
 
 class UnitManager(models.Manager):
@@ -137,7 +136,6 @@ class Units(models.Model):
 
     class Meta:
         ordering = ['-pk']
-        unique_together = [['unit_type']]
 
 
 class Worktop_category(models.Model):
