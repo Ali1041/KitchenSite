@@ -1,6 +1,6 @@
 runtime: python38
 
-entrypoint: gunicorn -b :$PORT KitchenSite.wsgi --timeout 360
+entrypoint: gunicorn -b :$PORT Kitchen.wsgi --timeout 360
 
 
 handlers:
