@@ -7,7 +7,7 @@
 {% block content %}
     <div class="container">
         {% for item in list %}
-            <div class="p-3 d-flex justify-content-between border-bottom my-3 menu" id="container_remove">
+            <div class="p-3 d-flex justify-content-between border-bottom my-3" id="container_remove">
                 <div>
                     <h1 style="font-size: 23px!important;"><a style="color: rgb(46, 154, 135)" href="{% url 'application:blog-detail' item.slug item.pk %}">{{ item.title }}</a></h1>
                     <p>{{ item.text|safe|truncatewords_html:30 }}</p>
