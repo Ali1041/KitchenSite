@@ -155,9 +155,13 @@
 						<div style="width: min-content;margin: auto" class="my-3 newPosition">
 				<video src="{% static 'videos/Lucente Matt gloss.mp4' %}" controls muted height="400px" class="video" ></video>
 			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Oxford' %}
+			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Matt Kitchens' %}
 			<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Oxford.mp4' %}" controls muted height="400px" class="video" ></video>
+				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+		{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Gloss Kitchens' %}
+			<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
 			</div>
 			{% elif item.kitchen_type|stringformat:"s" == 'Newmarket' %}
 			<div style="width: min-content;margin: auto" class="my-3 newPosition">
@@ -168,7 +172,7 @@
 
         {% if units %}
         {% if not user.is_authenticated %}
-	        <div class="alert alert-primary text-center p-2 my-1 newPosition" role="alert">
+	        <div class="alert alert-primary text-center p-2 my-1" role="alert">
                 <span style="font-weight: 700">Units starting from £113, Log in to select units, view prices and get access to our latest offers. </span><a class="btn btn-success" href="{% url 'application:login' %}">Login Here or Register Now</a>
             </div>
         {% endif %}
@@ -186,7 +190,7 @@
                 </form>
             </div>
 
-				<div class="align-self-start" id="abs"  >
+				<div class="align-self-start mtb" id="abs"  >
 					<form class="ml-auto w-100 d-flex">
 						<input type="text" class="form-control" oninput="searchUnits(event)" onblur="removeDiv(event)" required name="name__icontains" placeholder="Search units..">
 						<button class="btn btn-success"><i class="fas fa-search"></i></button>
