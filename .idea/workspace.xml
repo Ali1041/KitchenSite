@@ -3,17 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="21657a69-ca15-4fa4-a5e8-fdace87d06f8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kitchen/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Kitchen/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/sitemaps.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/sitemaps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inc/design.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inc/design.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inc/installation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inc/installation.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/kitchen.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/kitchen.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/wishlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wishlist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/TERMS OF SERVICE 5 (40).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/TERMS OF SERVICE 5 (40).html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -310,6 +301,7 @@
       <workItem from="1625083582563" duration="47000" />
       <workItem from="1625117980849" duration="1276000" />
       <workItem from="1625137246774" duration="3261000" />
+      <workItem from="1625302717600" duration="1709000" />
     </task>
     <servers />
   </component>
