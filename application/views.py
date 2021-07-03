@@ -23,6 +23,7 @@ from django.template.loader import render_to_string
 from datetime import datetime, timezone, time
 from django import template
 from django.conf import settings
+from .utils import get_captcha
 
 # Create your views here.
 User = get_user_model()
@@ -218,6 +219,10 @@ def login(request):
 # home page
 def index(request):
     if request.method == 'POST':
+        if not get_captcha(request):
+            messages.warning(request, 'Captcha is not valid')
+            return redirect('application:index')
+
         Brochure.objects.create(
             first_name=request.POST['first'],
             last_name=request.POST['last'],
@@ -725,16 +730,19 @@ def contact(request):
             detail=detail_contact,
             reason=request.POST.getlist('check1')
         )
+        send_mail('Contact','small',None,['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk', 'hiphop.ali1041@gmail.com'] ,
+                  fail_silently=False)
         html_content = render_to_string('inc/my_contact.html', {'detail': contact_instance})
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(
             'Contact form',
             text_content,
-            None,
-            ['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk']
+            'service@tkckitchens.co.uk',
+            ['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk', 'hiphop.ali1041@gmail.com']
         )
         email.attach_alternative(html_content, 'text/html')
-        email.send()
+        email.send(fail_silently=False)
+        print('here')
         return redirect('application:contact')
     meta = meta_info('home')
     ctx = {
@@ -884,20 +892,16 @@ def newsletter_subscribe(request):
 
 
 def newsletter(request):
-    if request.body and not request.POST:
-        newsletter_subscribe(request)
-        return JsonResponse({'added': 'added'})
-    if request.method == 'GET':
-        return render(request,'subscribe.html')
-    if request.POST:
-        already_exist = Newsletter.objects.filter(email=request.POST['email'])
+    if request.body:
+        print(request.body)
+        data = json.loads(request.body)
+        print(data)
+        already_exist = Newsletter.objects.filter(email=data['email'])
         if already_exist:
-            messages.warning(request,'You have already subscribed')
-            return redirect('application:newsletter')
-        Newsletter.objects.create(email=request.POST['email'])
-        email_send(request.POST['email'], 'newsletter')
-        messages.success(request, 'You have now subscribed')
-        return redirect('application:newsletter')
+            return JsonResponse({'added': 'not added'})
+        Newsletter.objects.create(email=data['email'])
+        email_send(data['email'], 'newsletter')
+
 
 def terms(request):
     worktop = Worktop_category.objects.all()

@@ -28,6 +28,7 @@ django-filter==2.4.0
 django-google-analytics-app==5.0.2
 django-jquery==3.1.0
 django-js-asset==1.2.2
+django-recaptcha==2.0.6
 django-social-share==2.2.1
 django-storages==1.11.1
 django-tawkto==0.3
@@ -84,7 +85,7 @@ structlog==20.2.0
 toml==0.10.2
 twilio==6.55.0
 tzlocal==2.1
-urllib3==1.26.4
+urllib3==1.25.8
 vine==1.3.0
 virtualenv==20.4.2
 virtualenv-clone==0.5.4

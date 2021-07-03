@@ -3,6 +3,7 @@ from django.urls import reverse
 from .models import *
 
 class StaticMaps(sitemaps.Sitemap):
+    protocol = 'https'
 
     def items(self):
         return [
@@ -31,41 +32,49 @@ class StaticMaps(sitemaps.Sitemap):
 
 
 class WorktopMap(sitemaps.Sitemap):
+    protocol = 'https'
 
     def items(self):
         return Worktop_category.objects.all()
 
 class AppliancesMap(sitemaps.Sitemap):
-
+    protocol = 'https'
     def items(self):
         return Category_Applianes.objects.all()
 
 class AccessoriesList(sitemaps.Sitemap):
+    protocol = 'https'
 
     def items(self):
         return AccessoriesType.objects.all()
 
 
 class KitchenMap(sitemaps.Sitemap):
+    protocol = 'https'
 
     def items(self):
         return Kitchen.objects.select_related('kitchen_type').all()
 
 class WorktopsDetailMap(sitemaps.Sitemap):
+    protocol = 'https'
 
     def items(self):
         return WorkTop.objects.select_related('category').all()
 
 class AppliancesDetailMap(sitemaps.Sitemap):
+    protocol = 'https'
 
     def items(self):
         return Appliances.objects.select_related('category').all()
 
 class AccessoriesDetail(sitemaps.Sitemap):
+    protocol = 'https'
 
     def items(self):
         return Accessories.objects.select_related('accessories_type').all()
 
 class BlogsMap(sitemaps.Sitemap):
+    protocol = 'https'
+
     def items(self):
         return Blogs.objects.all()

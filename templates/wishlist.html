@@ -59,7 +59,7 @@
                                 Add to cart
                             </a>
                         </td>
-                            <td><a href="{% url 'application:accessories-detail' item.accessories.slug item.accessories.pk %}">Detail</a></td>
+                            <td><a href="{% url 'application:accessories-detail' item.accessories.accessories_type.slug item.accessories.pk %}">Detail</a></td>
 
                         {% endif %}
 

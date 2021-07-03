@@ -62,8 +62,10 @@ INSTALLED_APPS = [
     'compressor',
     'crispy_forms',
     'tawkto',
+    'captcha',
 ]
-
+# server side recaptcha 6Lfc52obAAAAAFnFF_0YSCYjlJy8n_QVUbVuL8Mk
+# client side 6Lfc52obAAAAANYjf5L2N0rCIJewB_9G63KFnW0a
 TAWKTO_ID_SITE = '609415aab1d5182476b65aae'
 TAWKTO_API_KEY = 'cd414feaa0eaaa11f0a234cbdadd472efbad0c9d'
 SITE_ID = 1
@@ -218,3 +220,7 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 )
 
 LOGOUT_REDIRECT_URL = 'application:login'
+
+RECAPTCHA_PUBLIC_KEY = '6LcL72obAAAAAKdB6jWHf-Oqa7EGP3VPf6UMJuzC'
+RECAPTCHA_PRIVATE_KEY = '6Lfc52obAAAAAFnFF_0YSCYjlJy8n_QVUbVuL8Mk'
+RECAPTCHA_REQUIRED_SCORE = 0.85
