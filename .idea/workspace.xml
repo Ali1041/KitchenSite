@@ -3,8 +3,20 @@
   <component name="ChangeListManager">
     <list default="true" id="21657a69-ca15-4fa4-a5e8-fdace87d06f8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kitchen/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Kitchen/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/credential.json" beforeDir="false" afterPath="$PROJECT_DIR$/credential.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/CACHE/js/output.3eb0de9acff1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/kitchen.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/kitchen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/404.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/CANCELLATION POLICY (16).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/CANCELLATION POLICY (16).html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Shipping and Delivery Policy 1 (22).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Shipping and Delivery Policy 1 (22).html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/TERMS OF SERVICE 5 (40).html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/TERMS OF SERVICE 5 (40).html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/checkout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/kitchen.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/kitchen.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -301,7 +313,28 @@
       <workItem from="1625083582563" duration="47000" />
       <workItem from="1625117980849" duration="1276000" />
       <workItem from="1625137246774" duration="3261000" />
-      <workItem from="1625302717600" duration="1709000" />
+      <workItem from="1625302717600" duration="2800000" />
+      <workItem from="1625566253063" duration="2951000" />
+      <workItem from="1625780000977" duration="45000" />
+      <workItem from="1625781063135" duration="85000" />
+      <workItem from="1625905136684" duration="5772000" />
+      <workItem from="1625991125748" duration="11092000" />
+      <workItem from="1626078726253" duration="669000" />
+      <workItem from="1626086831983" duration="4342000" />
+      <workItem from="1626094913966" duration="775000" />
+      <workItem from="1626197253769" duration="1240000" />
+      <workItem from="1626243419129" duration="1763000" />
+      <workItem from="1626278437727" duration="22000" />
+      <workItem from="1626363504264" duration="2421000" />
+      <workItem from="1626601960358" duration="3183000" />
+      <workItem from="1626609037652" duration="458000" />
+      <workItem from="1626687186704" duration="5401000" />
+      <workItem from="1626702697769" duration="671000" />
+      <workItem from="1626864685437" duration="55000" />
+      <workItem from="1626866636008" duration="3000" />
+      <workItem from="1627049439213" duration="5234000" />
+      <workItem from="1627066010638" duration="5000" />
+      <workItem from="1627118616517" duration="2061000" />
     </task>
     <servers />
   </component>

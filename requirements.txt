@@ -28,7 +28,6 @@ django-filter==2.4.0
 django-google-analytics-app==5.0.2
 django-jquery==3.1.0
 django-js-asset==1.2.2
-django-recaptcha==2.0.6
 django-social-share==2.2.1
 django-storages==1.11.1
 django-tawkto==0.3

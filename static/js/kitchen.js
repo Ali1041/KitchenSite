@@ -1,8 +1,9 @@
-            const active = document.getElementsByClassName('get')
-            active[0].classList.add('active')
-            const select = document.getElementById('select').innerText
-            const value = select.split(' ')
-            const div = document.getElementById('cart')
+            const active = document.getElementsByClassName('get');
+            active[0].classList.add('active');
+            const select = document.getElementById('select').innerText;
+            const value = select.split(' ');
+            console.log(value);
+            const div = document.getElementById('cart');
 
             function change_url(e,name) {
 
@@ -31,20 +32,26 @@
             function stop(e, status, kit, pk, pro) {
 
                 const qty = e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value
-                const base_url = `${origin}/add-to-cart`
-                let url = `${base_url}/${value[2]}/${kit}/${pk}/${qty}/${pro}/`
+                const base_url = `${origin}/add-to-cart`;
+                let url = ''
+                if (value.length>3){
+                    url = `${base_url}/${value[2]} ${value[3]}/${kit}/${pk}/${qty}/${pro}/`;
+                }
+                else{
+                    url = `${base_url}/${value[2]}/${kit}/${pk}/${qty}/${pro}/`;
+                }
                 fetch(url)
                     .then((res) => {
                         return res.json()
                     })
                     .then((result) => {
-                        div.style.bottom = 10 + '%'
+                        div.style.bottom = 10 + '%';
 
                         setTimeout(() => {
-                            div.style.bottom = -10 + '%'
-                        }, 1500)
-                        e.target.style.color = 'lightgray'
-                        const ls = localStorage.getItem('pk')
+                            div.style.bottom = -10 + '%';
+                        }, 1500);
+                        e.target.style.color = 'lightgray';
+                        const ls = localStorage.getItem('pk');
                         if (ls === pk) {
                             const val = parseInt(qty) + 1
                             e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value = val

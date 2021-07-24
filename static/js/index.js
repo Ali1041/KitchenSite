@@ -57,7 +57,7 @@ const subscribe = async (reg) => {
     };
 
     const sub = await reg.pushManager.subscribe(options);
-    sendSubData(sub)
+    sendSubData(sub);
 };
 
 const sendSubData = async (subscription) => {
@@ -85,6 +85,9 @@ const handleResponse = (res) => {
 };
 
 registerSw()
+
+
+
 
     function subscribe1(e){
             e.preventDefault()
@@ -178,6 +181,15 @@ registerSw()
           scriptFont.src = "https://kit.fontawesome.com/359826513d.js"
           scriptFont.crossorigin = "anonymous"
           headTop[0].append(scriptFont)
+    window.onload=()=>{
+	    const body = document.getElementsByTagName('body')
+        setTimeout(()=>{
+            let script = document.createElement('script')
+	    script.src = 'https://www.google.com/recaptcha/api.js'
+	    body[0].append(script)
+        },3000)
+
+      }
 
       function search(e){
         function getCookie(name) {
@@ -212,4 +224,5 @@ registerSw()
         })
 
     }
+
 

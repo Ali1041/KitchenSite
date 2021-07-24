@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .models import *
+from django.conf import settings
 from django.contrib.auth import authenticate, login as log
 from django.contrib.auth import get_user_model
 from django.contrib import messages
@@ -182,9 +183,6 @@ def my_redirect(url):
 
 # login view
 def login(request):
-    if request.method == 'GET':
-        redirect_to = request.META.get('HTTP_REFERER')
-        my_redirect(redirect_to)
     if request.method == 'POST':
         try:
             get_username = User.objects.get(email=request.POST['email'])
@@ -193,19 +191,12 @@ def login(request):
             return redirect('application:login')
         user = authenticate(username=get_username.username, password=request.POST['password'])
         if user is not None:
-            abs_uri = request.get_host()
+            # abs_uri = request.get_host()
             log(request, user)
-            if len(mylist) == 0:
-                return redirect('application:index')
-            if mylist[0] is None:
-                return redirect('application:index')
-            new_list = mylist.copy()
-            mylist.clear()
-            x = new_list[-1]
-
-            if x == f"http://{abs_uri}/login/" or x == f"http://{abs_uri}/signup/" or x == f'http://{abs_uri}/password_reset_done/':
-                return redirect('application:index')
-            return redirect(x)
+            if 'signup' in request.session['redirect']:
+                return redirect('application:signup')
+            else:
+                return redirect(request.session['redirect'])
         else:
             messages.warning(request, 'Enter a valid username or password!!')
             return redirect('application:login')
@@ -213,6 +204,8 @@ def login(request):
     meta = meta_info('home')
     ctx = {'name': meta.login_name
         , 'description': meta.login_description, 'title': meta.login_title}
+    redirect_to = request.META.get('HTTP_REFERER')
+    request.session['redirect'] = redirect_to
     return render(request, 'registration/login.html', ctx)
 
 
@@ -250,7 +243,8 @@ def index(request):
 
     ctx = {'blog': Blogs.objects.all()[:3],
            'name': meta.home_name
-        , 'description': meta.home_description, 'title': meta.home_title, 'vapid_key': vapid_key, 'user': request.user}
+        , 'description': meta.home_description, 'title': meta.home_title, 'vapid_key': vapid_key, 'user': request.user,
+           'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY}
 
     return render(request, 'base.html', ctx)
 
@@ -582,6 +576,7 @@ def addcart(request, **kwargs):
             color = kwargs['product']
             name = kwargs['name']
             qty = kwargs['qty']
+            print(color,name,qty)
             kitchen = Kitchen.objects.select_related('kitchen_type').get(
                 kitchen_type=KitchenCategory.objects.get(name__iexact=name), color__iexact=color)
 
@@ -716,6 +711,9 @@ def cart(request):
 # contact form page
 def contact(request):
     if request.method == 'POST':
+        if not get_captcha(request):
+            messages.warning(request, 'Captcha is not valid')
+            return redirect('application:index')
         messages.info(request,
                       'An email with your given info was sent to one of our customer care representative. We will contact you as soon as possible.')
         detail_contact = f"{request.POST['detail']}/{datetime.now()} "
@@ -730,8 +728,7 @@ def contact(request):
             detail=detail_contact,
             reason=request.POST.getlist('check1')
         )
-        send_mail('Contact','small',None,['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk', 'hiphop.ali1041@gmail.com'] ,
-                  fail_silently=False)
+
         html_content = render_to_string('inc/my_contact.html', {'detail': contact_instance})
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(
@@ -742,12 +739,12 @@ def contact(request):
         )
         email.attach_alternative(html_content, 'text/html')
         email.send(fail_silently=False)
-        print('here')
         return redirect('application:contact')
     meta = meta_info('home')
     ctx = {
         'name': meta.contact_name
-        , 'description': meta.contact_description, 'title': meta.contact_title
+        , 'description': meta.contact_description, 'title': meta.contact_title,
+        'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY
     }
 
     return render(request, 'contact_us.html', ctx)
@@ -881,9 +878,7 @@ class BlogDetail(generic.DetailView):
 
 
 def newsletter_subscribe(request):
-    print(request.body)
     data = json.loads(request.body)
-    print(data)
     already_exist = Newsletter.objects.filter(email=data['email'])
     if already_exist:
         return JsonResponse({'added': 'not added'})
@@ -1037,6 +1032,10 @@ def unit_change(request, **kwargs):
 def checkout(request):
     form = UserInfoForm(request.POST or None)
     if request.method == 'POST':
+        if not get_captcha(request):
+            messages.warning(request, 'Captcha is not valid')
+            return redirect('application:checkout')
+
         if form.is_valid():
             data = form.cleaned_data
             info = UserInfo.objects.create(
@@ -1053,7 +1052,7 @@ def checkout(request):
             )
             request.session['user_info_pk'] = info.pk
             return redirect('application:create-order')
-    ctx = {'form': form}
+    ctx = {'form': form,'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY}
     myuser = User.objects.get(username=request.user)
     ctx['email'] = myuser.email
     return render(request, 'checkout.html', ctx)
@@ -1063,14 +1062,14 @@ def temp_checkout(request, **kwargs):
     info = UserInfo.objects.get(pk=request.session.get('user_info_pk'))
     my_cart = Cart.objects.select_related('user').filter(user=request.user, checkedout=False)
     kitchen_ids = my_cart.values('kitchen_order__kitchen_id')
+    for id in kitchen_ids:
+        if id['kitchen_order__kitchen_id'] != None:
+            Combining.objects.select_related('user', 'kitchen').filter(user=request.user, kitchen=Kitchen.objects.get(
+                id=id['kitchen_order__kitchen_id'])).update(checkout=True)
 
     complete_order = CompleteOrder.objects.create(user=info)
     complete_order.order.add(*my_cart)
     Cart.objects.filter(user=request.user, checkedout=False).update(checkedout=True)
-    for id in kitchen_ids:
-        Combining.objects.select_related('user', 'kitchen').filter(user=request.user, kitchen=Kitchen.objects.get(
-            id=id['kitchen_order__kitchen_id'])).update(checkout=True)
-
     email_send(info.email_address, 'order')
     html_content = render_to_string('inc/order_detail_email.html', {'detail': complete_order})
     text_content = strip_tags(html_content)
