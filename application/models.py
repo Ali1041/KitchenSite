@@ -182,8 +182,6 @@ class WorkTop(models.Model):
     meta_title = models.CharField(max_length=255, default='WorkTop', blank=True, null=True)
     meta_description = models.TextField(default='WorkTop', blank=True, null=True)
 
-    # for_sample = models.CharField(max_length=10,blank=True,null=True,default='Yes')
-    # sample_price = models.FloatField(blank=True,null=True,default=5)
 
     def __str__(self):
         return f'{self.name}'
@@ -355,7 +353,7 @@ class Blogs(models.Model):
 
     class Meta:
         verbose_name_plural = 'Blogs'
-        ordering = ['-timestamp']
+        # ordering = ['-timestamp']
 
     def get_absolute_url(self):
         return reverse('application:blog-detail', kwargs={'slug': self.slug, 'pk': self.pk})
@@ -516,7 +514,7 @@ class MetaStatic(models.Model):
     wishlist_name = models.CharField(max_length=255,default='description')
     wishlist_description = models.TextField(default='description')
 
-    def __str__(self):
+def __str__(self):
         return 'Meta Info for static pages'
 
 

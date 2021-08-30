@@ -11,13 +11,10 @@ from django.views import generic
 from django.urls import reverse_lazy
 import json
 from django.db.models import Q
-from itertools import chain
 from django.db.models import Count
 import random
 from .forms import *
-# import klarnacheckout
-# import requests
-# import base64
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail, EmailMultiAlternatives, send_mass_mail
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
@@ -39,8 +36,8 @@ def error_403(request, exception):
 
 # 404 error page
 def error_404(request, exception):
-    if 'adminPanel' in request.META.get('HTTP_REFERER'):
-        error_403(request, exception)
+    # if 'adminPanel' in request.META.get('HTTP_REFERER',None):
+    #     error_403(request, exception)
 
     return render(request, '403.html')
 
@@ -55,43 +52,7 @@ def meta_info(page):
     return MetaStatic.objects.first()
 
 
-# async taks of sending emails
-def async_task():
-    now = datetime.now(tz=timezone.utc)
-    all_carts = Cart.objects.select_related('user').all()
-    all_user_email_list = []
-    for time1 in all_carts:
-        first_value = now.hour
-        second_value = time1.date.hour
-        if second_value > first_value:
-            first_value += 24
-
-        x = first_value - second_value
-
-        y = x
-        if (y == 72 or y / 72 == int(y / 72)) and x != 0:
-            # print(time1.user,time1.user.email)
-            all_user_email_list.append(time1.user.email)
-
-    dup_removed_emails = list(set(all_user_email_list))
-    if dup_removed_emails:
-        email_tuple = (
-            'Items in the cart are waiting!!',
-            'This is a reminder email. Your items in the cart are waiting. Visit the site and checkout right away.',
-            None,
-            dup_removed_emails
-        )
-        send_mass_mail((email_tuple,), fail_silently=True
-
-                       )
-
-    # send_mail(
-    #     'to check',
-    #     f'email to {dup_removed_emails}',
-    #     None,
-    #     ['hiphop.ali1041@gmail.com']
-    # )
-
+# todo: async tasks of sending emails pending
 
 # counting of cart items
 def cart_count(request):
@@ -129,56 +90,44 @@ def email_send(email, to):
     email.send()
 
 
-mylist = []
-
-
 # random queryset
 def random_queryset():
-    one = list(WorkTop.objects.all())
-    random_sample = random.sample(one, 2)
-    three = list(Appliances.objects.all())
-    random_sample_2 = random.sample(three, 2)
+    # returning random samples of appliances and worktops
+    random_sample = random.sample(list(WorkTop.objects.all()), 2)
+    random_sample_2 = random.sample(list(Appliances.objects.all()), 2)
     return random_sample, random_sample_2
 
 
 # sign up view
 def signup(request):
-    if request.method == 'GET':
-        redirect_to = request.META.get('HTTP_REFERER')
-        if not redirect_to == 'https://tkc-kitchen.nw.r.appspot.com/login/':
-            if not mylist:
-                mylist.append(redirect_to)
-
     if request.method == 'POST':
-        pas1 = request.POST['password']
-        pas2 = request.POST['re_password']
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+        else:
+            messages.warning(request,'Enter a unique and valid Username and E-mail')
+            return redirect('application:signup')
 
-        if pas1 != pas2:
-            messages.warning(request, 'Password do not match')
-            return redirect('application:signup')
-        already_exist = User.objects.filter(email=request.POST['email'])
-        if already_exist:
-            messages.warning(request, 'This email is already registered. Try again with a different one.')
-            return redirect('application:signup')
-        try:
-            user = User.objects.create(username=request.POST['username'], email=request.POST['email'])
-        except:
-            messages.warning(request, 'This username is taken. Enter a different one.')
-            return redirect('application:signup')
-        user.set_password(pas1)
-        user.save()
-        email_send(user.email, 'register')
+        # pas1 = request.POST['password']
+        # pas2 = request.POST['re_password']
+        #
+        # if pas1 != pas2:
+        #     messages.warning(request, 'Password do not match')
+        #     return redirect('application:signup')
+        # already_exist = User.objects.filter(email=request.POST['email'],username=request.POST['username'])
+        # if already_exist:
+        #     messages.warning(request, 'This email is already registered. Try again with a different one.')
+        #     return redirect('application:signup')
+        # user = User.objects.create(username=request.POST['username'], email=request.POST['email'])
+        # user.set_password(pas1)
+        # user.save()
+        # email_send(user.email, 'register')
         messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
     meta = meta_info('home')
-    ctx = {'name': meta.signup_name
+    ctx = {'form':UserRegistrationForm(),'name': meta.signup_name
         , 'description': meta.signup_description, 'title': meta.signup_title}
     return render(request, 'signup.html', ctx)
-
-
-def my_redirect(url):
-    mylist.append(url)
-    return mylist
 
 
 # login view
@@ -186,17 +135,13 @@ def login(request):
     if request.method == 'POST':
         try:
             get_username = User.objects.get(email=request.POST['email'])
-        except:
+        except ObjectDoesNotExist:
             messages.warning(request, 'Invalid email or password')
             return redirect('application:login')
-        user = authenticate(username=get_username.username, password=request.POST['password'])
+        user = authenticate(request,username=get_username.username, password=request.POST['password'])
         if user is not None:
-            # abs_uri = request.get_host()
             log(request, user)
-            if 'signup' in request.session['redirect']:
-                return redirect('application:signup')
-            else:
-                return redirect(request.session['redirect'])
+            return redirect(request.session['redirect'])
         else:
             messages.warning(request, 'Enter a valid username or password!!')
             return redirect('application:login')
@@ -230,7 +175,7 @@ def index(request):
             'YOUR BROCHURE',
             text_content,
             None,
-            [request.POST['email'], 'kashif@tkckitchens.co.uk']
+            [request.POST['email']]
         )
         email.attach_alternative(html_content, 'text/html')
         email.send()
@@ -258,15 +203,13 @@ class AccessoriesList(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        ctx = Accessories.objects.select_related('accessories_type').filter(
+        qs = Accessories.objects.select_related('accessories_type').filter(
             accessories_type__slug__iexact=self.kwargs['slug'])
 
         if len(self.request.GET) > 1:
-            filter_result = AccessoriesFilter(self.request.GET,
-                                              queryset=Accessories.objects.select_related('accessories_type').filter(
-                                                  accessories_type__slug__iexact=self.kwargs['slug']))
-            ctx = filter_result.qs
-        return ctx
+            filter_result = AccessoriesFilter(self.request.GET, queryset=qs)
+            qs = filter_result.qs
+        return qs
 
 
 # accessories detail
@@ -275,6 +218,7 @@ class AccessoriesDetail(generic.DetailView):
     template_name = 'accessories_detail.html'
     context_object_name = 'detail'
 
+    # Adding the context
     def get_context_data(self, **kwargs):
         ctx = super(AccessoriesDetail, self).get_context_data(**kwargs)
         ctx['feature1'] = random_queryset()[0]
@@ -282,7 +226,6 @@ class AccessoriesDetail(generic.DetailView):
         ctx['product'] = 'accessories'
         ctx['review'] = Review.objects.select_related('accessories').filter(accessories_id=self.kwargs['pk'],
                                                                             approval='Approved')
-
         return ctx
 
     def get_queryset(self):
@@ -317,19 +260,18 @@ def get_kitchen(request, **kwargs):
     kitchens = Kitchen.objects.select_related('kitchen_type').all()
     annotated_kitchen = kitchens.values('kitchen_type__name').annotate(count=Count('kitchen_type')).order_by()
     my_list = []
-    for i in [1, 2, 6, 7, 8, 9, 3, 4, 0, 5]:
-        my_list.append(annotated_kitchen[i])
+    list_dict = []
+    color_list = []
+    imgs_list = []
     for i in range(10, annotated_kitchen.count()):
         my_list.append(annotated_kitchen[i])
-    list_dict = []
     for item in my_list:
         x = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type__name=item['kitchen_type__name'],
                                                                   available=True)
         annotated_color = x.values('color', 'kitchen_type__name').annotate(count=Count('color')).order_by()
         inner_dict = {'name': item['kitchen_type__name'], 'description': x[0].description}
 
-        color_list = []
-        imgs_list = []
+
         for i in annotated_color:
             color_list.append(i['color'])
             img_color = Kitchen.objects.select_related('kitchen_type').filter(
@@ -413,19 +355,18 @@ class WorktopListView(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        category = Worktop_category.objects.get(slug=self.kwargs['slug'])
-        qs = WorkTop.objects.select_related('category').filter(category=category, available=True)
-        filters = WorktopFilters(self.request.GET, queryset=qs)
+        qs = WorkTop.objects.select_related('category').filter(category__slug__exact=self.kwargs['slug'],
+                                                               available=True)
         if len(self.request.GET) != 0:
+            filters = WorktopFilters(self.request.GET, queryset=qs)
             qs = filters.qs
-        if category.worktop_type == 'Stone Worktops':
-            qs = ['stone', 'stone']
+
         return qs
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(WorktopListView, self).get_context_data(*args, **kwargs)
-
-        try:
+        if self.get_queryset():
+            # to get names of all related worktops for filtering
             category_based_worktop = WorkTop.objects.select_related('category').filter(
                 category=self.get_queryset().first().category)
             number_of_worktop_in_category = category_based_worktop.values('name').annotate(
@@ -434,19 +375,17 @@ class WorktopListView(generic.ListView):
             for item in number_of_worktop_in_category:
                 select_list.append(item['name'])
             ctx['select'] = select_list
-        except:
-            if self.get_queryset():
-                if self.get_queryset()[0] == 'stone':
-                    ctx['stone'] = 'stone'
-                    ctx['meta'] = Worktop_category.objects.get(worktop_type='Stone Worktops')
+        else:
+            # catering the need for a custom worktop
+            ctx['stone'] = 'stone'
+            ctx['meta'] = Worktop_category.objects.get(worktop_type='Stone Worktops')
 
         ctx['product'] = 'worktop'
         return ctx
 
 
-# worktop detail
+# worktop and appliance detail
 class WorktopDetailView(generic.DetailView):
-    model = WorkTop
     template_name = 'worktop_app_detail.html'
     context_object_name = 'detail'
 
@@ -468,12 +407,12 @@ class WorktopDetailView(generic.DetailView):
         return ctx
 
     def get_queryset(self):
+        qs = []
         if self.kwargs['name'] == 'worktop':
-            worktop = WorkTop.objects.select_related('category').filter(pk=self.kwargs['pk'])
-            return worktop
+            qs = WorkTop.objects.select_related('category').filter(pk=self.kwargs['pk'])
         elif self.kwargs['name'] == 'appliance':
-            appliance = Appliances.objects.select_related('category').filter(pk=self.kwargs['pk'])
-            return appliance
+            qs = Appliances.objects.select_related('category').filter(pk=self.kwargs['pk'])
+        return qs
 
 
 class AppliancesListView(generic.ListView):
@@ -483,16 +422,16 @@ class AppliancesListView(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        category = Category_Applianes.objects.get(slug=self.kwargs['slug'])
-        x = Appliances.objects.select_related('category').filter(category=category, available=True)
-        filters = AppliancesFilters(self.request.GET, queryset=x)
+        qs = Appliances.objects.select_related('category').filter(category__slug__exact=self.kwargs['slug'], available=True)
+        filters = AppliancesFilters(self.request.GET, queryset=qs)
         if len(self.request.GET) != 0:
-            x = filters.qs
-        return x
+            qs = filters.qs
+        return qs
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(AppliancesListView, self).get_context_data(*args, **kwargs)
-        try:
+        if self.get_queryset():
+            # getting appliances names in select_list for filtering
             category_based_appliances = Appliances.objects.select_related('category').filter(
                 category=self.get_queryset().first().category)
             num_of_appliances_in_category = category_based_appliances.values('appliance_category').annotate(
@@ -501,9 +440,6 @@ class AppliancesListView(generic.ListView):
             for item in num_of_appliances_in_category:
                 select_list.append(item['appliance_category'])
             ctx['select'] = select_list
-        except:
-            pass
-
         ctx['product'] = 'appliance'
         return ctx
 
@@ -576,7 +512,7 @@ def addcart(request, **kwargs):
             color = kwargs['product']
             name = kwargs['name']
             qty = kwargs['qty']
-            print(color,name,qty)
+            print(color, name, qty)
             kitchen = Kitchen.objects.select_related('kitchen_type').get(
                 kitchen_type=KitchenCategory.objects.get(name__iexact=name), color__iexact=color)
 
@@ -813,7 +749,7 @@ def add_review(request, **kwargs):
         # appliance review addition
         if request.POST['name'] == 'appliance':
             appliance = Appliances.objects.select_related('category').get(pk=kwargs['pk'])
-            review = Review.objects.create(
+            Review.objects.create(
                 user=request.user, rating=request.POST['rating'], comment=request.POST['comment'], appliances=appliance,
                 approval='Pending')
             return redirect(
@@ -888,9 +824,7 @@ def newsletter_subscribe(request):
 
 def newsletter(request):
     if request.body:
-        print(request.body)
         data = json.loads(request.body)
-        print(data)
         already_exist = Newsletter.objects.filter(email=data['email'])
         if already_exist:
             return JsonResponse({'added': 'not added'})
@@ -899,7 +833,6 @@ def newsletter(request):
 
 
 def terms(request):
-    worktop = Worktop_category.objects.all()
     ctx = {}
     meta = meta_info('home')
     ctx['name'] = meta.terms_name
@@ -1046,13 +979,12 @@ def checkout(request):
                 door_number=data['door_number'],
                 street_name=data['street_name'],
                 city=data['city'],
-                # region=data['region'],
                 postcode=data['postcode'],
                 country=data['country'],
             )
             request.session['user_info_pk'] = info.pk
             return redirect('application:create-order')
-    ctx = {'form': form,'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY}
+    ctx = {'form': form, 'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY}
     myuser = User.objects.get(username=request.user)
     ctx['email'] = myuser.email
     return render(request, 'checkout.html', ctx)
