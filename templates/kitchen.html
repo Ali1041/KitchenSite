@@ -7,8 +7,22 @@
         <meta name="{{ current_kitchen.first.kitchen_type.meta_name }}" content="{{ current_kitchen.first.kitchen_type.meta_description }}">
         <title>{{ current_kitchen.first.kitchen_type.meta_title }}</title>
     {% endblock %}
-{% block content %}
+	{% block og %}
+	<meta property="og:title" content="{{ current_kitchen.first.kitchen_type.meta_title }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="{{ current_kitchen.first.kitchen_type.meta_description }}" />
+	<meta property="og:locale" content="en_GB" />
+	<meta property="og:image" content="{{ current_kitchen.first.get_photo_url }}" />
+	<meta property="og:url" content="{{ can_tag }}" />
 
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{ current_kitchen.first.kitchen_type.meta_title }}" />
+	<meta name="twitter:description" content="{{ current_kitchen.first.kitchen_type.meta_description }}" />
+	<meta name="twitter:image" content="{{ current_kitchen.first.get_photo_url }}" />
+	<meta name=”twitter:url” content="{{ can_tag }}" />
+	{% endblock %}
+{% block content %}
 
 
 
@@ -17,7 +31,7 @@
 
 
     <div class="my-5 container" id="container_remove">
-        <h2 class="text-center"><span style="color: rgb(46, 154, 135)">{{ item }}</span></h2>
+        <h1 class="text-center"><span style="color: rgb(46, 154, 135)">{{ item }}</span></h1>
         <div style="width: 100%;margin: auto">
 
             <div id="carouselExampleControls" class="carousel slide " style="width: fit-content;margin: auto" data-ride="carousel">
@@ -35,7 +49,7 @@
                 <p class="m-0 align-self-center text-center w-25" id="search_in"><b>Colors Available: </b></p>
                 <div class="d-flex justify-content-between ml-3 w-75" id="search_in">
                 {% for item in kitchen_color %}
-                    <p class="m-0 align-self-center" onclick="change_url(`{{ item.color }}`)" style="cursor: pointer;border: 1px solid lightgrey;width: 30px;height: 30px;background-color: var(--{{ item.color }})"></p>
+                    <p class="m-0 align-self-center" onclick="change_url(`{{ item.color }}`,`{{ kitchen_view.name }}`)" style="cursor: pointer;border: 1px solid lightgrey;width: 30px;height: 30px;background-color: var(--{{ item.color }})"></p>
 
                 {% endfor %}
                 </div>
@@ -47,29 +61,17 @@
 
         </div>
         {% if not form %}
-        <div class="d-flex justify-content-between menu">
+        <div >
 
-            <div style="width:30%" id="search_in" class="p-3 align-self-center move" >
-                <form  id="filter" class="text-center" >
-                    <select name="unit_type" id="" class="form-control  mb-2">
-                        <option value="" >Select a unit</option>
-                        {% for item in search %}
-                            <option value="{{ item.pk }}">{{ item }}</option>
-                        {% endfor %}
-                    </select>
-                    <button class="btn btn-success">Apply filter</button>
-                    <a href="{% url 'application:kitchen-view' kitchen_view.name current_color %}" class="btn btn-secondary">Remove filter</a>
-                </form>
-            </div>
 
-            <div class="align-self-start text-center p-3 move3">
+            <div class="text-center p-3">
 {#                <a href="{% url 'application:add-to-cart' 'sample' current_color kitchen_view.pk 1 'create' %}" class="btn btn-success">Order a sample</a>#}
                 <a href="{% url 'application:contact' %}" class="btn btn-success" >Order a free sample</a>
             </div>
 
 
-            <div class=" p-3 align-self-start " id="search_in" style="width: 30%">
-                    <div class="btn-group border p-2 move2" style="width: 100%;border-radius: 6px">
+            <div class="mx-auto p-3" id="search_in" style="width: 30%">
+                    <div class="btn-group border p-2 " style="width: 100%;border-radius: 6px">
                         <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;height: 30px;width: 30px;background-color: var(--{{ current_color }})">
                         </p>
             <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
@@ -79,7 +81,7 @@
 
           <div class="dropdown-menu p-0 w-100">
               {% for item in kitchen_color %}
-                    <div class="dropdown-item dropHover a_btn d-flex" onclick="change_url(`{{ item.color }}`)" style="cursor:pointer">
+                    <div class="dropdown-item a_btn d-flex" onclick="change_url(`{{ item.color }}`,`{{ kitchen_view.name }}`)" style="cursor:pointer">
                     <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;display: inline-block;height: 30px;width: 30px;background-color: var(--{{ item.color }})">
                         </p>
                         <h6 class="align-self-center">
@@ -153,9 +155,13 @@
 						<div style="width: min-content;margin: auto" class="my-3 newPosition">
 				<video src="{% static 'videos/Lucente Matt gloss.mp4' %}" controls muted height="400px" class="video" ></video>
 			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Oxford' %}
+			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Matt Kitchens' %}
 			<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Oxford.mp4' %}" controls muted height="400px" class="video" ></video>
+				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+		{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Gloss Kitchens' %}
+			<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
 			</div>
 			{% elif item.kitchen_type|stringformat:"s" == 'Newmarket' %}
 			<div style="width: min-content;margin: auto" class="my-3 newPosition">
@@ -166,12 +172,37 @@
 
         {% if units %}
         {% if not user.is_authenticated %}
-	        <div class="alert alert-primary text-center p-2 my-1 newPosition" role="alert">
+	        <div class="alert alert-primary text-center p-2 my-1" role="alert">
                 <span style="font-weight: 700">Units starting from £113, Log in to select units, view prices and get access to our latest offers. </span><a class="btn btn-success" href="{% url 'application:login' %}">Login Here or Register Now</a>
             </div>
         {% endif %}
+	        <div class="d-flex justify-content-between" id="display_b">
+	        <div style="width:30%" id="search_in" class="align-self-start" >
+                <form  id="filter" class="text-center" action="{% url 'application:kitchen-view' kitchen_view.name current_color   %}" >
+                    <select name="unit_type" id="" class="form-control  mb-2">
+                        <option value="" >Select a unit</option>
+                        {% for item in search %}
+                            <option value="{{ item.pk }}">{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-success">Apply filter</button>
+                    <a href="{% url 'application:kitchen-view' kitchen_view.name current_color %}" class="btn btn-secondary">Remove filter</a>
+                </form>
+            </div>
 
-            <div class="container">
+				<div class="align-self-start mtb" id="abs"  >
+					<form class="ml-auto w-100 d-flex">
+						<input type="text" class="form-control" oninput="searchUnits(event)" onblur="removeDiv(event)" required name="name__icontains" placeholder="Search units..">
+						<button class="btn btn-success"><i class="fas fa-search"></i></button>
+					</form>
+					<div style="" class="bg-white p-2" id="add-units">
+
+					</div>
+				</div>
+	        </div>
+
+
+            <div class="container text-center">
                 <span class="step-links">
         {% if page_obj.has_previous %}
             <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
@@ -203,8 +234,8 @@
             <tbody id="table">
 
             {% for item in units %}
-                <tr>
-                    <td><img src="{{ item.get_photo_url }}" loading="lazy" width="70px" height="70px" alt=""></td>
+                <tr id="unit">
+                    <td><img class="pointer" src="{{ item.get_photo_url }}" onmouseover="displayImage(event)" onmouseleave="removeImage(event)" loading="lazy" width="70px" height="70px" alt="{{ item.name }}"></td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.unit_type }}</td>
                     <td>{{ item.description }}</td>
@@ -357,56 +388,60 @@ Policy
         Added to cart!!
     </div>
 
+	<div id="fixed" class="bg-white" style="position: fixed;top: 20%;left: 20%;display: none">
+		<p class="m-0 btn btn-danger text-right d-none">x</p>
+		<img src="" height="350px" alt="Image">
+	</div>
+{{ current_kitchen.first.kitchen_type.name|json_script:'name' }}
+	{{ current_kitchen.first.color|json_script:'color' }}
+	{{ request.user.username|json_script:'username' }}
 {% endblock %}
 {% block script %}
+	<script type="text/javascript" src="{% static 'js/kitchen.js' %}"></script>
     <script>
+	    const dropdown = document.getElementById('add-units')
+		const kitchenName = JSON.parse(document.getElementById('name').textContent);
+		const color = JSON.parse(document.getElementById('color').textContent);
+		const username = JSON.parse(document.getElementById('username').textContent);
 
-            const active = document.getElementsByClassName('get')
-            active[0].classList.add('active')
-            const select = document.getElementById('select').innerText
-            const value = select.split(' ')
-            const div = document.getElementById('cart')
-            function stop(e, status, kit, pk, pro) {
-                {#e.target.removeEventListener()#}
 
-                const qty = e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value
-                const base_url = `${origin}/add-to-cart`
-                let url = `${base_url}/${value[2]}/${kit}/${pk}/${qty}/${pro}/`
-                fetch(url)
-                    .then((res) => {
-                        return res.json()
-                    })
-                    .then((result) => {
-                        div.style.bottom = 10 + '%'
+            function searchUnits(e){
+                fetch(`${location.origin}/search-units/${e.target.value}/${kitchenName}/`)
+	            .then((res)=>{
+	                return res.json()
+	            })
+	            .then((result)=>{
+		            const resultArray = JSON.parse(result.response)
+		            dropdown.style.display = 'block'
+		            dropdown.innerHTML = ''
+					resultArray.forEach((item)=>{
+						const a = document.createElement('a')
+						a.innerText = item.fields.name +' : '+item.fields.description
+						a.classList.add('p-2','d-block')
+						a.setAttribute('href',`${location.origin}/kitchen-view/unit/${kitchenName}/${color}/${item.pk}/`)
+						a.addEventListener('click',()=>{
+						    location.assign(`${location.origin}/kitchen-view/unit/${kitchenName}/${color}/${item.pk}/`)
+						})
+						dropdown.append(a)
+					})
+	            })
+	            .catch((err,res)=>{
+	                dropdown.style.display = 'block';
+		            dropdown.style.minHeight = 'fit-content';
+	                dropdown.innerHTML = 'No results';
+	            })
+            }
+            function removeDiv(e){
+                setTimeout(()=>{
+                    dropdown.style.display = 'none'
 
-                        setTimeout(() => {
-                            div.style.bottom = -10 + '%'
-                        }, 1500)
-                        e.target.style.color = 'lightgray'
-                        const ls = localStorage.getItem('pk')
-                        if (ls === pk) {
-                            const val = parseInt(qty) + 1
-                            e.target.parentElement.parentElement.previousElementSibling.firstElementChild.value = val
-                        }
-                        localStorage.setItem('pk', pk)
-                        cart_count('e')
-
-                        return result
-                    })
-
+                },500)
             }
 
-            function change_url(e) {
 
-                const color = e;
-                const kitchen = `{{ kitchen_view.name }}`
-                const base_url = `${origin}/kitchen-view`
-                location.replace(`${base_url}/${kitchen}/${color}/`)
-            }
 
-			window.addEventListener('load',()=>{
-			    window.scrollTo({top:400,behavior:"smooth"})
-			})
+
+
 
     </script>
 

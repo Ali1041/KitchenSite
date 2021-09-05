@@ -77,6 +77,9 @@ class Kitchen(models.Model):
     class Meta:
         ordering = ['pk']
 
+class UnitTypeManager(models.Manager):
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
 
 class UnitType(models.Model):
     UNIT_TYPES = [
@@ -92,9 +95,20 @@ class UnitType(models.Model):
     ]
     name = models.CharField(max_length=255)
 
+    objects = UnitTypeManager()
+    def natural_key(self):
+        return (self.name,)
+
+    def get_by_natural_key(self):
+        return (self.name,)
     def __str__(self):
         return self.name
 
+
+
+class UnitManager(models.Manager):
+    def get_by_natural_key(self, unit_type):
+        return self.get(unit_type=unit_type)
 
 class Units(models.Model):
     name = models.CharField(max_length=255)
@@ -113,6 +127,12 @@ class Units(models.Model):
     def get_photo_url(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
+
+    def natural_key(self):
+        return (self.unit_type.name,)
+
+    def get_by_natural_key(self):
+        return (self.unit_type.name,)
 
     class Meta:
         ordering = ['-pk']
@@ -162,8 +182,6 @@ class WorkTop(models.Model):
     meta_title = models.CharField(max_length=255, default='WorkTop', blank=True, null=True)
     meta_description = models.TextField(default='WorkTop', blank=True, null=True)
 
-    # for_sample = models.CharField(max_length=10,blank=True,null=True,default='Yes')
-    # sample_price = models.FloatField(blank=True,null=True,default=5)
 
     def __str__(self):
         return f'{self.name}'
@@ -236,7 +254,7 @@ class Combining(models.Model):
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='complete_kitchen')
     units = models.ManyToManyField(Units, through='Units_intermediate')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    checkout = models.BooleanField(default=True,blank=True,null=True)
     # door = models.ForeignKey(Doors, on_delete=models.CASCADE, blank=True, null=True)
     # cabnet = models.ForeignKey(Cabnets, on_delete=models.CASCADE, blank=True, null=True)
 
@@ -335,7 +353,7 @@ class Blogs(models.Model):
 
     class Meta:
         verbose_name_plural = 'Blogs'
-        ordering = ['-timestamp']
+        # ordering = ['-timestamp']
 
     def get_absolute_url(self):
         return reverse('application:blog-detail', kwargs={'slug': self.slug, 'pk': self.pk})
@@ -496,7 +514,7 @@ class MetaStatic(models.Model):
     wishlist_name = models.CharField(max_length=255,default='description')
     wishlist_description = models.TextField(default='description')
 
-    def __str__(self):
+def __str__(self):
         return 'Meta Info for static pages'
 
 

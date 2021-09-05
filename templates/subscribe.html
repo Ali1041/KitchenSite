@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div>
+		<div class="w-75 mx-auto"  >
+			<form action="{% url 'application:newsletter' %}" method="POST" >{% csrf_token %}
+				{% if messages %}
+				{% for msg in messages %}
+				<p class="text-center alert alert-{{ msg.level_tag }}">{{ msg }}</p>
+				{% endfor %}
+				{% endif %}
+				<h1>Enter your email:</h1>
+            <input type="email" placeholder="Your Email" name="email" class="form-control">
+            <button type="submit" class=" btn btn-success my-2" >Subscribe</button>
+			</form>
+        </div>
+	</div>
+{% endblock %}

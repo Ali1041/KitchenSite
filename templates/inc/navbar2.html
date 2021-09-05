@@ -4,7 +4,7 @@
 {% my_appliances as appliances %}
 {% my_accessories as accessories %}
 {% my_cart request as cart_count %}
-<div class="d-flex justify-content-center p-4 mt-2 bg-white" id="second_bar" style="position: sticky;top: 0;z-index: 2">
+<div class="d-flex justify-content-center p-4 mt-2 bg-white desktop" id="second_bar" >
     <div class="d-flex justify-content-around" style="width: 70%">
         <a href="{% url 'application:index' %}" style="color:inherit;font-weight: 600;text-decoration: none;cursor:pointer;" class="a_btn">Home</a>
 
@@ -70,7 +70,7 @@
         </div>
 
         <a style="color:inherit;font-weight: 600;text-decoration: none;cursor:pointer;" href="{% url 'application:contact' %}" class="a_btn">Contact Us</a>
-        <a href="{% url 'application:cart' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center"><img src="{% static 'Svg/cart2.svg' %}" height="20px" alt=""></a>
+        <a href="{% url 'application:cart' %}" style="font-weight: 600;text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center"><img src="{% static 'Svg/cart2.svg' %}" height="20px" alt="Cart svg"></a>
         {% if request.user.is_authenticated %}
         <small class="m-0 text-white border pl-1 pr-1 cart_count" id="cart_count"
                 style="position: relative;right: 2%;top: -40%;
@@ -86,7 +86,7 @@
 
 
 {# for mobile version#}
-    <div class="text-center my-3 menu" style="display: none">
+    <div class="text-center my-3 menu" >
         <a class="p-1 pl-2 pr-2 " onclick="mobile_click(event)"
            style="border: 1px solid rgb(46, 154, 13);color: rgb(46, 154, 13);border-radius: 8px;
            width: fit-content">Learn More</a>
@@ -169,7 +169,7 @@
 
 
         <div class="py-2">
-	        <a href="{% url 'application:cart' %}" style="text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center d-block pb-1 mb-2 border-bottom"><img src="{% static 'Svg/cart2.svg' %}" height="20px" alt=""></a>
+	        <a href="{% url 'application:cart' %}" style="text-decoration: none;cursor:pointer;color: black" class="a_btn align-self-center d-block pb-1 mb-2 border-bottom"><img src="{% static 'Svg/cart2.svg' %}" height="20px" alt="Cart svg"></a>
 	        {% if request.user.is_authenticated %}
 	                <small class="m-0 text-white border pl-1 pr-1 cart_count" id="cart_count"
 	                style="position: relative;left: 4%;top: -42px;

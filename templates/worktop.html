@@ -13,23 +13,35 @@
 	{% endif %}
 
 {% endblock %}
-
+	{% block og %}
+			<meta name=”twitter:url” content="{{ can_tag }}" />
+	<meta property="og:url" content="{{ can_tag }}" />
+	<meta property="og:title" content="{{ list.first.category.meta_title }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="{{ list.first.category.meta_description }}" />
+	<meta property="og:locale" content="en_GB" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{ list.first.category.meta_title }}" />
+	<meta name="twitter:description" content="{{ list.first.category.meta_description }}" />
+	<meta name="twitter:image" content="https://tkckitchens.co.uk/static/imgs/favicon.png" />
+	<meta property="og:image" content="https://tkckitchens.co.uk/static/imgs/favicon.png" />
+	{% endblock %}
 
 {% block content %}
+	{% if stone %}
+	<div class="container">
+		<h1>Stone Worktops</h1>
+		<p>We can supply all stone worktops Marble, Granite, Quartz and Onyx. We supply branded and unbranded both stone worktops.These type of worktops are priced per application and will need to be purchased as part of our kitchen supply and installation service. If you require any more information please feel free to get in touch. Thank You.</p>
+	</div>
+	{% endif %}
+
     {% if list %}
     <div class="my-3">
     {% ifequal product 'worktop' %}
 {#   filter form of worktop     #}
-        {% if stone %}
-            <div class="container">
-                <h3>Stone Worktops</h3>
-                <p>We can supply all stone worktops Marble, Granite, Quartz and Onyx. We supply branded and unbranded both stone worktops.These type of worktops are priced per application and will need to be purchased as part of our kitchen supply and installation service. If you require any more information please feel free to get in touch. Thank You.</p>
-
-            </div>
-        {% else %}
         <div class="bg-light p-2 mb-3">
-            <form method="GET" id="remove_form" onsubmit="" style="width: 80%;margin: auto"
-                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:worktop-view' list.first.category.pk %}">
+            <form method="GET" id="remove_form" style="width: 80%;margin: auto"
+                  class="d-flex justify-content-around my-2 block" action="{% url 'application:worktop-view' list.first.category.slug  %}">
                 <select name="name__iexact" id="search_in" class="form-control" style="width: 17%">
                     <option value="">Select Name</option>
                     {% for i in select %}
@@ -38,12 +50,12 @@
                 </select>
 {#                {{ search.form }}#}
                 <label class="align-self-center">Min value: £ <span id="output_min">100</span></label>
-                <input type="range" name="price__gte" id="search_in" class="menu bottom" value="100" oninput="change(event)" step="any" max="500" min="100">
+                <input type="range" name="price__gte" id="search_in" class="bottom" value="100" oninput="change(event)" step="any" max="500" min="100">
                 <label for="" class="align-self-center">Max Value: £ <span id="output_max">1000</span></label>
-                <input type="range" name="price__lte" id="search_in" class="menu bottom" value="1000" step="any" max="1000" min="100" oninput="change(event)">
+                <input type="range" name="price__lte" id="search_in" class="bottom" value="1000" step="any" max="1000" min="100" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
-                <a href="{% url 'application:worktop-view' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
+                <a href="{% url 'application:worktop-view' list.first.category.slug %}" class="align-self-center btn btn-secondary">Remove Filters</a>
             </form>
 
         </div>
@@ -51,7 +63,7 @@
         <div class="container text-center my-2">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+	            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
             <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
@@ -68,13 +80,13 @@
 
 {#   Wokrtop list     #}
         {% for item in list %}
-            <div class="border border-rounded d-flex mb-5 menu " id="search_in" style="width: 60%;margin: auto">
+            <div class="border border-rounded d-flex mb-5 block" id="search_in" style="width: 60%;margin: auto">
                 <div style="width: fit-content;" id="contain">
-                    <img src="{{ item.get_photo_url }}" loading="lazy" class="img1" height="245px" width="367px"     alt="">
+                    <img src="{{ item.get_photo_url }}" loading="lazy" class="img1" height="245px" width="367px" alt="{{ item }} image">
                 </div>
 
                 <div class="align-self-center ml-5" id="contain">
-                    <h5 style="color: rgb(46, 154, 135)"><a href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}" style="color:rgb(46, 154, 135)" >{{ item }}</a></h5>
+                    <h1 style="font-size: 23px!important;"><a href="{% url 'application:worktop-detail-view' 'worktop' item.category.slug item.pk %}" style="color:rgb(46, 154, 135)" >{{ item }}</a></h1>
                     <h4>£ {{ item.price|floatformat:"0" }}</h4>
                     <p>{{ item.description }}</p>
                     <p class="m-0">Dimension/Size: {{ item.size }}</p>
@@ -83,7 +95,7 @@
 {#                    <input type="number" class="" style="width: 40%;display: inline" >#}
                     <a onclick="add_cart_1(event,{{ item.pk }},'create','worktop')"
                        class="btn btn-success">Add to cart</a>
-                    <a href="{% url 'application:wishlist' 'worktop' item.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt=""></a>
+                    <a href="{% url 'application:wishlist' 'worktop' item.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt="Wishlist svg"></a>
                     <a onclick="add_cart_1(event,{{ item.pk }},'create','worktop')" class="btn btn-secondary my-1">Order sample</a>
                 </div>
             </div>
@@ -108,8 +120,6 @@
             </div>
 
 
-        {% endif %}
-
 {#   Appliances part     #}
 
     {% else  %}
@@ -118,8 +128,8 @@
 
 {#    Filter form of appliances        #}
             <div class="bg-light p-2 mb-3">
-            <form method="GET" id="remove_form" style="width: 80%;margin: auto"
-                  class="d-flex justify-content-around my-2 menu" action="{% url 'application:appliances-list' list.first.category.pk %}">
+            <form method="GET" id="remove_form"  style="width: 80%;margin: auto"
+                  class="d-flex justify-content-around my-2 block" action="{% url 'application:appliances-list' list.first.category.slug %}">
 {#                {{ search.form }}#}
                 <select name="appliance_category__iexact" id="search_in" class="form-control bottom" style="width: 17%">
                     <option value="">Select a category</option>
@@ -128,12 +138,12 @@
                     {% endfor %}
                 </select>
                 <label class="align-self-center">Min value: £ <span id="output_min">100</span></label>
-                <input type="range" name="price__gte" id="search_in" class="menu bottom" value="100" oninput="change(event)" step="any" max="500" min="100">
+                <input type="range" name="price__gte" id="search_in" class=" bottom" value="100" oninput="change(event)" step="any" max="500" min="100">
                 <label for="" class="align-self-center">Max Value: £ <span id="output_max">500</span></label>
-                <input type="range" name="price__lte" class="menu bottom" id="search_in" value="500" step="any" max="500" min="100" oninput="change(event)">
+                <input type="range" name="price__lte" class=" bottom" id="search_in" value="500" step="any" max="500" min="100" oninput="change(event)">
 
                 <button class="btn btn-success align-self-center">Apply Filter</button>
-                <a href="{% url 'application:appliances-list' list.first.category.pk %}" class="align-self-center btn btn-secondary">Remove Filters</a>
+                <a href="{% url 'application:appliances-list' list.first.category.slug %}" class="align-self-center btn btn-secondary">Remove Filters</a>
             </form>
 
         </div>
@@ -158,23 +168,22 @@
 
         {% for item in list %}
 
-            <div class="border border-rounded d-flex justify-content-around mb-5 menu" id="search_in" style="width: 60%;margin: auto">
-                <div style="width: fit-content;" id="contain">
-                    <img src="{{ item.get_photo_url }}" loading="lazy" id="k_img" height="245px"       alt="">
+            <div class="border border-rounded d-flex justify-content-around mb-5 block" id="search_in" style="width: 60%;margin: auto">
+                <div style="width: fit-content;margin: auto">
+                    <img src="{{ item.get_photo_url }}" loading="lazy" id="k_img" height="245px"  alt="{{ item }} image">
                 </div>
 
                 <div class="align-self-center ml-5" style="width: 374px" id="contain">
-                    <h5 style="color: rgb(46, 154, 135)"><a style="color: rgb(46, 154, 135)" href="{% url 'application:appliances-detail-view' 'appliance' item.category.slug item.pk %}" >{{ item }}</a></h5>
+                    <h1 style="font-size: 23px!important;"><a style="color: rgb(46, 154, 135);" href="{% url 'application:appliances-detail-view' 'appliance' item.category.slug item.pk %}" >{{ item }}</a></h1>
                     <h4>£ {{ item.price|floatformat:"0" }}</h4>
                     <p>{{ item.description|truncatewords:15 }}</p>
                     <p>Type: {{ item.appliances_type }}</p>
                     <p>Brand: {{ item.brand_name }}</p>
-{#                    <input type="number" class="" style="width: 40%;display: inline" >#}
                     <p class="m-0" style="color: green;font-weight: 700" id="add{{ item.pk }}"></p>
 
                     <a onclick="add_cart_1(event,{{ item.pk }},'create','appliance')"
                        class="btn btn-success">Add to cart</a>
-                    <a href="{% url 'application:wishlist' 'appliance' item.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt=""></a>
+                    <a href="{% url 'application:wishlist' 'appliance' item.pk %}"><img src="{% static 'Svg/heart-regular.svg' %}" height="25px" style="   color: red" alt="Wishlist Svg"></a>
                 </div>
             </div>
 
@@ -206,7 +215,7 @@
         {% endif %}
     {% endifequal %}
     </div>
-    {% else %}
+    {% elif not stone %}
         <div class="alert alert-primary text-center" role="alert">
             We have noting that matches your filters!!!
         </div>

@@ -30,7 +30,7 @@ def superuser(any_func):
         if not args[0].user.is_superuser:
             return error_403(args[0], 'none')
         else:
-            return any_func(args[0])
+            return any_func(args[0],**kwargs)
 
     return inner
 
@@ -446,6 +446,7 @@ class BlogsList(generic.ListView):
 def create_blog(request, **kwargs):
     form = BlogForm
     ctx = {'form': BlogForm}
+
     if len(kwargs) != 1:
         blog = get_object_or_404(Blogs, id=kwargs['pk'])
         form = BlogForm(request.POST or None, request.FILES or None, instance=blog)
@@ -484,27 +485,25 @@ def bulk_add(request):
     if request.method == 'POST':
         if form.is_valid():
             form.save(commit=True)
-            return redirect(reverse_lazy('adminPanel:reading',
-                                         kwargs={'name': request.POST['name'], 'category': request.POST['category']}))
+            return file_reading(request)
 
     return render(request, 'adminPanel/testupload.html', {'form': form})
 
 
 @superuser
-def file_reading(request, **kwargs):
+def file_reading(request):
     file = UploadFile.objects.first()
     x = openpyxl.load_workbook(default_storage.open(file.file.name))
-    if kwargs['name'] == 'appliance':
-        worksheet = x[kwargs['category']]
-        cat = Category_Applianes.objects.get(name=kwargs['category'])
-        print(worksheet.max_row)
+    if request.POST.get('name') == 'appliance':
+        worksheet = x[request.POST['category']]
+        cat = Category_Applianes.objects.get(name=request.POST['category'])
         for i in range(3, worksheet.max_row):
             if worksheet.cell(row=i, column=3).value is not None:
                 img_loader = SheetImageLoader(worksheet)
                 img = img_loader.get(f'G{i}')
                 img_io = BytesIO()
                 new_img = File(img_io, name=f'{cat}_{i}')
-                if img.mode in 'RGBA':
+                if img.mode in 'RGBA' or img.mode in 'P':
                     img = img.convert('RGB')
                 img.save(img_io, 'JPEG', optimize=True)
                 app = Appliances.objects.create(
@@ -525,10 +524,10 @@ def file_reading(request, **kwargs):
         file.delete()
         return redirect('adminPanel:index')
 
-    elif kwargs['name'] == 'worktop':
+    elif request.POST.get('name') == 'worktop':
         y = x.sheetnames
         worksheet = x[y[0]]
-        cat = Worktop_category.objects.get(worktop_type__iexact=kwargs['category'])
+        cat = Worktop_category.objects.get(worktop_type__iexact=request.POST['category'])
         for i in range(3, worksheet.max_row):
             if worksheet.cell(row=i, column=3).value is not None:
 
@@ -555,10 +554,10 @@ def file_reading(request, **kwargs):
         file.delete()
         return redirect('adminPanel:index')
 
-    elif kwargs['name'] == 'kitchen':
+    elif request.POST.get('name')== 'kitchen':
         y = x.sheetnames
         worksheet = x[y[0]]
-        cat = KitchenCategory.objects.get(name__iexact=kwargs['category'])
+        cat = KitchenCategory.objects.get(name__iexact=request.POST['category'])
         for i in range(8, worksheet.max_row):
             if worksheet.cell(row=i, column=3).value is not None:
                 unit_cat = UnitType.objects.get_or_create(name=worksheet.cell(row=i, column=4).value)
@@ -582,10 +581,10 @@ def file_reading(request, **kwargs):
         file.delete()
         return redirect('adminPanel:index')
 
-    elif kwargs['name'] == 'accessory':
+    elif request.POST.get('name') == 'accessory':
         y = x.sheetnames
         worksheet = x[y[0]]
-        accessory_type = AccessoriesType.objects.get(name__iexact=kwargs['category'])
+        accessory_type = AccessoriesType.objects.get(name__iexact=request.POST['category'])
         for i in range(3, worksheet.max_row):
             if worksheet.cell(row=i, column=3).value is not None:
 
@@ -785,7 +784,7 @@ def create_room(request, **kwargs):
     if demo_chat_instance:
         return JsonResponse({'Msg': 'Room Already exists'})
 
-    DemoChat.objects.create(name=request.user, description=datetime.datetime.now())
+    DemoChat.objects.create(name=request.user, description=f'Last active {datetime.datetime.now()}')
     return JsonResponse({'Msg': 'Room created'})
 
 
@@ -821,21 +820,16 @@ def token(request):
     return JsonResponse(response)
 
 
-@csrf_exempt
 def send_push(request):
-    try:
-        body = request.body
-        data = json.loads(body)
-        #
-        # if 'head' not in data or 'body' not in data or 'id' not in data:
-        #     return JsonResponse(status=400, data={"message": "Invalid data format"})
+    if request.method == 'POST':
+        try:
+            body = 'The body of notification'
+            data = request.POST['text']
 
-        # user_id = data['id']
-        # user = get_object_or_404(User, pk=user_id)
-        user = User.objects.get(email=request.user.email)
-        payload = {'head': 'TKC Kitchens - Chat', 'body': data['body']}
-        send_user_notification(user=user, payload=payload, ttl=1000)
+            user = request.user
+            payload = {'head': request.POST['title'], 'body': data}
+            send_user_notification(user=user, payload=payload, ttl=1000)
 
-        return JsonResponse(status=200, data={"message": "Web push successful"})
-    except TypeError:
-        return JsonResponse(status=500, data={"message": "An error occurred"})
+            return JsonResponse(status=200, data={"message": "Web push notifications successful"})
+        except TypeError:
+            return JsonResponse(status=500, data={"message": "An error occurred"})

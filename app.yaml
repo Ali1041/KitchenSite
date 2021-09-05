@@ -1,6 +1,6 @@
 runtime: python38
 
-entrypoint: gunicorn -b :$PORT KitchenSite.wsgi --timeout 120
+entrypoint: gunicorn -b :$PORT Kitchen.wsgi --timeout 360
 
 
 handlers:
@@ -16,6 +16,6 @@ handlers:
   script: auto
 
 resources:
-  cpu: 4
+  cpu: 5
   memory_gb: 4
   disk_size_gb: 5

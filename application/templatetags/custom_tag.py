@@ -2,6 +2,7 @@ from django import template
 from application.models import *
 from application.views import cart_count
 import json
+from django.contrib.sites.models import Site
 
 register = template.Library()
 
@@ -42,4 +43,5 @@ def my_cart(request):
 # canonical tag url
 @register.simple_tag
 def canonical_tag(request):
-    return request.build_absolute_uri(request.path)
+    current_site = Site.objects.get_current()
+    return f'https://{current_site.domain}{request.path}'

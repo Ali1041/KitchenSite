@@ -4,6 +4,27 @@
 	    <meta name="description" content="Your cart">
     {% endblock %}
 {% block content %}
+
+	<div class="modal" id="cartModal">
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Confirmation required</h3>
+
+				</div>
+				<div class="modal-body">
+					<p>Are you sure you want to delete this item?</p>
+					<button id="yes" class="btn btn-danger">Yes</button>
+					<button id="no" class="btn btn-secondary">No</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
     {% if cart %}
     <div class='container my-4' id="container_remove">
 
@@ -15,7 +36,7 @@
                 <div class="my-2 card shadow p-3 border-rounded">
                 <div class="card-title d-flex justify-content-between">
                     <h3 class="m-0">{{ item.kitchen_order.kitchen }}</h3>
-                    <a onclick="remove_cart(event,{{ item.kitchen_order.pk }},'delete',`{{ item.kitchen_order.kitchen.color }}`)" style="color: white;text-decoration: none" class="btn btn-danger">X</a>
+                    <a onclick="stateChange(event,{{ item.kitchen_order.pk }},'delete',`{{ item.kitchen_order.kitchen.color }}`)" style="color: white;text-decoration: none" class="btn btn-danger">X</a>
                 </div>
                     <div class="card-body">
                     <div class="text-center my-2">
@@ -30,6 +51,7 @@
                                         <tr>
                                             <th>Image</th>
                                             <th>Name</th>
+	                                        <th>Size</th>
                                             <th>Unit type</th>
                                             <th>SKU</th>
                                             <th>Price</th>
@@ -42,6 +64,7 @@
                                             <tr>
                                                 <td><img src="{{ i.unit.get_photo_url }}" height="45px" width="40px" alt=""></td>
                                                 <td>{{ i.unit }}</td>
+	                                            <td>{{ i.unit.description }}</td>
                                                 <td>{{ i.unit.unit_type }}</td>
                                                 <td>{{ i.unit.sku }}</td>
                                                 <td>{{ i.unit.price }}</td>
@@ -124,8 +147,7 @@
                         {% endifequal %}
 
                         <td class="text-center"><a class="m-0 text-center" style="text-decoration: none;width: fit-content;color: red;cursor: pointer"
-                        onclick="remove_cart(event,{{ item.worktop.pk }},'delete','worktop')
-                                       ">x</a></td>
+                        onclick="stateChange(event,{{ item.worktop.pk }},'delete','worktop')">x</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -162,7 +184,7 @@
                         <td>{{ item.appliances.price }}</td>
 
                         <td class="text-center"><a id="search_in"
-                        onclick="remove_cart(event,{{ item.appliances.pk }},'delete','appliance')"
+                        onclick="stateChange(event,{{ item.appliances.pk }},'delete','appliance')"
                                 class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a></td>
 
                     </tr>
@@ -204,7 +226,7 @@
                         <td>{{ item.accessories.price }}</td>
 
                         <td class="text-center"><a id="search_in"
-                        onclick="remove_cart(event,{{ item.accessories.pk }},'delete','accessories')"
+                        onclick="stateChange(event,{{ item.accessories.pk }},'delete','accessories')"
                                 class="m-0" style="text-decoration: none;width: fit-content;color: red;cursor: pointer">x</a></td>
 
                     </tr>
@@ -307,17 +329,32 @@
             })
         }
 
+			let modalValue = false
 
+        function stateChange(e,pk,process,pro){
+            $('#cartModal').show()
+
+	        document.getElementById('yes').addEventListener('click',()=>{
+	            modalValue = true
+		        remove_cart(e,pk,process,pro)
+	        })
+	        document.getElementById('no').addEventListener('click',()=>{
+	            $('#cartModal').hide()
+	        })
+        }
         function remove_cart(e,pk,process,pro){
 
             const base_url = `${origin}/add-to-cart`;
             let p='';
 
-            fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
-            .then((res)=>{
+
+				console.log(modalValue)
+
+				    fetch(`${base_url}/${pro}/appliance/${pk}/1/${process}/`)
+					    .then((res)=>{
                 return res.json()
             })
-            .then((result)=>{
+					    .then((result)=>{
                 if (pro==='worktop'){
                  p =document.getElementById('info_worktop')
 
@@ -344,6 +381,12 @@
                     location.reload()
                 },1500)
             })
+
+
+
+
+
+
         }
 
         function changing(e,pk,name,status){

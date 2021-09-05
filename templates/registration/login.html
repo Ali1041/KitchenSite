@@ -10,12 +10,12 @@
 	<div class="row " style="width: 70%;margin: auto"  id="search_in">
 		
 		<div class="col-sm-6 my-4 p-0 align-self-center" style="width: fit-content">
-			<img src="{% static 'imgs/login.PNG' %}" width="100%" height="" alt="" id="k_img1">
+			<img src="{% static 'imgs/login.PNG' %}" width="100%" height="" alt="login" id="k_img1">
 		</div>
 	
 	    <div class="col-sm-6 align-self-center p-5 my-4 text-white class" style="background-color: rgb(46, 154, 135);width: 40%;margin: auto" id="search_in">
         <form action="{% url 'application:login' %}"  method="POST">
-            <h4 class="text-center mb-5" >Register or Login to view Prices</h4>
+            <h1 style="font-size: 20px!important;" class="text-center mb-5" >Register or Login to view Prices</h1>
             {% if messages %}
                 {% for msg in messages %}
 

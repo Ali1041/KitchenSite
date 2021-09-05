@@ -4,31 +4,30 @@
         initialiseState(reg)
 
     } else {
-        showNotAllowed("You can't send push notifications ☹️😢")
+        showNotAllowed("You can't send push notifications.")
     }
 }
 
 const initialiseState = (reg) => {
     if (!reg.showNotification) {
-        showNotAllowed('Showing notifications isn\'t supported ☹️😢');
+        showNotAllowed('Showing notifications isn\'t supported');
         return
     }
     if (Notification.permission === 'denied') {
-        showNotAllowed('You prevented us from showing notifications ☹️🤔');
+        showNotAllowed('You prevented us from showing notifications');
         return
     }
     if (!'PushManager' in window) {
-        showNotAllowed("Push isn't allowed in your browser 🤔");
+        showNotAllowed("Push isn't allowed in your browser");
         return
     }
     subscribe(reg);
 }
 
 const showNotAllowed = (message) => {
-    const button = document.querySelector('form>button');
-    button.innerHTML = `${message}`;
-    button.setAttribute('disabled', 'true');
+    alert(`${message}`)
 };
+
 function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
@@ -58,7 +57,7 @@ const subscribe = async (reg) => {
     };
 
     const sub = await reg.pushManager.subscribe(options);
-    sendSubData(sub)
+    sendSubData(sub);
 };
 
 const sendSubData = async (subscription) => {
@@ -88,26 +87,51 @@ const handleResponse = (res) => {
 registerSw()
 
 
-	function openChat(e){
-	    fetch(`${location.origin}/create-room/`)
-		.then((res)=>{
-		    return res.json()
-		})
-		.then((result)=>{
-		})
 
-	    e.target.parentElement.nextElementSibling.style.display = 'block'
-	}
 
-	function closeChat(e){
-	    document.getElementById('chatDiv').style.display = 'none'
-	}
-	    setTimeout(()=>{
-        document.getElementById('pop-up').style.display = 'block'
-    },10000)
-	function closePopup(e){
-	    document.getElementById('pop-up').style.display = 'none'
-	}
+    function subscribe1(e){
+            e.preventDefault()
+            const email=e.target.previousElementSibling.value
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        function validateEmail(email) {
+              const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+              return re.test(email);
+            }
+
+        if (validateEmail(email)){
+            const p = document.getElementById('msg')
+            p.style.color = 'green'
+            const base_url = `${origin}/subscribe/`
+            fetch(base_url,{
+                method:'POST',
+                body:JSON.stringify({'email':e.target.previousElementSibling.value}),
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken':csrftoken
+                }
+            })
+            .then((res)=>{
+                return res.json()
+            })
+            .then((result)=>{
+                if (result.added==='added'){
+                    p.innerHTML = 'Thank you.You have subscribed successfully to our newsletter!!'
+                }
+                else{
+                    p.innerHTML = 'Thank you.You are already subscribed to the list!!'
+                }
+                e.target.previousElementSibling.value = ''
+            })
+        }
+        else{
+                p.innerHTML = 'Try again!!!'
+                setTimeout(()=>{
+                    p.innerHTML = ''
+                },3000)
+
+        }
+    }
+
 
       function cart_count(e){
             const num = document.getElementsByClassName('cart_count')
@@ -152,6 +176,20 @@ registerSw()
             pay.style.width = 90 + '%'
 
     }
+      const headTop = document.getElementsByTagName('head')
+            const scriptFont = document.createElement('script')
+          scriptFont.src = "https://kit.fontawesome.com/359826513d.js"
+          scriptFont.crossorigin = "anonymous"
+          headTop[0].append(scriptFont)
+    window.onload=()=>{
+	    const body = document.getElementsByTagName('body')
+        setTimeout(()=>{
+            let script = document.createElement('script')
+	    script.src = 'https://www.google.com/recaptcha/api.js'
+	    body[0].append(script)
+        },3000)
+
+      }
 
       function search(e){
         function getCookie(name) {
@@ -186,3 +224,5 @@ registerSw()
         })
 
     }
+
+

@@ -48,12 +48,12 @@ urlpatterns = [
     # blogs
     path('admin-blogs/',BlogsList.as_view(),name='admin-blog'),
     path('admin-add-blog/<str:to>/',create_blog,name='admin-add-blog'),
-    path('admin-edit-blog/<str:to>/<int:pk>/',create_blog,name='edit-blog'),
+    path('edit-blog/<str:to>/<int:pk>/',create_blog,name='edit-blog'),
     path('admin-detail/<int:pk>/',DetailBlog.as_view(),name='detail-blog'),
 
     # bulk data
     path('bulk-form/',bulk_add,name='bulk'),
-    path('bulk-read/<str:name>/<str:category>/',file_reading,name='reading'),
+    # path('bulk-read/<str:name>/<str:category>/',file_reading,name='reading'),
 
     path('approve/',approve,name='approve'),
     path('approve/<str:name>/<int:pk>/',approving_admin,name='approved'),
@@ -85,6 +85,6 @@ urlpatterns = [
     # path('create-room/',create_room,name='create_room'),
     path('chat-room/<slug:slug>', room_detail, name='room'),
     # path('token/', token, name='token'),
-    # path('send_push/',send_push,name='push'),
+    path('send_push/',send_push,name='push'),
 
 ]

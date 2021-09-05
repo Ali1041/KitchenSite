@@ -1,3 +1,3 @@
-from KitchenSite.wsgi import application
+from Kitchen.wsgi import application
 
 app = application

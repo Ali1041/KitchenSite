@@ -2,4 +2,15 @@ User-agent: *
 Disallow: /admin/
 Disallow: /adminPanel/
 Disallow: /cart/
+Disallow: /add-to-wishlist/
+Disallow: /wishlist/
+Disallow: /add-review/
+Disallow: /add-to-cart/
+Disallow: /searchresults/
+Disallow: /checkout/
+Disallow: /orderconfirmation/
+Disallow: /reset_password/
+Disallow: /password_reset_done/
+Disallow: /password_reset_complete/
+Disallow: /subscribe/
 Sitemap: https://tkckitchens.co.uk/sitemap.xml
