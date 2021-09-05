@@ -22,10 +22,8 @@
         <meta name="user_id" content="{{ user.id }}">
     {% endif %}
     <link rel="shortcut icon" type="image/png" href="{% static 'imgs/favicon.png' %}">
-	{% compress css %}
 	<link rel="stylesheet" href="{% static 'css/home.css' %}" type="text/css" id="style">
 	<link rel="stylesheet" href="{% static 'css/admin.css' %}" type="text/css" id="style2">
-	{% endcompress %}
 	<link rel="canonical" href="{{ can_tag }}">
 
 	{% block og %}

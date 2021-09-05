@@ -10,92 +10,23 @@ from .filters import *
 from django.views import generic
 from django.urls import reverse_lazy
 import json
+from django.utils.html import strip_tags
+
 from django.db.models import Q
 from django.db.models import Count
-import random
 from .forms import *
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail, EmailMultiAlternatives, send_mass_mail
-from django.utils.html import strip_tags
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from datetime import datetime, timezone, time
 from django import template
 from django.conf import settings
-from .utils import get_captcha
+from .utils import get_captcha, random_queryset, display_error_messages, cart_count
 
 # Create your views here.
 User = get_user_model()
 register = template.Library()
 
-
-# custom error handling pages
-# 403 error page
-def error_403(request, exception):
-    return render(request, '403.html')
-
-
-# 404 error page
-def error_404(request, exception):
-    # if 'adminPanel' in request.META.get('HTTP_REFERER',None):
-    #     error_403(request, exception)
-
-    return render(request, '403.html')
-
-
-# 500 error page
-def error_500(request):
-    return render(request, '404.html')
-
-
-# meta info on pages provided here
-def meta_info(page):
-    return MetaStatic.objects.first()
-
-
-# todo: async tasks of sending emails pending
-
-# counting of cart items
-def cart_count(request):
-    if request.user.is_authenticated:
-        return JsonResponse(
-            {'Count': Cart.objects.select_related('user').filter(user=request.user, checkedout=False).count()})
-    else:
-        return JsonResponse({'Count': 0})
-
-
-# sending emails on different actions
-def email_send(email, to):
-    html_content = ''
-    subject = ''
-    if to == 'newsletter':
-        html_content = render_to_string('inc/newsleter.html')
-        subject = 'THANK YOU FOR SUBSCRIBING!'
-    elif to == 'order':
-        html_content = render_to_string('inc/order_email.html')
-        subject = 'Your order is being processed'
-    elif to == 'register':
-        html_content = render_to_string('inc/email.html')
-        subject = 'Thank you for registering with TKC Kitchens'
-    elif to == 'install':
-        html_content = render_to_string('inc/instal_email.html')
-        subject = 'Thank you for Contacting TKC Kitchens'
-    text_content = strip_tags(html_content)
-    email = EmailMultiAlternatives(
-        subject,
-        text_content,
-        None,
-        [email],
-    )
-    email.attach_alternative(html_content, 'text/html')
-    email.send()
-
-
-# random queryset
-def random_queryset():
-    # returning random samples of appliances and worktops
-    random_sample = random.sample(list(WorkTop.objects.all()), 2)
-    random_sample_2 = random.sample(list(Appliances.objects.all()), 2)
-    return random_sample, random_sample_2
 
 
 # sign up view
@@ -103,29 +34,19 @@ def signup(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save(commit=True)
+            form = form.save(commit=False)
+            form.set_password(request.POST['password'])
+            form.save()
         else:
-            messages.warning(request,'Enter a unique and valid Username and E-mail')
+            err_msgs = display_error_messages(form)
+            messages.warning(request, *err_msgs)
             return redirect('application:signup')
 
-        # pas1 = request.POST['password']
-        # pas2 = request.POST['re_password']
-        #
-        # if pas1 != pas2:
-        #     messages.warning(request, 'Password do not match')
-        #     return redirect('application:signup')
-        # already_exist = User.objects.filter(email=request.POST['email'],username=request.POST['username'])
-        # if already_exist:
-        #     messages.warning(request, 'This email is already registered. Try again with a different one.')
-        #     return redirect('application:signup')
-        # user = User.objects.create(username=request.POST['username'], email=request.POST['email'])
-        # user.set_password(pas1)
-        # user.save()
         # email_send(user.email, 'register')
         messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
     meta = meta_info('home')
-    ctx = {'form':UserRegistrationForm(),'name': meta.signup_name
+    ctx = {'form': UserRegistrationForm(), 'name': meta.signup_name
         , 'description': meta.signup_description, 'title': meta.signup_title}
     return render(request, 'signup.html', ctx)
 
@@ -138,7 +59,7 @@ def login(request):
         except ObjectDoesNotExist:
             messages.warning(request, 'Invalid email or password')
             return redirect('application:login')
-        user = authenticate(request,username=get_username.username, password=request.POST['password'])
+        user = authenticate(request, username=get_username.username, password=request.POST['password'])
         if user is not None:
             log(request, user)
             return redirect(request.session['redirect'])
@@ -265,12 +186,15 @@ def get_kitchen(request, **kwargs):
     imgs_list = []
     for i in range(10, annotated_kitchen.count()):
         my_list.append(annotated_kitchen[i])
+
+    print(annotated_kitchen)
+    for i in annotated_kitchen:
+        print(i)
     for item in my_list:
         x = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type__name=item['kitchen_type__name'],
                                                                   available=True)
         annotated_color = x.values('color', 'kitchen_type__name').annotate(count=Count('color')).order_by()
         inner_dict = {'name': item['kitchen_type__name'], 'description': x[0].description}
-
 
         for i in annotated_color:
             color_list.append(i['color'])
@@ -422,7 +346,8 @@ class AppliancesListView(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        qs = Appliances.objects.select_related('category').filter(category__slug__exact=self.kwargs['slug'], available=True)
+        qs = Appliances.objects.select_related('category').filter(category__slug__exact=self.kwargs['slug'],
+                                                                  available=True)
         filters = AppliancesFilters(self.request.GET, queryset=qs)
         if len(self.request.GET) != 0:
             qs = filters.qs
@@ -602,24 +527,30 @@ def cart(request):
     appliances_cart = []
     accessories_cart = []
     sample_price = 0
-    service = ''
-    for item in cart:
-        if item.worktop:
 
+    for item in cart:
+
+        # Price calculation for worktops
+        if item.worktop:
             if item.sample_worktop == 'Yes':
-                for_check1 = False
                 sample_price += 5
             else:
                 price += item.worktop.price * item.qty
             worktop_cart.append(item)
+
+        # Price calculations for appliances
         if item.appliances:
             price += item.appliances.price * item.qty
             appliances_cart.append(item)
+
+        #  Price calculation for accessories
         if item.accessories:
             VAT = (item.accessories.price * 20) / 100
             included_VAT = VAT + item.accessories.price
             price += included_VAT * item.qty
             accessories_cart.append(item)
+
+        # Price calculation for kitchens and units
         if item.kitchen_order:
             if item.kitchen_order.units_intermediate_set.all():
                 for i in item.kitchen_order.units_intermediate_set.all():
@@ -628,15 +559,11 @@ def cart(request):
                     price += included_VAT * i.qty
             else:
                 sample_price += 4.99
-        if item.service:
-            service = 'service'
-            sample_price += 0
-            for_check2 = False
+
     if price < 300 and price != 0:
         price += 30
-    price = price + sample_price
 
-    ctx = {'cart': cart, 'service': service, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
+    ctx = {'cart': cart, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
            'appliances_cart': appliances_cart,
            'total': price, 'feature1': random_queryset()[0],
            'feature2': random_queryset()[1]}
@@ -832,88 +759,6 @@ def newsletter(request):
         email_send(data['email'], 'newsletter')
 
 
-def terms(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.terms_name
-    ctx['title'] = meta.terms_title
-    ctx['description'] = meta.terms_description
-    return render(request, 'TERMS OF SERVICE 5 (40).html', ctx)
-
-
-def disclaimer(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.disclaimer_name
-    ctx['title'] = meta.disclaimer_title
-    ctx['description'] = meta.disclaimer_description
-    return render(request, 'Disclaimer1 (37).html', ctx)
-
-
-def cancel(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.cancellation_name
-    ctx['title'] = meta.cancellation_title
-    ctx['description'] = meta.cancellation_description
-    return render(request, 'CANCELLATION POLICY (16).html', ctx)
-
-
-def intellectual(request):
-    ctx = {}
-
-    meta = meta_info('home')
-    ctx['name'] = meta.ip_name
-    ctx['title'] = meta.ip_title
-    ctx['description'] = meta.ip_description
-    return render(request, 'Intellectual Property Notification (8).html', ctx)
-
-
-def Gdp(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.gdpr_name
-    ctx['title'] = meta.gdpr_title
-    ctx['description'] = meta.gdpr_description
-    return render(request, 'GDPR Privacy Policy2 (44).html', ctx)
-
-
-def FAQ(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.faq_name
-    ctx['title'] = meta.faq_title
-    ctx['description'] = meta.faq_description
-    return render(request, 'FAQ.html', ctx)
-
-
-def Return(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.return_name
-    ctx['title'] = meta.return_title
-    ctx['description'] = meta.return_description
-    return render(request, 'Return and Refund Policy (2) (6).html', ctx)
-
-
-def ship(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.shipping_name
-    ctx['title'] = meta.shipping_title
-    ctx['description'] = meta.shipping_description
-    return render(request, 'Shipping and Delivery Policy 1 (22).html', ctx)
-
-
-def cook(request):
-    ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.cookies_name
-    ctx['title'] = meta.cookies_title
-    ctx['description'] = meta.cookies_description
-    return render(request, 'Cookies Policy3 (42).html', ctx)
-
-
 def install_contact(request):
     if request.method == 'POST':
         details = f"{request.POST['detail']} from the {request.META.get('HTTP_REFERER')} /{datetime.now()}"
@@ -1016,244 +861,144 @@ def temp_checkout(request, **kwargs):
     return render(request, 'temp_checkout.html')
 
 
-# def create_order_klarna(request, **kwargs):
-#     worktop = Worktop_category.objects.all()
-#     appliances = Category_Applianes.objects.all()
-#     base_url = 'https://api.playground.klarna.com'
-#     url = base_url + '/checkout/v3/orders'
-#
-#     my_items = Cart.objects.select_related('kitchen_order', 'worktop', 'appliances', 'user').filter(user=request.user)
-#     raw_data = {
-#         "purchase_country": "GB",
-#         "purchase_currency": "GBP",
-#         "locale": "en-GB",
-#         "order_amount": 0,
-#         "order_tax_amount": 0,
-#         "order_lines": [
-#
-#         ],
-#         "merchant_urls": {
-#             "terms": "https://www.example.com/terms.html",
-#             "checkout": "https://www.example.com/checkout.html?order_id={checkout.order.id}",
-#             "confirmation": "http://127.0.0.1:8000/order-confirmed/",
-#             "push": "http://127.0.0.1:8000/push-email/",
-#         },
-#     }
-#
-#     price = 0
-#     sample_price = 0
-#     cal_total_tax = 0
-#     for item in my_items:
-#         if item.worktop:
-#             if item.sample_worktop == 'Yes':
-#                 sample_price += 5
-#                 # total amount
-#                 f_price = 5 * 100
-#
-#                 # total tax
-#                 this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
-#
-#                 # added tax to total tax
-#                 cal_total_tax += this_item_tax
-#                 item_dict = {
-#                     "type": "physical",
-#                     "reference": "19-402-USA",
-#                     "name": f'{item.worktop.name} Sample',
-#                     "quantity": item.qty,
-#                     "quantity_unit": "pcs",
-#                     "unit_price": f_price,
-#                     "tax_rate": 2000,
-#                     "total_amount": f_price,
-#                     "total_discount_amount": 0,
-#                     "total_tax_amount": this_item_tax
-#                 }
-#                 raw_data['order_lines'].append(item_dict)
-#             else:
-#                 # total amount
-#                 f_price = int(item.worktop.price * item.qty * 100)
-#
-#                 # total tax
-#                 this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
-#
-#                 # added tax to total tax
-#                 cal_total_tax += this_item_tax
-#                 price += item.worktop.price * item.qty
-#                 item_dict = {
-#                     "type": "physical",
-#                     "reference": "19-402-USA",
-#                     "name": f'{item.worktop.name}',
-#                     "quantity": item.qty,
-#                     "quantity_unit": "pcs",
-#                     "unit_price": int(item.worktop.price * 100),
-#                     "tax_rate": 2000,
-#                     "total_amount": f_price,
-#                     "total_discount_amount": 0,
-#                     "total_tax_amount": this_item_tax
-#                 }
-#                 raw_data['order_lines'].append(item_dict)
-#         if item.appliances:
-#             price += item.appliances.price * item.qty
-#
-#             # total amount
-#             f_price = int(item.appliances.price * item.qty * 100)
-#
-#             # total tax
-#             this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
-#
-#             # added tax to total tax
-#             cal_total_tax += this_item_tax
-#             item_dict = {
-#                 "type": "physical",
-#                 "reference": "19-402-USA",
-#                 "name": f'{item.appliances.name}',
-#                 "quantity": item.qty,
-#                 "quantity_unit": "pcs",
-#                 "unit_price": int(item.appliances.price * 100),
-#                 "tax_rate": 2000,
-#                 "total_amount": f_price,
-#                 "total_discount_amount": 0,
-#                 "total_tax_amount": this_item_tax
-#             }
-#             raw_data['order_lines'].append(item_dict)
-#         if item.kitchen_order:
-#             if item.kitchen_order.units_intermediate_set.all():
-#                 for i in item.kitchen_order.units_intermediate_set.all():
-#                     # total amount
-#                     f_price = int(int(i.unit.price + (i.unit.price * 20 / 100)) * i.qty * 100)
-#                     # separate_tax = f_price*20/100
-#                     # print(separate_tax)
-#                     #
-#                     # f_price = int(f_price+separate_tax)
-#                     # total tax
-#                     this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
-#
-#                     # tax cal
-#                     # f_price = f_price+this_item_tax
-#
-#                     # added tax to total tax
-#                     cal_total_tax += this_item_tax
-#                     print(f_price, this_item_tax)
-#                     item_dict = {
-#                         "type": "physical",
-#                         "reference": f'{i.unit.sku}',
-#                         "name": f'{i.unit.kitchen} with {i.unit}',
-#                         "quantity": i.qty,
-#                         "quantity_unit": "pcs",
-#                         "unit_price": int(i.unit.price + (i.unit.price * 20 / 100)) * 100,
-#                         "tax_rate": 2000,
-#                         "total_amount": f_price,
-#                         "total_discount_amount": 0,
-#                         "total_tax_amount": this_item_tax
-#                     }
-#                     raw_data['order_lines'].append(item_dict)
-#                     price += int((i.unit.price + (i.unit.price * 20 / 100)) * i.qty)
-#             else:
-#                 sample_price += 5
-#                 # total amount
-#                 f_price = int(5 * 100)
-#
-#                 # total tax
-#                 this_item_tax = int(((f_price * 10000) / (10000 + 1000)) / 10)
-#
-#                 # added tax to total tax
-#                 cal_total_tax += this_item_tax
-#                 item_dict = {
-#                     "type": "physical",
-#                     "reference": 'Sample',
-#                     "name": f'{item.kitchen_order.kitchen} Sample',
-#                     "quantity": 1,
-#                     "quantity_unit": "pcs",
-#                     "unit_price": f_price,
-#                     "tax_rate": 1000,
-#                     "total_amount": f_price,
-#                     "total_discount_amount": 0,
-#                     "total_tax_amount": this_item_tax
-#                 }
-#                 raw_data['order_lines'].append(item_dict)
-#
-#         if item.service:
-#             service = 'service'
-#             sample_price += 50
-#             # total amount
-#             f_price = 50 * 100
-#
-#             # total tax
-#             this_item_tax = int((((f_price * 10000) / (10000 + 2000)) / 10) * 2)
-#
-#             # added tax to total tax
-#             cal_total_tax += this_item_tax
-#             item_dict = {
-#                 "type": "physical",
-#                 "reference": "19-402-USA",
-#                 "name": 'Service',
-#                 "quantity": 1,
-#                 "quantity_unit": "pcs",
-#                 "unit_price": 50 * 100,
-#                 "tax_rate": 2000,
-#                 "total_amount": 50 * 100,
-#                 "total_discount_amount": 0,
-#                 "total_tax_amount": this_item_tax
-#             }
-#             raw_data['order_lines'].append(item_dict)
-#     if price < 300 and price != 0:
-#         raw_data['shipping_options'] = [{
-#             'id': 'Shipping Detail',
-#             'name': 'Shipping',
-#             'price': 3000,
-#             'preselected': True,
-#             'tax_rate': 0,
-#             'tax_amount': 0
-#         }, ]
-#     price = int(price + sample_price)
-#     raw_data['order_amount'] = price * 100
-#     raw_data['order_tax_amount'] = cal_total_tax
-#
-#     data = json.dumps(raw_data)
-#     value = json.dumps({
-#         'PK34671_2300d5bebae2': 'wPTKWhc1xSyImu6R'
-#     })
-#
-#     headers = {'Authorization': 'Basic UEszNDY3MV8yMzAwZDViZWJhZTI6d1BUS1doYzF4U3lJbXU2Ug==',
-#                'content-type': 'application/json'
-#                }
-#
-#     res = requests.post(url, data=data, headers=headers)
-#     result = res.json()
-#     ctx = {'html': result['html_snippet'], 'cart_count': cart_count(request), 'appliances': appliances,
-#            'worktop': worktop}
-#     request.session['order_id'] = result['order_id']
-#     return render(request, 'klarna_snippet.html', ctx)
-#
-#
-# def confirmation(request):
-#     base_url = 'https://api.playground.klarna.com'
-#     worktop = Worktop_category.objects.all()
-#     appliances = Category_Applianes.objects.all()
-#     order_id = request.session.get('order_id')
-#     url = base_url + f'/checkout/v3/orders/{order_id}'
-#     headers = {'Authorization': 'Basic UEszNDY3MV8yMzAwZDViZWJhZTI6d1BUS1doYzF4U3lJbXU2Ug==',
-#                'content-type': 'application/json'
-#                }
-#     res = requests.get(url, headers=headers)
-#     result = res.json()
-#     ctx = {'html': result['html_snippet'], 'cart_count': cart_count(request), 'appliances': appliances,
-#            'worktop': worktop}
-#     acknowledge_url = base_url + f'/ordermanagement/v1/orders/{order_id}/acknowledge'
-#     requests.post(acknowledge_url, headers=headers)
-#     send_mail(
-#         'Push',
-#         'An order has been placed. Kindly check your klarna account to process the order.',
-#         None,
-#         ['hiphop.ali1041@gmail.com']
-#     )
-#     info = UserInfo.objects.get(pk=request.session.get('user_info_pk'))
-#     complete_order = CompleteOrder.objects.create(user=info)
-#     my_cart = Cart.objects.select_related('user').filter(user=request.user, checkedout=False)
-#     # print(my_cart.checkedout,my_cart)
-#     complete_order.order.add(*my_cart)
-#     Cart.objects.filter(user=request.user, checkedout=False).update(checkedout=True)
-#     return render(request, 'klarna_confirm.html', ctx)
-
 
 def google_verification(request):
     return render(request, 'google.html')
+
+
+# custom error handling pages
+# 403 error page
+def error_403(request, exception):
+    return render(request, '403.html')
+
+
+# 404 error page
+def error_404(request, exception):
+    # if 'adminPanel' in request.META.get('HTTP_REFERER',None):
+    #     error_403(request, exception)
+
+    return render(request, '403.html')
+
+
+# 500 error page
+def error_500(request):
+    return render(request, '404.html')
+
+
+# meta info on pages provided here
+def meta_info(page):
+    return MetaStatic.objects.first()
+
+
+# todo: async tasks of sending emails pending
+
+
+# sending emails on different actions
+def email_send(email, to):
+    html_content = ''
+    subject = ''
+    if to == 'newsletter':
+        html_content = render_to_string('inc/newsleter.html')
+        subject = 'THANK YOU FOR SUBSCRIBING!'
+    elif to == 'order':
+        html_content = render_to_string('inc/order_email.html')
+        subject = 'Your order is being processed'
+    elif to == 'register':
+        html_content = render_to_string('inc/email.html')
+        subject = 'Thank you for registering with TKC Kitchens'
+    elif to == 'install':
+        html_content = render_to_string('inc/instal_email.html')
+        subject = 'Thank you for Contacting TKC Kitchens'
+    text_content = strip_tags(html_content)
+    email = EmailMultiAlternatives(
+        subject,
+        text_content,
+        None,
+        [email],
+    )
+    email.attach_alternative(html_content, 'text/html')
+    email.send()
+
+
+# Static pages
+def terms(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.terms_name
+    ctx['title'] = meta.terms_title
+    ctx['description'] = meta.terms_description
+    return render(request, 'TERMS OF SERVICE 5 (40).html', ctx)
+
+
+def disclaimer(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.disclaimer_name
+    ctx['title'] = meta.disclaimer_title
+    ctx['description'] = meta.disclaimer_description
+    return render(request, 'Disclaimer1 (37).html', ctx)
+
+
+def cancel(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.cancellation_name
+    ctx['title'] = meta.cancellation_title
+    ctx['description'] = meta.cancellation_description
+    return render(request, 'CANCELLATION POLICY (16).html', ctx)
+
+
+def intellectual(request):
+    ctx = {}
+
+    meta = meta_info('home')
+    ctx['name'] = meta.ip_name
+    ctx['title'] = meta.ip_title
+    ctx['description'] = meta.ip_description
+    return render(request, 'Intellectual Property Notification (8).html', ctx)
+
+
+def Gdp(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.gdpr_name
+    ctx['title'] = meta.gdpr_title
+    ctx['description'] = meta.gdpr_description
+    return render(request, 'GDPR Privacy Policy2 (44).html', ctx)
+
+
+def FAQ(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.faq_name
+    ctx['title'] = meta.faq_title
+    ctx['description'] = meta.faq_description
+    return render(request, 'FAQ.html', ctx)
+
+
+def Return(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.return_name
+    ctx['title'] = meta.return_title
+    ctx['description'] = meta.return_description
+    return render(request, 'Return and Refund Policy (2) (6).html', ctx)
+
+
+def ship(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.shipping_name
+    ctx['title'] = meta.shipping_title
+    ctx['description'] = meta.shipping_description
+    return render(request, 'Shipping and Delivery Policy 1 (22).html', ctx)
+
+
+def cook(request):
+    ctx = {}
+    meta = meta_info('home')
+    ctx['name'] = meta.cookies_name
+    ctx['title'] = meta.cookies_title
+    ctx['description'] = meta.cookies_description
+    return render(request, 'Cookies Policy3 (42).html', ctx)
+

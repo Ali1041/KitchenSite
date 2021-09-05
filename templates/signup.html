@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-{% load compress %}
-{% load static %}
+{% load static bootstrap4 %}
     {% block meta %}
         <title>{{ title }}</title>
 	    <meta name="{{ name }}" content="{{ description }}">
@@ -23,22 +22,7 @@
                     <p class="alert alert-danger" id="pop" role="alert">{{ msg }}</p>
                 {% endfor %}
             {% endif %}
-            <label for="" class="d-block">
-                Username
-                <input type="text" required name="username" class="form-control" placeholder="Username">
-            </label>
-            <label for="" class="d-block">
-                Email
-                <input type="email" required name="email" class="form-control" placeholder="Email">
-            </label>
-            <label for="" class="d-block">
-                Password
-                <input type="password" name="password" required min="8" class="form-control" placeholder="Password">
-            </label>
-            <label for="" class="d-block">
-                Confirm Password
-                <input type="password" name="re_password" required min="8" class="form-control" placeholder="Confirm Password">
-            </label>
+            {% bootstrap_form form %}
             <button  class="w-100 btn btn-success my-2">Signup</button>
             <p>Already have an account?<a href="{% url 'application:login' %}" style="text-decoration: underline;color: white">Login here</a></p>
                 <div class="text-center">

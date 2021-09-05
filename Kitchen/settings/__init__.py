@@ -167,8 +167,8 @@ USE_TZ = True
 # static and media files paths
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, '../../static')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles'),)
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 COMPRESS_ROOT = os.path.join(BASE_DIR, '../../static')
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
