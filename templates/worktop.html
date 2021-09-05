@@ -28,17 +28,17 @@
 	{% endblock %}
 
 {% block content %}
+	{% if stone %}
+	<div class="container">
+		<h1>Stone Worktops</h1>
+		<p>We can supply all stone worktops Marble, Granite, Quartz and Onyx. We supply branded and unbranded both stone worktops.These type of worktops are priced per application and will need to be purchased as part of our kitchen supply and installation service. If you require any more information please feel free to get in touch. Thank You.</p>
+	</div>
+	{% endif %}
+
     {% if list %}
     <div class="my-3">
     {% ifequal product 'worktop' %}
 {#   filter form of worktop     #}
-        {% if stone %}
-            <div class="container">
-                <h1>Stone Worktops</h1>
-                <p>We can supply all stone worktops Marble, Granite, Quartz and Onyx. We supply branded and unbranded both stone worktops.These type of worktops are priced per application and will need to be purchased as part of our kitchen supply and installation service. If you require any more information please feel free to get in touch. Thank You.</p>
-
-            </div>
-        {% else %}
         <div class="bg-light p-2 mb-3">
             <form method="GET" id="remove_form" style="width: 80%;margin: auto"
                   class="d-flex justify-content-around my-2 block" action="{% url 'application:worktop-view' list.first.category.slug  %}">
@@ -119,8 +119,6 @@
     </span>
             </div>
 
-
-        {% endif %}
 
 {#   Appliances part     #}
 
@@ -217,7 +215,7 @@
         {% endif %}
     {% endifequal %}
     </div>
-    {% else %}
+    {% elif not stone %}
         <div class="alert alert-primary text-center" role="alert">
             We have noting that matches your filters!!!
         </div>

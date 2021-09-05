@@ -13,10 +13,10 @@
 
     {% endblock %}
 	<meta name="referrer" content="no-referrer-when-downgrade">
-	<meta name=”robots” content=”index, follow”>
 	{% load bootstrap4 %}
 	{% bootstrap_css %}
-
+	{% bootstrap_jquery %}
+	{% bootstrap_javascript %}
 	<meta name="vapid-key" content="{{ vapid_key }}">
     {% if user.id %}
         <meta name="user_id" content="{{ user.id }}">
@@ -411,7 +411,7 @@
         <p>To request your copy of our brochure and see more of beautiful kitchen designs simply complete your details below, or alternatively call us on 08002118289</p>
 
         <div style="width: 80%;margin: auto">
-            <form action="{% url 'application:index' %}" method="POST">
+            <form action="{% url 'application:index' %}" method="POST" onsubmit="check(event)">
                 {% csrf_token %}
                 <div class="d-flex justify-content-between" id="display_b">
 	                <input type="text" id="search_in" placeholder="TITLE" class="form-control-form mtb">
@@ -430,10 +430,8 @@
 	            </label>
 	            <span class="mr-1">Yes</span><input type="radio" name="visit" class="mr-2">
 	            <span class="mr-1">No</span><input type="radio" name="visit"><br/>
-	            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <div class="g-recaptcha mx-auto" style="width: fit-content" data-sitekey="6LcL72obAAAAAKdB6jWHf-Oqa7EGP3VPf6UMJuzC"></div>
-
-                <button class="btn btn-success mt-2">Send Brochure</button>
+    <div class="g-recaptcha mx-auto" data-callback="recaptchaCallback" style="width: fit-content"  data-sitekey="{{ recaptcha_key }}"></div>
+                <button class="btn btn-success mt-2" disabled id="captchaBtn">Send Brochure</button>
             </form>
         </div>
 
@@ -476,18 +474,24 @@ s0.parentNode.insertBefore(s1,s0);
     </script>
 
 <!-- Facebook Pixel Code --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js'); fbq('init', '244190073982241'); fbq('track', 'PageView');</script><noscript> <img height="1" width="1" alt="Facebook" src="https://www.facebook.com/tr?id=244190073982241&ev=PageView&noscript=1"/></noscript><!-- End Facebook Pixel Code -->
-{% compress js %}
-<script async type="tet/javascript" src="{% static 'js/index.js' %}">
-{% endcompress %}
-	{% bootstrap_jquery %}
-	{% bootstrap_javascript %}
+<script async type="text/javascript" src="{% static 'js/index.js' %}">
+
 </script>
+<script>
+	    function recaptchaCallback() {
+        document.getElementById('captchaBtn').removeAttribute('disabled')
+	}
+
+</script>
+{#<script src="https://www.google.com/recaptcha/api.js" async defer></script>#}
+
 {% block script %}
 
 <script async src="{% static 'js/base.js' %}" type="text/javascript">
 
 
 </script>
+
 
 {% endblock %}
 

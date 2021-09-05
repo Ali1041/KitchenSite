@@ -26,8 +26,8 @@ SECRET_KEY = config('SECRET_KEY')
 
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'service@tkckitchens.co.uk'
-EMAIL_HOST_PASSWORD = 'rkpoibdxvvnohnrh'
+EMAIL_HOST_USER = 'testingtakenornot1@gmail.com'
+EMAIL_HOST_PASSWORD = 'lemxsnhusvaljhzr'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'compressor',
     'crispy_forms',
     'tawkto',
-    'captcha',
+
 ]
 # server side recaptcha 6Lfc52obAAAAAFnFF_0YSCYjlJy8n_QVUbVuL8Mk
 # client side 6Lfc52obAAAAANYjf5L2N0rCIJewB_9G63KFnW0a
@@ -119,23 +119,23 @@ pymysql.version_info = (1, 4, 6, 'final', 0)
 pymysql.install_as_MySQLdb()
 DEBUG = True
 
-if DEBUG == False:
+if DEBUG == True:
     DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql',
                 'HOST': '127.0.0.1',
                 'USER': 'root',
-                'PASSWORD': 'tkc-kitchen',
+                'PASSWORD': 'testpassword1',
                 'NAME': 'main',
             }
         }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         }
+#     }
 
 
 # Password validation
@@ -221,6 +221,9 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 
 LOGOUT_REDIRECT_URL = 'application:login'
 
-RECAPTCHA_PUBLIC_KEY = '6LcL72obAAAAAKdB6jWHf-Oqa7EGP3VPf6UMJuzC'
-RECAPTCHA_PRIVATE_KEY = '6Lfc52obAAAAAFnFF_0YSCYjlJy8n_QVUbVuL8Mk'
+RECAPTCHA_PUBLIC_KEY = '6LdvPqcbAAAAADofSg9C88kvwQsYMZLKnTmyDEku'
+RECAPTCHA_PRIVATE_KEY = '6LdvPqcbAAAAAKAQxmDc5WSv4Tdbu1z0B_DcOlTZ'
 RECAPTCHA_REQUIRED_SCORE = 0.85
+
+# RECAPTCHA_PUBLIC_KEY = '6LeTH48bAAAAADewzfBgWcOLGtZETQoRH7Y6KYpx'
+# RECAPTCHA_PRIVATE_KEY = '6LeTH48bAAAAAPmUTtBtTpe9-F9YIdfG7zqzp4Wr'
