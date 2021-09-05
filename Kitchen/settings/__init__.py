@@ -12,10 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
-
+from .security_settings import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -27,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'testingtakenornot1@gmail.com'
-EMAIL_HOST_PASSWORD = 'lemxsnhusvaljhzr'
+EMAIL_HOST_PASSWORD = config('email_password')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -46,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # installed/added by me
+    # installed/added
     'application.apps.ApplicationConfig',
     'adminPanel',
     'bootstrap4',
@@ -64,15 +63,12 @@ INSTALLED_APPS = [
     'tawkto',
 
 ]
-# server side recaptcha 6Lfc52obAAAAAFnFF_0YSCYjlJy8n_QVUbVuL8Mk
-# client side 6Lfc52obAAAAANYjf5L2N0rCIJewB_9G63KFnW0a
-TAWKTO_ID_SITE = '609415aab1d5182476b65aae'
-TAWKTO_API_KEY = 'cd414feaa0eaaa11f0a234cbdadd472efbad0c9d'
+
 SITE_ID = 1
 CKEDITOR_UPLOAD_PREFIX = 'media/uploads/'
 CKEDITOR_UPLOAD_PATH = "media/uploads/"
 GOOGLE_ANALYTICS = {
-    'google_analytics_id': 'G-WKLM57GY6R',
+    'google_analytics_id': config('google_analytics'),
 }
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -125,17 +121,10 @@ if DEBUG == True:
                 'ENGINE': 'django.db.backends.mysql',
                 'HOST': '127.0.0.1',
                 'USER': 'root',
-                'PASSWORD': 'testpassword1',
+                'PASSWORD': config('db_password'),
                 'NAME': 'main',
             }
         }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         }
-#     }
 
 
 # Password validation
@@ -155,9 +144,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# web push settings
 WEBPUSH_SETTINGS = {
-   "VAPID_PUBLIC_KEY": "BP47yAVLNSvHVWDJkzMeu6FduiBLmP6ve-AUgFeUA7uCKdBEXZRVnvZ7-ikzo-PRFECedMaiQIwyqIlYj1csCq4",
-   "VAPID_PRIVATE_KEY": "TAOidJ8NGiLG88NnIMfelb2UxGIVaEQfUyvRQEO2yJ4",
+   "VAPID_PUBLIC_KEY": config('web_push_public'),
+   "VAPID_PRIVATE_KEY": config('web_push_private'),
    "VAPID_ADMIN_EMAIL": "admin@example.com"
 }
 # Internationalization
@@ -174,11 +164,12 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
+# static and media files paths
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, '../../static')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles'),)
-COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
+COMPRESS_ROOT = os.path.join(BASE_DIR, '../../static')
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 COMPRESS_FILTERS = {
@@ -191,20 +182,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-# cloud_sql_proxy.exe -instances="tkc-kitchen:europe-west2:application-instance"=tcp:3307
-if DEBUG:
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
-    SECURE_SSL_REDIRECT = False
-else:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
 
 DEFAULT_FILE_STORAGE = 'Kitchen.gcloud.GoogleCloudMediaFileStorage'
 GS_PROJECT_ID = 'tkc-kitchen'
@@ -221,9 +198,7 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 
 LOGOUT_REDIRECT_URL = 'application:login'
 
-RECAPTCHA_PUBLIC_KEY = '6LdvPqcbAAAAADofSg9C88kvwQsYMZLKnTmyDEku'
-RECAPTCHA_PRIVATE_KEY = '6LdvPqcbAAAAAKAQxmDc5WSv4Tdbu1z0B_DcOlTZ'
+# Recaptcha
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')
 RECAPTCHA_REQUIRED_SCORE = 0.85
-
-# RECAPTCHA_PUBLIC_KEY = '6LeTH48bAAAAADewzfBgWcOLGtZETQoRH7Y6KYpx'
-# RECAPTCHA_PRIVATE_KEY = '6LeTH48bAAAAAPmUTtBtTpe9-F9YIdfG7zqzp4Wr'
