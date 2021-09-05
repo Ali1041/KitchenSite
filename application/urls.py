@@ -1,7 +1,8 @@
-from django.urls import path, include
-from .views import *
 from django.contrib.auth.views import LogoutView
-from adminPanel.views import token, send_push, create_room
+from django.urls import path
+
+from adminPanel.views import token, send_push
+from .views import *
 
 app_name = 'application'
 

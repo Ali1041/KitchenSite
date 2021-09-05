@@ -77,9 +77,11 @@ class Kitchen(models.Model):
     class Meta:
         ordering = ['pk']
 
+
 class UnitTypeManager(models.Manager):
     def get_by_natural_key(self, name):
         return self.get(name=name)
+
 
 class UnitType(models.Model):
     UNIT_TYPES = [
@@ -96,19 +98,21 @@ class UnitType(models.Model):
     name = models.CharField(max_length=255)
 
     objects = UnitTypeManager()
+
     def natural_key(self):
         return (self.name,)
 
     def get_by_natural_key(self):
         return (self.name,)
+
     def __str__(self):
         return self.name
-
 
 
 class UnitManager(models.Manager):
     def get_by_natural_key(self, unit_type):
         return self.get(unit_type=unit_type)
+
 
 class Units(models.Model):
     name = models.CharField(max_length=255)
@@ -182,7 +186,6 @@ class WorkTop(models.Model):
     meta_title = models.CharField(max_length=255, default='WorkTop', blank=True, null=True)
     meta_description = models.TextField(default='WorkTop', blank=True, null=True)
 
-
     def __str__(self):
         return f'{self.name}'
 
@@ -254,7 +257,8 @@ class Combining(models.Model):
     kitchen = models.ForeignKey(Kitchen, on_delete=models.CASCADE, related_name='complete_kitchen')
     units = models.ManyToManyField(Units, through='Units_intermediate')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    checkout = models.BooleanField(default=True,blank=True,null=True)
+    checkout = models.BooleanField(default=True, blank=True, null=True)
+
     # door = models.ForeignKey(Doors, on_delete=models.CASCADE, blank=True, null=True)
     # cabnet = models.ForeignKey(Cabnets, on_delete=models.CASCADE, blank=True, null=True)
 
@@ -337,12 +341,11 @@ class Blogs(models.Model):
     meta_name = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
     meta_title = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
     meta_description = models.TextField(default='Accessories', blank=True, null=True)
-    slug = models.SlugField(max_length=255,blank=True,null=True,default='slug')
+    slug = models.SlugField(max_length=255, blank=True, null=True, default='slug')
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
-
 
     def __str__(self):
         return self.title
@@ -434,88 +437,13 @@ class MetaInfo(models.Model):
 
 
 class MetaStatic(models.Model):
-    home_title = models.CharField(max_length=255)
-    home_name = models.CharField(max_length=255)
-    home_description = models.TextField()
+    title = models.CharField(max_length=255,blank=True)
+    name = models.CharField(max_length=255,blank=True)
+    description = models.TextField(blank=True)
+    unique_id = models.CharField(max_length=100, unique=True, blank=True)
 
-    kitchen_title = models.CharField(max_length=255)
-    kitchen_name = models.CharField(max_length=255)
-    kitchen_description = models.TextField()
-
-    design_title = models.CharField(max_length=255)
-    design_name = models.CharField(max_length=255)
-    design_description = models.TextField()
-
-    install_title = models.CharField(max_length=255)
-    install_name = models.CharField(max_length=255)
-    install_description = models.TextField()
-
-    contact_title = models.CharField(max_length=255)
-    contact_name = models.CharField(max_length=255)
-    contact_description = models.TextField()
-
-    blog_title = models.CharField(max_length=255)
-    blog_name = models.CharField(max_length=255)
-    blog_description = models.TextField()
-
-    cancellation_title = models.CharField(max_length=255)
-    cancellation_name = models.CharField(max_length=255)
-    cancellation_description = models.TextField()
-
-    cookies_title = models.CharField(max_length=255)
-    cookies_name = models.CharField(max_length=255)
-    cookies_description = models.TextField()
-
-    disclaimer_title = models.CharField(max_length=255)
-    disclaimer_name = models.CharField(max_length=255)
-    disclaimer_description = models.TextField()
-
-    faq_title = models.CharField(max_length=255)
-    faq_name = models.CharField(max_length=255)
-    faq_description = models.TextField()
-
-    gdpr_title = models.CharField(max_length=255)
-    gdpr_name = models.CharField(max_length=255)
-    gdpr_description = models.TextField()
-
-    ip_title = models.CharField(max_length=255)
-    ip_name = models.CharField(max_length=255)
-    ip_description = models.TextField()
-
-    return_title = models.CharField(max_length=255)
-    return_name = models.CharField(max_length=255)
-    return_description = models.TextField()
-
-    shipping_title = models.CharField(max_length=255)
-    shipping_name = models.CharField(max_length=255)
-    shipping_description = models.TextField()
-
-    terms_title = models.CharField(max_length=255)
-    terms_name = models.CharField(max_length=255)
-    terms_description = models.TextField()
-
-    login_title = models.CharField(max_length=255,default='login')
-    login_name = models.CharField(max_length=255,default='description')
-    login_description = models.TextField(default='description')
-
-    signup_title = models.CharField(max_length=255,default='Signup')
-    signup_name = models.CharField(max_length=255,default='description')
-    signup_description = models.TextField(default='description')
-
-    install_form_title = models.CharField(max_length=255,default='description')
-    install_form_name = models.CharField(max_length=255,default='description')
-    install_form_description = models.TextField(default='description')
-
-    search_title = models.CharField(max_length=255,default='description')
-    search_name = models.CharField(max_length=255,default='description')
-    search_description = models.TextField(default='description')
-
-    wishlist_title = models.CharField(max_length=255,default='description')
-    wishlist_name = models.CharField(max_length=255,default='description')
-    wishlist_description = models.TextField(default='description')
-
-def __str__(self):
-        return 'Meta Info for static pages'
+    def __str__(self):
+        return f'{self.title} page'
 
 
 class AccessoriesType(models.Model):
@@ -618,6 +546,6 @@ class DemoChat(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self,*args,**kwargs):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        return super().save(*args,**kwargs)
+        return super().save(*args, **kwargs)

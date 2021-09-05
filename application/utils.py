@@ -1,9 +1,11 @@
-from django.conf import settings
-import requests
-from django.utils.html import strip_tags
 import random
-from application.models import WorkTop,Appliances,Cart
+
+import requests
 from django.http import JsonResponse
+from django.utils.html import strip_tags
+
+from application.models import WorkTop, Appliances, Cart, MetaStatic
+
 
 # captcha validation
 def get_captcha(request):
@@ -38,10 +40,11 @@ def random_queryset():
     return random_sample, random_sample_2
 
 
-# counting of cart items
-def cart_count(request):
-    if request.user.is_authenticated:
-        return JsonResponse(
-            {'Count': Cart.objects.select_related('user').filter(user=request.user, checkedout=False).count()})
-    else:
-        return JsonResponse({'Count': 0})
+
+# Return Meta data for static pages
+def meta_static(page_name,ctx):
+    meta_instance = MetaStatic.objects.get(unique_id=page_name)
+    ctx['name'] = meta_instance.name
+    ctx['title'] = meta_instance.title
+    ctx['description'] = meta_instance.description
+    return ctx

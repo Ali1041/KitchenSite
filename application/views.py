@@ -1,32 +1,28 @@
-from django.shortcuts import render, redirect, HttpResponse
-from .models import *
-from django.conf import settings
-from django.contrib.auth import authenticate, login as log
-from django.contrib.auth import get_user_model
-from django.contrib import messages
-from django.http import JsonResponse
-from django.core.serializers import serialize
-from .filters import *
-from django.views import generic
-from django.urls import reverse_lazy
 import json
-from django.utils.html import strip_tags
+from datetime import datetime
 
-from django.db.models import Q
-from django.db.models import Count
-from .forms import *
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
-from datetime import datetime, timezone, time
 from django import template
 from django.conf import settings
-from .utils import get_captcha, random_queryset, display_error_messages, cart_count
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as log
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMultiAlternatives
+from django.core.serializers import serialize
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.html import strip_tags
+from django.views import generic
+
+from .filters import *
+from .forms import *
+from .utils import get_captcha, random_queryset, display_error_messages, meta_static
 
 # Create your views here.
 User = get_user_model()
 register = template.Library()
-
 
 
 # sign up view
@@ -45,9 +41,9 @@ def signup(request):
         # email_send(user.email, 'register')
         messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
-    meta = meta_info('home')
-    ctx = {'form': UserRegistrationForm(), 'name': meta.signup_name
-        , 'description': meta.signup_description, 'title': meta.signup_title}
+    ctx = {'form': UserRegistrationForm()}
+    meta_static('signup',ctx)
+
     return render(request, 'signup.html', ctx)
 
 
@@ -67,9 +63,9 @@ def login(request):
             messages.warning(request, 'Enter a valid username or password!!')
             return redirect('application:login')
 
-    meta = meta_info('home')
-    ctx = {'name': meta.login_name
-        , 'description': meta.login_description, 'title': meta.login_title}
+    ctx = {}
+    meta_static('login',ctx)
+
     redirect_to = request.META.get('HTTP_REFERER')
     request.session['redirect'] = redirect_to
     return render(request, 'registration/login.html', ctx)
@@ -103,15 +99,13 @@ def index(request):
         messages.success(request, 'Your brochure has been sent successfully!!')
         return redirect('application:index')
 
-    meta = meta_info('home')
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
 
     ctx = {'blog': Blogs.objects.all()[:3],
-           'name': meta.home_name
-        , 'description': meta.home_description, 'title': meta.home_title, 'vapid_key': vapid_key, 'user': request.user,
+           'vapid_key': vapid_key, 'user': request.user,
            'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY}
-
+    meta_static('home', ctx)
     return render(request, 'base.html', ctx)
 
 
@@ -154,67 +148,40 @@ class AccessoriesDetail(generic.DetailView):
             pk=self.kwargs['pk'])
 
 
-# all kitchen
-class AllKitchenView(generic.ListView):
-    model = Kitchen
-    template_name = 'new_kitchen_style.html'
-    context_object_name = 'list'
-
-    def get_context_data(self, *args, **kwargs):
-        ctx = super(AllKitchenView, self).get_context_data(*args, **kwargs)
-        meta = meta_info('home')
-        ctx['name'] = meta.kitchen_name
-        ctx['description'] = meta.kitchen_description
-        ctx['title'] = meta.kitchen_title
-        return ctx
-
-    def get_queryset(self):
-        kitchens = Kitchen.objects.select_related('kitchen_type').filter(available=True)
-        all_unique = kitchens.values('color').annotate(count=Count('color')).order_by()
-        colors = [i['color'] for i in all_unique]
-        return colors
-
-
 # ajax kitchen request
 
 def get_kitchen(request, **kwargs):
+    # Getting total kitchens
     kitchens = Kitchen.objects.select_related('kitchen_type').all()
-    annotated_kitchen = kitchens.values('kitchen_type__name').annotate(count=Count('kitchen_type')).order_by()
-    my_list = []
-    list_dict = []
-    color_list = []
-    imgs_list = []
-    for i in range(10, annotated_kitchen.count()):
-        my_list.append(annotated_kitchen[i])
+    total_kitchens = kitchens.values('kitchen_type__name').annotate(count=Count('kitchen_type')).order_by()
+    ctx = {'list': []}
 
-    print(annotated_kitchen)
-    for i in annotated_kitchen:
-        print(i)
-    for item in my_list:
-        x = Kitchen.objects.select_related('kitchen_type').filter(kitchen_type__name=item['kitchen_type__name'],
-                                                                  available=True)
-        annotated_color = x.values('color', 'kitchen_type__name').annotate(count=Count('color')).order_by()
-        inner_dict = {'name': item['kitchen_type__name'], 'description': x[0].description}
+    # Getting total number of instances of a particular kitchen
+    for item in total_kitchens:
+        color_list = []
+        img_list = []
+        number_of_kitchen_instances = Kitchen.objects.select_related('kitchen_type').filter(
+            kitchen_type__name=item['kitchen_type__name'],
+            available=True)
+        inner_dict = {'name': item['kitchen_type__name'], 'description': number_of_kitchen_instances[0].description}
 
-        for i in annotated_color:
-            color_list.append(i['color'])
+        # Getting all images and colors of a particular kitchen
+        for i in number_of_kitchen_instances:
+            color_list.append(i.color)
             img_color = Kitchen.objects.select_related('kitchen_type').filter(
-                kitchen_type__name=i['kitchen_type__name'], color=i['color'], available=True)
-            imgs_list.append(img_color[0].img)
+                kitchen_type__name=item['kitchen_type__name'], color=i.color, available=True)
+            img_list.append(img_color[0].img)
+
         inner_dict['colors'] = color_list
-        inner_dict['imgs'] = imgs_list
-        list_dict.append(inner_dict)
+        inner_dict['imgs'] = img_list
+        ctx['list'].append(inner_dict)
 
-    ctx = {'list': list_dict}
+    meta_static('kitchen',ctx)
 
-    meta = meta_info('home')
-    ctx['name'] = meta.kitchen_name
-    ctx['title'] = meta.kitchen_title
-    ctx['description'] = meta.kitchen_description
     return render(request, 'all_kitchen.html', ctx)
 
 
-# view for kitchen display
+# todo: targeted optimization
 class KitchenView(generic.ListView):
     model = Units
     paginate_by = 10
@@ -437,7 +404,6 @@ def addcart(request, **kwargs):
             color = kwargs['product']
             name = kwargs['name']
             qty = kwargs['qty']
-            print(color, name, qty)
             kitchen = Kitchen.objects.select_related('kitchen_type').get(
                 kitchen_type=KitchenCategory.objects.get(name__iexact=name), color__iexact=color)
 
@@ -603,34 +569,25 @@ def contact(request):
         email.attach_alternative(html_content, 'text/html')
         email.send(fail_silently=False)
         return redirect('application:contact')
-    meta = meta_info('home')
     ctx = {
-        'name': meta.contact_name
-        , 'description': meta.contact_description, 'title': meta.contact_title,
         'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY
     }
+    meta_static('contact', ctx)
 
     return render(request, 'contact_us.html', ctx)
 
 
 # installation page
 def installation(request):
-    meta = meta_info('home')
-
-    ctx = {'name': meta.install_name
-        , 'description': meta.install_description, 'title': meta.install_title
-           }
-
+    ctx = {}
+    meta_static('installation', ctx)
     return render(request, 'inc/installation.html', ctx)
 
 
 # design page
 def design(request):
-    meta = meta_info('home')
-    ctx = {
-        'name': meta.design_name
-        , 'description': meta.design_description, 'title': meta.design_title
-    }
+    ctx = {}
+    meta_static('design', ctx)
 
     return render(request, 'inc/design.html', ctx)
 
@@ -660,10 +617,8 @@ def wishlist(request, **kwargs):
         my_wishlist = WishList.objects.select_related('worktop', 'kitchen', 'unit', 'appliances').filter(
             user=request.user)
         ctx = {'wishlist': my_wishlist}
-        meta = meta_info('home')
-        ctx['title'] = meta.wishlist_title
-        ctx['name'] = meta.wishlist_name
-        ctx['description'] = meta.wishlist_description
+        meta_static('wishlist', ctx)
+
         return render(request, 'wishlist.html', ctx)
 
 
@@ -713,10 +668,8 @@ def search(request, **kwargs):
         qs2 = Appliances.objects.filter(Q(name__icontains=data) | Q(description__icontains=data))
         qs3 = Accessories.objects.filter(Q(description__icontains=data))
         ctx = {'qs1': qs1, 'qs2': qs2, 'qs3': qs3}
-        meta = meta_info('home')
-        ctx['title'] = meta.search_title
-        ctx['name'] = meta.search_name
-        ctx['description'] = meta.search_description
+        meta_static('search', ctx)
+
         return render(request, 'search.html', ctx)
 
 
@@ -727,10 +680,8 @@ class BlogList(generic.ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super(BlogList, self).get_context_data(**kwargs)
-        meta = meta_info('home')
-        ctx['name'] = meta.blog_name
-        ctx['title'] = meta.blog_title
-        ctx['description'] = meta.blog_description
+        meta_static('blog', ctx)
+
         return ctx
 
 
@@ -788,9 +739,9 @@ def install_contact(request):
         messages.info(request,
                       'Your form has been submitted. One of our customer care representative will contact you soon!')
         return redirect(request.META.get('HTTP_REFERER'))
-    meta = meta_info('home')
-    ctx = {'name': meta.install_form_name, 'title': meta.install_form_title,
-           'description': meta.install_form_description}
+    ctx = {}
+    meta_static('installation', ctx)
+
     return render(request, 'installation_contact.html', ctx)
 
 
@@ -861,7 +812,6 @@ def temp_checkout(request, **kwargs):
     return render(request, 'temp_checkout.html')
 
 
-
 def google_verification(request):
     return render(request, 'google.html')
 
@@ -883,11 +833,6 @@ def error_404(request, exception):
 # 500 error page
 def error_500(request):
     return render(request, '404.html')
-
-
-# meta info on pages provided here
-def meta_info(page):
-    return MetaStatic.objects.first()
 
 
 # todo: async tasks of sending emails pending
@@ -923,82 +868,70 @@ def email_send(email, to):
 # Static pages
 def terms(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.terms_name
-    ctx['title'] = meta.terms_title
-    ctx['description'] = meta.terms_description
+    meta_static('terms', ctx)
     return render(request, 'TERMS OF SERVICE 5 (40).html', ctx)
 
 
 def disclaimer(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.disclaimer_name
-    ctx['title'] = meta.disclaimer_title
-    ctx['description'] = meta.disclaimer_description
+    meta_static('disclaimer', ctx)
+
     return render(request, 'Disclaimer1 (37).html', ctx)
 
 
 def cancel(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.cancellation_name
-    ctx['title'] = meta.cancellation_title
-    ctx['description'] = meta.cancellation_description
+    meta_static('cancel', ctx)
+
     return render(request, 'CANCELLATION POLICY (16).html', ctx)
 
 
 def intellectual(request):
     ctx = {}
 
-    meta = meta_info('home')
-    ctx['name'] = meta.ip_name
-    ctx['title'] = meta.ip_title
-    ctx['description'] = meta.ip_description
+    meta_static('ip', ctx)
+
     return render(request, 'Intellectual Property Notification (8).html', ctx)
 
 
 def Gdp(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.gdpr_name
-    ctx['title'] = meta.gdpr_title
-    ctx['description'] = meta.gdpr_description
+    meta_static('gdp', ctx)
+
     return render(request, 'GDPR Privacy Policy2 (44).html', ctx)
 
 
 def FAQ(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.faq_name
-    ctx['title'] = meta.faq_title
-    ctx['description'] = meta.faq_description
+    meta_static('faq', ctx)
+
     return render(request, 'FAQ.html', ctx)
 
 
 def Return(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.return_name
-    ctx['title'] = meta.return_title
-    ctx['description'] = meta.return_description
+    meta_static('return', ctx)
+
     return render(request, 'Return and Refund Policy (2) (6).html', ctx)
 
 
 def ship(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.shipping_name
-    ctx['title'] = meta.shipping_title
-    ctx['description'] = meta.shipping_description
+    meta_static('shipment', ctx)
+
     return render(request, 'Shipping and Delivery Policy 1 (22).html', ctx)
 
 
 def cook(request):
     ctx = {}
-    meta = meta_info('home')
-    ctx['name'] = meta.cookies_name
-    ctx['title'] = meta.cookies_title
-    ctx['description'] = meta.cookies_description
+    meta_static('cookie', ctx)
+
     return render(request, 'Cookies Policy3 (42).html', ctx)
 
+# counting of cart items
+def cart_count(request):
+    if request.user.is_authenticated:
+        return JsonResponse(
+            {'Count': Cart.objects.select_related('user').filter(user=request.user, checkedout=False).count()})
+    else:
+        return JsonResponse({'Count': 0})
