@@ -26,25 +26,18 @@
 
 
 
-	{% for item in current_kitchen %}
-        {% ifequal forloop.counter 1 %}
 
 
     <div class="my-5 container" id="container_remove">
         <h1 class="text-center"><span style="color: rgb(46, 154, 135)">{{ item }}</span></h1>
-        <div style="width: 100%;margin: auto">
+        <div>
 
-            <div id="carouselExampleControls" class="carousel slide " style="width: fit-content;margin: auto" data-ride="carousel">
-			  <div class="carousel-inner shadow">
-				  {% for i in current_kitchen %}
-			    <div class="carousel-item get" >
-			      <img class="d-block mx-auto" id="k_img" style="max-width: 100%" height="700px" src="{{ i.get_photo_url }}" alt="{{ i.get_alt_text }} TKC-kitchen pic">
-			    </div>
-				  {% endfor %}
+			{#    Image of kitchen    #}
+	        <div class="shadow mx-auto" style="width: fit-content">
+			      <img class="d-block" id="k_img" style="max-width: 100%" height="700px" src="{{ item.get_photo_url }}" alt="{{ item.get_alt_text }} TKC-kitchen pic">
+	        </div>
 
-			  </div>
-			</div>
-
+			{#     Colors available       #}
             <div class="d-flex my-3" id="display_b" style="width: 50%;margin: auto" >
                 <p class="m-0 align-self-center text-center w-25" id="search_in"><b>Colors Available: </b></p>
                 <div class="d-flex justify-content-between ml-3 w-75" id="search_in">
@@ -65,11 +58,10 @@
 
 
             <div class="text-center p-3">
-{#                <a href="{% url 'application:add-to-cart' 'sample' current_color kitchen_view.pk 1 'create' %}" class="btn btn-success">Order a sample</a>#}
                 <a href="{% url 'application:contact' %}" class="btn btn-success" >Order a free sample</a>
             </div>
 
-
+{#	Units search		#}
             <div class="mx-auto p-3" id="search_in" style="width: 30%">
                     <div class="btn-group border p-2 " style="width: 100%;border-radius: 6px">
                         <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;height: 30px;width: 30px;background-color: var(--{{ current_color }})">
@@ -98,6 +90,7 @@
 
         </div>
             {% else %}
+{#	  Mobile dropdown colors      #}
             <div style="width: 80%;margin: auto">
                     <div class="btn-group border p-2 my-2" style="width: 100%;border-radius: 6px">
                         <p class="align-self-center m-0 mr-2" style="height: 20px;width: 20px;background-color: var(--{{ current_color }})">
@@ -106,20 +99,19 @@
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                class=" a_btn dropdown-toggle" id="select">(Selected Color) {{ current_color }}</a>
 
-
-          <div class="dropdown-menu p-0 w-100">
-              {% for item in kitchen_color %}
-                    <div class="dropdown-item dropHover a_btn d-flex" onclick="change_url(`{{ item.color }}`)" style="cursor:pointer">
-                    <p class="align-self-center m-0 mr-2" style="display: inline-block;height: 20px;width: 20px;background-color: var(--{{ item.color }})">
-                        </p>
-                        <span class="">
-                      {{ item.color }}</span>
-                    </div>
-
+	                    <div class="dropdown-menu p-0 w-100">
+			              {% for item in kitchen_color %}
+			                    <div class="dropdown-item dropHover a_btn d-flex" onclick="change_url(`{{ item.color }}`)" style="cursor:pointer">
+			                    <p class="align-self-center m-0 mr-2" style="display: inline-block;height: 20px;width: 20px;background-color: var(--{{ item.color }})">
+			                        </p>
+			                        <span class="">
+			                      {{ item.color }}</span>
+			                    </div>
 
 
-              {% endfor %}
-          </div>
+
+			              {% endfor %}
+	                    </div>
                     </div>
             </div>
         {% endif %}
@@ -256,8 +248,8 @@
             <div>
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
-            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+            <a class="btn btn-theme" href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -265,8 +257,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
-            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>
@@ -276,10 +268,10 @@
             </div>
 
         <div class="d-flex justify-content-around my-3 menu p-2">
-            <a href="{{ current_kitchen.first.doors_guide }}" class="btn btn-success menu bottom">Door Guide</a>
-            <a href="{{ current_kitchen.first.tall_unit_guide }}" class="btn btn-success menu bottom">Tall Unit Guide</a>
-            <a href="{{ current_kitchen.first.x_tall_unit_guide }}" class="btn btn-success menu bottom">Extra Tall Unit Guide</a>
-            <a href="{{ current_kitchen.first.carcases_tech_guide }}" class="btn btn-success menu bottom">Carcases Tech Guide</a>
+            <a href="{{ current_kitchen.doors_guide }}" class="btn btn-success bottom">Door Guide</a>
+            <a href="{{ current_kitchen.tall_unit_guide }}" class="btn btn-success bottom">Tall Unit Guide</a>
+            <a href="{{ current_kitchen.x_tall_unit_guide }}" class="btn btn-success bottom">Extra Tall Unit Guide</a>
+            <a href="{{ current_kitchen.carcases_tech_guide }}" class="btn btn-success bottom">Carcases Tech Guide</a>
         </div>
         {% else %}
         <div class="alert alert-primary" role="alert">
@@ -299,14 +291,12 @@
             {% endfor %}
         {% endif %}
             <h3 class="text-center" style="color: rgb(46, 154, 135)">Order and installation request</h3>
-                        <p>
-                    Vero handleless rail system needs a highly-skilled designer and highly technical
-skills for installation. To save our valuable clients from getting into any
-                    installation or design-related problems, we only offer <b>{{ kitchen_view }}</b> when you acquire installation services from us as well. Contact us by
-filling the below form and our team will get in touch with you in 48 hours.
+
+	            <p>
+		            Vero handleless rail system needs a highly-skilled designer and highly technical skills for installation. To save our valuable clients from getting into any
+		            installation or design-related problems, we only offer <b>{{ kitchen_view }}</b> when you acquire installation services from us as well. Contact us by filling the below form and our team will get in touch with you in 48 hours.
                 </p>
-            <p class="text-center"><b>Please fill the below details and our representative will get in touch with you in
-24 hours.</b></p>
+            <p class="text-center"><b>Please fill the below details and our representative will get in touch with you in 24 hours.</b></p>
             <div class="d-flex justify-content-between" id="display_b">
 	            <div class="w-50 align-self-start   " id="search_in">
             <label for="" class="d-block ">
@@ -378,9 +368,7 @@ Policy
             {% endif %}
     {% endif %}
     </div>
-		        {% endifequal %}
 
-	{% endfor %}
     <div id="cart" style="
     transition: all 0.3s ease-in-out;display: block;position: fixed;left: 45%;bottom: -8%;
     background-color: forestgreen;border-radius: 8px"

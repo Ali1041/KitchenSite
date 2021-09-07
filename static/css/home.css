@@ -128,7 +128,16 @@ h1{
     display: block;
     position: sticky;top: 0;z-index: 2
 }
-
+.btn-theme{
+    background-color: rgb(46, 154, 135);
+    color: #fff;
+    border-color: rgb(46, 154, 135);
+}
+.btn-theme:hover{
+    background-color: rgb(70, 162, 155);
+    color: #fff;
+    border-color: rgb(46, 154, 135);
+}
 @media only screen and (min-width: 100px) and (max-width: 768px){
     body{
         /*font-size: 1.5rem;*/

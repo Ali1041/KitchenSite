@@ -8,9 +8,9 @@ from django.contrib.auth import authenticate, login as log
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
 from django.core.serializers import serialize
-from django.db.models import Q
+from django.db.models import Q,F
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.html import strip_tags
@@ -192,21 +192,24 @@ class KitchenView(generic.ListView):
         ctx = super(KitchenView, self).get_context_data(*args, **kwargs)
 
         # actual functionality
-        color = self.kwargs['color']
+        ctx['current_color'] = self.kwargs['color']
         if len(self.kwargs['color'].split("'")) > 1:
-            color = self.kwargs['color'].split("'")[1]
+            ctx['current_color'] = self.kwargs['color'].split("'")[1]
         ctx['kitchen_view'] = KitchenCategory.objects.get(name__iexact=self.kwargs['name'])
         ctx['search'] = UnitType.objects.all()
 
         if 'vero' in str(ctx['kitchen_view'].name):
             ctx['form'] = 'form'
+
+        # getting all colors related to that kitchen
         all_colors = Kitchen.objects.select_related('kitchen_type').filter(
             kitchen_type=ctx['kitchen_view'], available=True)
         ctx['kitchen_color'] = all_colors.values('color').annotate(count=Count('color')).order_by()
-        ctx['current_color'] = color
-        ctx['current_kitchen'] = Kitchen.objects.select_related('kitchen_type').filter(
-            kitchen_type=ctx['kitchen_view'], color=color, available=True
-        )
+        # ctx['current_kitchen'] = Kitchen.objects.select_related('kitchen_type').filter(
+        #     kitchen_type=ctx['kitchen_view'], color=ctx['current_color'], available=True
+        # )
+        ctx['item'] = get_object_or_404(Kitchen, kitchen_type=ctx['kitchen_view'],color=ctx['current_color'],
+                                                   available=True)
 
         return ctx
 

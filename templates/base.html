@@ -390,8 +390,8 @@
                             <div class="p-3">
                                 <h4 class="card-title m-0">{{ item.title }}</h4>
 
-                                <p class="m-0">{{ item.text|safe|truncatechars_html:20 }}</p>
-                                <a href="{% url 'application:blog-detail' item.slug item.pk %}">Read here</a>
+                                <p class="m-0">{{ item.text|safe|truncatechars_html:50 }}</p>
+                                <a class="btn btn-theme" href="{% url 'application:blog-detail' item.slug item.pk %}">Read here</a>
                             </div>
                         </div>
                     </div>
