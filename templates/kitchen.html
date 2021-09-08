@@ -55,39 +55,30 @@
         </div>
         {% if not form %}
         <div >
-
-
             <div class="text-center p-3">
                 <a href="{% url 'application:contact' %}" class="btn btn-success" >Order a free sample</a>
             </div>
 
 {#	Units search		#}
-            <div class="mx-auto p-3" id="search_in" style="width: 30%">
-                    <div class="btn-group border p-2 " style="width: 100%;border-radius: 6px">
-                        <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;height: 30px;width: 30px;background-color: var(--{{ current_color }})">
-                        </p>
-            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               class=" a_btn dropdown-toggle" id="select">(Selected Color) {{ current_color }}</a>
+	        <div class="mx-auto p-3" id="search_in" style="width: 30%">
+	            <div class="btn-group border p-2 " style="width: 100%;border-radius: 6px">
 
+		            <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;height: 30px;width: 30px;background-color: var(--{{ current_color }})">
+		            </p>
+		            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
+		               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class=" a_btn dropdown-toggle" id="select">(Selected Color) {{ current_color }}</a>
 
-          <div class="dropdown-menu p-0 w-100">
-              {% for item in kitchen_color %}
-                    <div class="dropdown-item a_btn d-flex" onclick="change_url(`{{ item.color }}`,`{{ kitchen_view.name }}`)" style="cursor:pointer">
-                    <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;display: inline-block;height: 30px;width: 30px;background-color: var(--{{ item.color }})">
-                        </p>
-                        <h6 class="align-self-center">
-                      {{ item.color }}</h6>
-                    </div>
+		            <div class="dropdown-menu p-0 w-100">
+			            {% for item in kitchen_color %}
+				            <div class="dropdown-item a_btn d-flex" onclick="change_url(`{{ item.color }}`,`{{ kitchen_view.name }}`)" style="cursor:pointer">
+			          <p class="align-self-center m-0 mr-2" style="border: 1px solid lightgrey;display: inline-block;height: 30px;width: 30px;background-color: var(--{{ item.color }})"></p>
+                        <h6 class="align-self-center">{{ item.color }}</h6>
+		          </div>
+			            {% endfor %}
+		            </div>
 
-
-
-              {% endfor %}
-          </div>
-                    </div>
-
-            </div>
-
+	            </div>
+	        </div>
         </div>
             {% else %}
 {#	  Mobile dropdown colors      #}
@@ -95,79 +86,29 @@
                     <div class="btn-group border p-2 my-2" style="width: 100%;border-radius: 6px">
                         <p class="align-self-center m-0 mr-2" style="height: 20px;width: 20px;background-color: var(--{{ current_color }})">
                         </p>
-            <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               class=" a_btn dropdown-toggle" id="select">(Selected Color) {{ current_color }}</a>
+
+	                    <a style="font-weight: 600;text-decoration: none;cursor:pointer;color:inherit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class=" a_btn dropdown-toggle" id="select">(Selected Color) {{ current_color }}</a>
 
 	                    <div class="dropdown-menu p-0 w-100">
-			              {% for item in kitchen_color %}
+		                    {% for item in kitchen_color %}
 			                    <div class="dropdown-item dropHover a_btn d-flex" onclick="change_url(`{{ item.color }}`)" style="cursor:pointer">
-			                    <p class="align-self-center m-0 mr-2" style="display: inline-block;height: 20px;width: 20px;background-color: var(--{{ item.color }})">
+				                    <p class="align-self-center m-0 mr-2" style="display: inline-block;height: 20px;width: 20px;background-color: var(--{{ item.color }})">
 			                        </p>
-			                        <span class="">
-			                      {{ item.color }}</span>
+			                        <span class="">{{ item.color }}</span>
 			                    </div>
-
-
-
-			              {% endfor %}
+		                    {% endfor %}
 	                    </div>
                     </div>
             </div>
         {% endif %}
-		{% if item.kitchen_type|stringformat:"s" == 'Oxford' %}
-			<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Oxford.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Cartmel' %}
-			<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Cartmel.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Cambridge' %}
-						<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/cambridge and windsor.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Windsor' %}
-						<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/cambridge and windsor.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Lucent Matt' %}
-						<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Lucente Matt gloss.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+Matt for vero system' %}
-						<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Vero Introduction1.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+Gloss for vero system' %}
-						<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Vero Introduction1.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Lucent Gloss' %}
-						<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Lucente Matt gloss.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Matt Kitchens' %}
-			<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-		{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Gloss Kitchens' %}
-			<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-			{% elif item.kitchen_type|stringformat:"s" == 'Newmarket' %}
-			<div style="width: min-content;margin: auto" class="my-3 newPosition">
-				<video src="{% static 'videos/newmarket video for the kitchen page.mp4' %}" controls muted height="400px" class="video" ></video>
-			</div>
-		{% endif%}
-
+		{% include 'inc/kitchen_video.html' %}
 
         {% if units %}
-        {% if not user.is_authenticated %}
+	        {% if not user.is_authenticated %}
 	        <div class="alert alert-primary text-center p-2 my-1" role="alert">
                 <span style="font-weight: 700">Units starting from £113, Log in to select units, view prices and get access to our latest offers. </span><a class="btn btn-success" href="{% url 'application:login' %}">Login Here or Register Now</a>
             </div>
-        {% endif %}
+	        {% endif %}
 	        <div class="d-flex justify-content-between" id="display_b">
 	        <div style="width:30%" id="search_in" class="align-self-start" >
                 <form  id="filter" class="text-center" action="{% url 'application:kitchen-view' kitchen_view.name current_color   %}" >
@@ -194,187 +135,74 @@
 	        </div>
 
 
-            <div class="container text-center">
-                <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
-            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
-        {% endif %}
+	        <div class="container text-center">
+		        <span class="step-links">
+			        {% if page_obj.has_previous %}
+			            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+			            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+			        {% endif %}
 
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+			        <span class="current">
+				        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+			        </span>
 
-        {% if page_obj.has_next %}
-            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
-            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
-        {% endif %}
-    </span>
-            </div>
-        <table class="table table-striped table-responsive1" >
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th>Price(Including V.A.T)</th>
-                    <th>Qty</th>
-                    <th>Add to cart</th>
-                </tr>
-            </thead>
-            <tbody id="table">
+			        {% if page_obj.has_next %}
+			            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+			            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+			        {% endif %}
+		        </span>
+	        </div>
 
-            {% for item in units %}
-                <tr id="unit">
-                    <td><img class="pointer" src="{{ item.get_photo_url }}" onmouseover="displayImage(event)" onmouseleave="removeImage(event)" loading="lazy" width="70px" height="70px" alt="{{ item.name }}"></td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.unit_type }}</td>
-                    <td>{{ item.description }}</td>
-	                {% if  user.is_authenticated %}
-                    <td>£ {{ item.price }}</td>
-	                {% else %}
-		                <td><a href="{% url 'application:login' %}" style="color: rgb(46, 154, 135)">View Price</a></td>
-	                {% endif %}
-                    <td><input type="number" value="1" class="form-control input" style="width: 60%;" min="1"></td>
-                    <td><a id="url" style="color: rgb(46, 154, 135);cursor: pointer"
-                           onclick="stop(event,'kitchen',`{{ item.kitchen }}`,`{{ item.pk }}`,'create')" ><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
+			{% include 'inc/kitchen_table.html' %}
+	        <div class="container d-flex justify-content-between">
+		        <div>
+			        <span class="step-links">
+				        {% if page_obj.has_previous %}
+					        <a class="btn btn-theme" href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+					        <a class="btn btn-theme" href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+				        {% endif %}
 
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-            <div class="container d-flex justify-content-between">
-            <div>
-                <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a class="btn btn-theme" href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
-            <a class="btn btn-theme" href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
-        {% endif %}
 
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+				        <span class="current">
+					        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+				        </span>
 
-        {% if page_obj.has_next %}
-            <a class="btn btn-theme" href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
-            <a class="btn btn-theme" href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
-        {% endif %}
-    </span>
-            </div>
-            <div>
-	            <a href="{% url 'application:cart' %}" class="btn btn-success">Proceed to cart</a>
-            </div>
-            </div>
+				        {% if page_obj.has_next %}
+				            <a class="btn btn-theme" href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+				            <a class="btn btn-theme" href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+				        {% endif %}
+			        </span>
+		        </div>
+		        <div>
+			        <a href="{% url 'application:cart' %}" class="btn btn-success">Proceed to cart</a>
+		        </div>
+	        </div>
 
-        <div class="d-flex justify-content-around my-3 menu p-2">
-            <a href="{{ current_kitchen.doors_guide }}" class="btn btn-success bottom">Door Guide</a>
-            <a href="{{ current_kitchen.tall_unit_guide }}" class="btn btn-success bottom">Tall Unit Guide</a>
-            <a href="{{ current_kitchen.x_tall_unit_guide }}" class="btn btn-success bottom">Extra Tall Unit Guide</a>
-            <a href="{{ current_kitchen.carcases_tech_guide }}" class="btn btn-success bottom">Carcases Tech Guide</a>
-        </div>
+	        <div class="d-flex justify-content-around my-3 p-2">
+	            <a href="{{ current_kitchen.doors_guide }}" class="btn btn-success bottom">Door Guide</a>
+	            <a href="{{ current_kitchen.tall_unit_guide }}" class="btn btn-success bottom">Tall Unit Guide</a>
+	            <a href="{{ current_kitchen.x_tall_unit_guide }}" class="btn btn-success bottom">Extra Tall Unit Guide</a>
+	            <a href="{{ current_kitchen.carcases_tech_guide }}" class="btn btn-success bottom">Carcases Tech Guide</a>
+	        </div>
         {% else %}
-        <div class="alert alert-primary" role="alert">
-            No units!!
-        </div>
-            {% if form %}
-             <div id="contain">
+	        <div class="alert alert-primary" role="alert">
+		        No units!!
+	        </div>
+	        {% if form %}
+		        <div id="contain">
 
-             </div>
-
-    <div style="width: 80%;margin: auto" class="border p-5 my-3 bg-light" id="search_in">
-        <form action="{% url 'application:installation_contact' %}" class="w-100" method="POST">
-            {% csrf_token %}
-            {% if messages %}
-            {% for msg in messages %}
-            <p class="alert alert-primary" role="alert">{{ msg }}</p>
-            {% endfor %}
+		        </div>
+		        {% include 'inc/kitchen_form.html' %}
+	        {% endif %}
         {% endif %}
-            <h3 class="text-center" style="color: rgb(46, 154, 135)">Order and installation request</h3>
-
-	            <p>
-		            Vero handleless rail system needs a highly-skilled designer and highly technical skills for installation. To save our valuable clients from getting into any
-		            installation or design-related problems, we only offer <b>{{ kitchen_view }}</b> when you acquire installation services from us as well. Contact us by filling the below form and our team will get in touch with you in 48 hours.
-                </p>
-            <p class="text-center"><b>Please fill the below details and our representative will get in touch with you in 24 hours.</b></p>
-            <div class="d-flex justify-content-between" id="display_b">
-	            <div class="w-50 align-self-start   " id="search_in">
-            <label for="" class="d-block ">
-                Name
-                <input placeholder="Name" required type="text" name="name" class="form-control ">
-            </label>
-
-            <label for="" class="d-block">
-                Email Address
-                <input placeholder="Email" required type="email" name="email" class="form-control">
-            </label>
-
-            <label for="" class="d-block">
-                Phone Number
-                <input placeholder="Phone Number" required type="number" name="phone" class="form-control">
-            </label>
-
-            <label for="" class="d-block">
-                Site Address
-                <input placeholder="Site Address" required type="text" name="address" class="form-control">
-            </label>
-		                        <label for="" class="d-block">
-                Anything else you want to tell us?
-                <textarea placeholder="Additional Detail" class="form-control" name="detail"></textarea>
-            </label>
-				</div>
-	            <div class="align-self-start text-left" style="width: 40%;margin: auto" id="search_in">
-            <label for="" class="d-block m-0">
-                Is room ready to measure?<br/>
-                <input type="radio" required name="measure" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" required name="measure" value="False"><span class="ml-2">No</span>
-            </label>
-
-            <label for="" class="d-block m-0">
-                Do you want us to remove the old kitchen?<br/>
-                <input type="radio" required name="old" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" required name="old" value="False"><span class="ml-2">No</span>
-            </label>
-
-            <label for="" class="d-block m-0">
-                Do you require Plastering, Plumbing & Electrics?<br/>
-                <input type="radio" required name="ee" value="True"><span class="ml-2">Yes</span><br/>
-                <input type="radio" required name="ee" value="False"><span class="ml-2">No</span>
-            </label>
-
-            <label for="" class="d-block m-0">
-                What is your budget on the project Including Cabinets, Worktops, Appliances, Accessories and Installation?<br/>
-                <input type="radio" required name="price" value="12,000-"><span class="ml-2">£ 10,000-12,000</span><br/>
-                <input type="radio" required name="price" value="14,000-"><span class="ml-2">£ 12,000-14,000</span><br/>
-                <input type="radio" required name="price" value="16,000-"><span class="ml-2">£ 14,000-16,000</span><br/>
-                <input type="radio" required name="price" value="18,000-"><span class="ml-2">£ 16,000-18,000</span><br/>
-
-                <input type="radio" required name="price" value="20,000+" ><span class="ml-2">£ 20,000+</span>
-            </label>
-				</div>
-			</div>
-
-            <div class="text-center">
-                <button class="btn btn-success ">Submit</button>
-            </div>
-                <div class="text-center">
-	                <small>For further information about how we use your personal data please see our <a href="{% url 'application:GDPR' %}">
-	        GDPR
-Policy
-        </a> and <a href="{% url 'application:terms' %}">Terms &amp; conditions.</a></small>
-                </div>
-        </form>
-    </div>
-            {% endif %}
-    {% endif %}
     </div>
 
-    <div id="cart" style="
+	<div id="cart" style="
     transition: all 0.3s ease-in-out;display: block;position: fixed;left: 45%;bottom: -8%;
     background-color: forestgreen;border-radius: 8px"
          class="text-white p-2">
-        Added to cart!!
-    </div>
+		Added to cart!!
+	</div>
 
 	<div id="fixed" class="bg-white" style="position: fixed;top: 20%;left: 20%;display: none">
 		<p class="m-0 btn btn-danger text-right d-none">x</p>

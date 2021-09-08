@@ -8,13 +8,14 @@ from django.contrib.auth import authenticate, login as log
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
 from django.core.serializers import serialize
-from django.db.models import Q,F
+from django.db.models import Q, F
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.html import strip_tags
 from django.views import generic
+from django.contrib.auth.decorators import login_required
 
 from .filters import *
 from .forms import *
@@ -42,7 +43,7 @@ def signup(request):
         messages.success(request, "You've registered successfully. Please Login to view prices & latest offers.")
         return redirect('application:login')
     ctx = {'form': UserRegistrationForm()}
-    meta_static('signup',ctx)
+    meta_static('signup', ctx)
 
     return render(request, 'signup.html', ctx)
 
@@ -64,7 +65,7 @@ def login(request):
             return redirect('application:login')
 
     ctx = {}
-    meta_static('login',ctx)
+    meta_static('login', ctx)
 
     redirect_to = request.META.get('HTTP_REFERER')
     request.session['redirect'] = redirect_to
@@ -176,7 +177,7 @@ def get_kitchen(request, **kwargs):
         inner_dict['imgs'] = img_list
         ctx['list'].append(inner_dict)
 
-    meta_static('kitchen',ctx)
+    meta_static('kitchen', ctx)
 
     return render(request, 'all_kitchen.html', ctx)
 
@@ -196,29 +197,28 @@ class KitchenView(generic.ListView):
         if len(self.kwargs['color'].split("'")) > 1:
             ctx['current_color'] = self.kwargs['color'].split("'")[1]
         ctx['kitchen_view'] = KitchenCategory.objects.get(name__iexact=self.kwargs['name'])
-        ctx['search'] = UnitType.objects.all()
 
         if 'vero' in str(ctx['kitchen_view'].name):
             ctx['form'] = 'form'
+        else:
+            ctx['search'] = UnitType.objects.all()
 
         # getting all colors related to that kitchen
         all_colors = Kitchen.objects.select_related('kitchen_type').filter(
             kitchen_type=ctx['kitchen_view'], available=True)
         ctx['kitchen_color'] = all_colors.values('color').annotate(count=Count('color')).order_by()
-        # ctx['current_kitchen'] = Kitchen.objects.select_related('kitchen_type').filter(
-        #     kitchen_type=ctx['kitchen_view'], color=ctx['current_color'], available=True
-        # )
-        ctx['item'] = get_object_or_404(Kitchen, kitchen_type=ctx['kitchen_view'],color=ctx['current_color'],
-                                                   available=True)
+
+        ctx['item'] = get_object_or_404(Kitchen, kitchen_type=ctx['kitchen_view'], color=ctx['current_color'],
+                                        available=True)
 
         return ctx
 
     def get_queryset(self):
         kitchen_view = KitchenCategory.objects.get(name__iexact=self.kwargs['name'])
         if len(self.kwargs) == 3:
-            return Units.objects.select_related('kitchen', 'unit_type').filter(pk=self.kwargs['unit'], available=True)
+            return Units.objects.prefetch_related('kitchen', 'unit_type').filter(pk=self.kwargs['unit'], available=True)
         else:
-            units = Units.objects.select_related('kitchen', 'unit_type').filter(kitchen=kitchen_view, available=True)
+            units = Units.objects.prefetch_related('kitchen', 'unit_type').filter(kitchen=kitchen_view, available=True)
             filters = UnitFilter(self.request.GET,
                                  queryset=Units.objects.select_related('kitchen').filter(kitchen=kitchen_view))
             if len(self.request.GET) != 0:
@@ -339,67 +339,54 @@ class AppliancesListView(generic.ListView):
         return ctx
 
 
-def addcart(request, **kwargs):
+def cart_operations(user_cart, kwargs, request, instance):
+    if user_cart:
+        if kwargs['process'] == 'update':
+            user_cart.update(qty=kwargs['qty'])
+        else:
+            user_cart.update(qty=F('qty') + kwargs['qty'])
+    else:
+        if kwargs['product'] == 'worktop':
+            Cart.objects.create(user=request.user, worktop=instance, qty=kwargs['qty'])
+        elif kwargs['product'] == 'appliance':
+            Cart.objects.create(user=request.user, appliances=instance, qty=kwargs['qty'])
+        elif kwargs['product'] == 'accessories':
+            Cart.objects.create(user=request.user, accessories=instance, qty=kwargs['qty'])
+
+
+@login_required(login_url='/login/')
+def add_cart(request, **kwargs):
     if not request.user.is_authenticated:
         return redirect('application:login')
-    if kwargs['process'] == 'create':
+
+    # creating and updating the cart items
+    if kwargs['process'] == 'update' or kwargs['process'] == 'create':
+
+        # worktop cart
         if kwargs['product'] == 'worktop':
             worktop = WorkTop.objects.select_related('category').get(pk=kwargs['pk'])
+            user_cart = Cart.objects.filter(user=request.user, worktop=worktop, checkedout=False)
 
+            # worktop sample
             if kwargs['name'] == 'sample':
-                my_cart = Cart.objects.create(user=request.user, worktop=worktop, qty=1, sample_worktop='Yes')
+                Cart.objects.create(user=request.user, worktop=worktop, qty=1, sample_worktop='Yes')
                 return JsonResponse({'added': 'added'})
-            # worktop cart
-            try:
-                my_cart = Cart.objects.get(user=request.user, worktop=worktop, checkedout=False)
-                x = my_cart.qty
-                my_cart.qty = x + kwargs['qty']
-                my_cart.save()
-            except:
-                my_cart = Cart.objects.create(user=request.user, worktop=worktop, qty=kwargs['qty'])
 
-            return JsonResponse({'add': 'added'})
-            # return redirect(rev)
+            cart_operations(user_cart, kwargs, request, worktop)
+            return JsonResponse({'add': 'Success'})
 
+        # appliances cart
         elif kwargs['product'] == 'appliance':
             appliance = Appliances.objects.select_related('category').get(pk=kwargs['pk'])
-            try:
-                my_cart = Cart.objects.get(user=request.user, appliances=appliance, checkedout=False)
-                x = my_cart.qty
-                my_cart.qty = x + kwargs['qty']
-                my_cart.save()
-            except:
-                # appliance cart
-                my_cart = Cart.objects.create(user=request.user, appliances=appliance, qty=kwargs['qty'])
+            user_cart = Cart.objects.filter(user=request.user, appliances=appliance, checkedout=False)
+            cart_operations(user_cart, kwargs, request, appliance)
             return JsonResponse({'add': 'added'})
 
-            # return redirect('application:worktop-detail-view', kwargs={'pk': appliance.pk})
-
-        elif kwargs['product'] == 'service':
-            service = Services.objects.get_or_create(name='Service')
-            my_cart = Cart.objects.create(user=request.user, service=service[0])
-            return redirect('application:cart')
-
-        elif kwargs['product'] == 'sample':
-            kitchen_cat = KitchenCategory.objects.get(pk=kwargs['pk'])
-            kitchen = Kitchen.objects.filter(kitchen_type=kitchen_cat)
-            # unit = Units.objects.select_related('unit_type').filter(kitchen=kitchen_cat)
-            combine = Combining.objects.create(kitchen=kitchen[0], user=request.user)
-            # combine.units.add(unit[0])
-            my_cart = Cart.objects.create(kitchen_order=combine, user=request.user)
-
-            return redirect('application:cart')
-
+        # accessories cart
         elif kwargs['product'] == 'accessories':
             accessory = Accessories.objects.select_related('accessories_type').get(pk=kwargs['pk'])
-            try:
-                my_cart = Cart.objects.get(user=request.user, accessories=accessory, checkedout=False)
-                x = my_cart.qty
-                my_cart.qty = x + kwargs['qty']
-                my_cart.save()
-            except:
-                # accessories cart
-                my_cart = Cart.objects.create(user=request.user, accessories=accessory, qty=kwargs['qty'])
+            user_cart = Cart.objects.filter(user=request.user, accessories=accessory, checkedout=False)
+            cart_operations(user_cart, kwargs, request, accessory)
             return JsonResponse({'add': 'added'})
 
         else:
@@ -429,31 +416,6 @@ def addcart(request, **kwargs):
                 unit_inter.save()
                 Cart.objects.create(kitchen_order=pre_order, user=request.user)
             return JsonResponse({'added': 'added'})
-
-
-    elif kwargs['process'] == 'update':
-        if kwargs['product'] == 'appliance':
-            appliance = Appliances.objects.select_related('category').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.select_related('user', 'appliances').get(user=request.user, checkedout=False,
-                                                                            appliances=appliance)
-            my_cart.qty = kwargs['qty']
-            my_cart.save()
-            return JsonResponse({'update': 'update'})
-
-        elif kwargs['product'] == 'worktop':
-            worktop = WorkTop.objects.select_related('category').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.select_related('worktop', 'user').get(user=request.user, worktop=worktop,
-                                                                         checkedout=False)
-            my_cart.qty = kwargs['qty']
-            my_cart.save()
-            return JsonResponse({'update': 'update'})
-        elif kwargs['product'] == 'accessories':
-            accessory = Accessories.objects.select_related('accessories_type').get(pk=kwargs['pk'])
-            my_cart = Cart.objects.select_related('accessories', 'user').get(user=request.user, accessories=accessory,
-                                                                             checkedout=False)
-            my_cart.qty = kwargs['qty']
-            my_cart.save()
-            return JsonResponse({'update': 'update'})
 
     elif kwargs['process'] == 'delete':
         if kwargs['product'] == 'worktop':
@@ -532,7 +494,7 @@ def cart(request):
     if price < 300 and price != 0:
         price += 30
 
-    ctx = {'cart': cart, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
+    ctx = {'cart': cart, 'sample': sample_price, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
            'appliances_cart': appliances_cart,
            'total': price, 'feature1': random_queryset()[0],
            'feature2': random_queryset()[1]}
@@ -930,6 +892,7 @@ def cook(request):
     meta_static('cookie', ctx)
 
     return render(request, 'Cookies Policy3 (42).html', ctx)
+
 
 # counting of cart items
 def cart_count(request):

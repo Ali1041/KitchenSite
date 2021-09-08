@@ -1,0 +1,46 @@
+{% load static %}
+		{% if item.kitchen_type|stringformat:"s" == 'Oxford Shaker Kitchens' %}
+			<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Oxford.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Cartmel Shaker Kitchens' %}
+			<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Cartmel.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Cambridge Shaker Kitchens' %}
+						<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/cambridge and windsor.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Windsor Shaker Kitchens' %}
+						<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/cambridge and windsor.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Lucente Handleless Matt kitchens' %}
+						<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Lucente Matt gloss.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+Matt for vero system' %}
+						<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Vero Introduction1.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+Gloss for vero system' %}
+						<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Vero Introduction1.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Lucente Handleless Gloss Kitchens' %}
+						<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Lucente Matt gloss.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Matt Kitchens' %}
+			<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+		{% elif item.kitchen_type|stringformat:"s" == 'Vivo+ Gloss Kitchens' %}
+			<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/Vivo Matt Gloss.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+			{% elif item.kitchen_type|stringformat:"s" == 'Newmarket' %}
+			<div style="width: min-content;margin: auto" class="my-3 newPosition">
+				<video src="{% static 'videos/newmarket video for the kitchen page.mp4' %}" controls muted height="400px" class="video" ></video>
+			</div>
+		{% endif%}

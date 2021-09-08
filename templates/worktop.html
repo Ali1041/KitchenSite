@@ -63,8 +63,8 @@
         <div class="container text-center my-2">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-	            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
-            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+	        <a class="btn btn-theme" href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -72,8 +72,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
-            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>
@@ -82,7 +82,7 @@
         {% for item in list %}
             <div class="border border-rounded d-flex mb-5 block" id="search_in" style="width: 60%;margin: auto">
                 <div style="width: fit-content;" id="contain">
-                    <img src="{{ item.get_photo_url }}" loading="lazy" class="img1" height="245px" width="367px" alt="{{ item }} image">
+                    <img src="{{ item.get_photo_url }}" loading="lazy" class="img1" style="height: 100%" width="367px" alt="{{ item }} image">
                 </div>
 
                 <div class="align-self-center ml-5" id="contain">
@@ -104,8 +104,8 @@
 	                <div class="container text-center my-2">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
-            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+            <a class="btn btn-theme" href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -113,8 +113,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
-            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>
@@ -151,8 +151,8 @@
         <div class="container text-center my-2">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
-            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+            <a class="btn btn-theme" href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -160,8 +160,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
-            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>
@@ -191,8 +191,8 @@
 	                <div class="container text-center my-2">
                 <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
-            <a href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+            <a class="btn btn-theme" href="{% new_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -200,8 +200,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
-            <a href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+            <a class="btn btn-theme" href="{% new_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
         {% endif %}
     </span>
             </div>

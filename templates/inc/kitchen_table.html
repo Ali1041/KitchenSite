@@ -1,0 +1,33 @@
+	        <table class="table table-striped table-responsive1" >
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Price(Including V.A.T)</th>
+                    <th>Qty</th>
+                    <th>Add to cart</th>
+                </tr>
+            </thead>
+            <tbody id="table">
+
+            {% for item in units %}
+                <tr id="unit">
+                    <td><img class="pointer" src="{{ item.get_photo_url }}" onmouseover="displayImage(event)" onmouseleave="removeImage(event)" loading="lazy" width="70px" height="70px" alt="{{ item.name }}"></td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.unit_type }}</td>
+                    <td>{{ item.description }}</td>
+	                {% if  user.is_authenticated %}
+                    <td>£ {{ item.price }}</td>
+	                {% else %}
+		                <td><a href="{% url 'application:login' %}" style="color: rgb(46, 154, 135)">View Price</a></td>
+	                {% endif %}
+                    <td><input type="number" value="1" class="form-control input" style="width: 60%;" min="1"></td>
+                    <td><a id="url" style="color: rgb(46, 154, 135);cursor: pointer"
+                           onclick="stop(event,'kitchen',`{{ item.kitchen }}`,`{{ item.pk }}`,'create')" ><i class="fas fa-cart-plus" style="font-size: large"></i></a></td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>

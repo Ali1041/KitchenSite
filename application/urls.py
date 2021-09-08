@@ -36,7 +36,7 @@ urlpatterns = [
          name='appliances-detail-view'),
 
     # cart
-    path('add-to-cart/<str:product>/<str:name>/<int:pk>/<int:qty>/<str:process>/', addcart, name='add-to-cart'),
+    path('add-to-cart/<str:product>/<str:name>/<int:pk>/<int:qty>/<str:process>/', add_cart, name='add-to-cart'),
     path('cart/', cart, name='cart'),
 
     # misllaneous
