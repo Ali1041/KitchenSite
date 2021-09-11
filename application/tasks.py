@@ -9,8 +9,8 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_emails(subject, html_content, email):
-    return send_all_emails(subject, html_content, email)
+def send_emails(subject, html_content, email, extra=None):
+    return send_all_emails(subject, html_content, email, extra)
 
 
 @shared_task

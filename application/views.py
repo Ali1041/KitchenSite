@@ -444,7 +444,7 @@ def add_cart(request, **kwargs):
 def cart(request):
     if not request.user.is_authenticated:
         return redirect('application:login')
-    cart = Cart.objects.select_related('kitchen_order', 'appliances', 'worktop', 'user').filter(user=request.user,
+    my_cart = Cart.objects.select_related('kitchen_order', 'appliances', 'worktop', 'user').filter(user=request.user,
                                                                                                 checkedout=False)
     price = 0
     worktop_cart = []
@@ -452,7 +452,7 @@ def cart(request):
     accessories_cart = []
     sample_price = 0
 
-    for item in cart:
+    for item in my_cart:
 
         # Price calculation for worktops
         if item.worktop:
@@ -487,7 +487,7 @@ def cart(request):
     if price < 300 and price != 0:
         price += 30
 
-    ctx = {'cart': cart, 'sample': sample_price, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
+    ctx = {'cart': my_cart, 'sample': sample_price, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
            'appliances_cart': appliances_cart,
            'total': price}
     random_qs = random_queryset()
@@ -517,16 +517,17 @@ def contact(request):
             reason=request.POST.getlist('check1')
         )
 
-        html_content = render_to_string('inc/my_contact.html', {'detail': contact_instance})
-        text_content = strip_tags(html_content)
-        email = EmailMultiAlternatives(
-            'Contact form',
-            text_content,
-            'service@tkckitchens.co.uk',
-            ['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk', 'hiphop.ali1041@gmail.com']
-        )
-        email.attach_alternative(html_content, 'text/html')
-        email.send(fail_silently=False)
+        # html_content = render_to_string('inc/my_contact.html', {'detail': contact_instance})
+        # text_content = strip_tags(html_content)
+        # email = EmailMultiAlternatives(
+        #     'Contact form',
+        #     text_content,
+        #     'service@tkckitchens.co.uk',
+        #     ['service@tkckitchens.co.uk', 'kashif@tkckitchens.co.uk', 'hiphop.ali1041@gmail.com']
+        # )
+        # email.attach_alternative(html_content, 'text/html')
+        # email.send(fail_silently=False)
+        send_emails('Contact Form', 'inc/my_contact.html', 'hiphop.ali1041@gmail.com', extra=contact_instance)
         return redirect('application:contact')
     ctx = {
         'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY
@@ -650,13 +651,13 @@ class BlogDetail(generic.DetailView):
     context_object_name = 'detail'
 
 
-def newsletter_subscribe(request):
-    data = json.loads(request.body)
-    already_exist = Newsletter.objects.filter(email=data['email'])
-    if already_exist:
-        return JsonResponse({'added': 'not added'})
-    Newsletter.objects.create(email=data['email'])
-    email_send(data['email'], 'newsletter')
+# def newsletter_subscribe(request):
+#     data = json.loads(request.body)
+#     already_exist = Newsletter.objects.filter(email=data['email'])
+#     if already_exist:
+#         return JsonResponse({'added': 'not added'})
+#     Newsletter.objects.create(email=data['email'])
+#     email_send(data['email'], 'newsletter')
 
 
 def newsletter(request):
@@ -684,7 +685,6 @@ def install_contact(request):
             your_budgets=request.POST['price'],
 
         )
-        email_send(request.POST['email'], 'install')
         html_content = render_to_string('inc/my_install_email.html', {'detail': contact_instance})
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(
@@ -695,6 +695,7 @@ def install_contact(request):
         )
         email.attach_alternative(html_content, 'text/html')
         email.send()
+        send_emails('Installation Service', 'inc/my_install_email.html', 'hiphop.ali1041@gmail.com',contact_instance)
         messages.info(request,
                       'Your form has been submitted. One of our customer care representative will contact you soon!')
         return redirect(request.META.get('HTTP_REFERER'))
@@ -737,6 +738,7 @@ def checkout(request):
                 postcode=data['postcode'],
                 country=data['country'],
             )
+            # form.save(commit=True)
             request.session['user_info_pk'] = info.pk
             return redirect('application:create-order')
     ctx = {'form': form, 'recaptcha_key': settings.RECAPTCHA_PUBLIC_KEY}
@@ -783,8 +785,8 @@ def error_403(request, exception):
 
 # 404 error page
 def error_404(request, exception):
-    # if 'adminPanel' in request.META.get('HTTP_REFERER',None):
-    #     error_403(request, exception)
+    if 'adminPanel' in request.META.get('HTTP_REFERER',None):
+        error_403(request, exception)
 
     return render(request, '403.html')
 
@@ -792,36 +794,6 @@ def error_404(request, exception):
 # 500 error page
 def error_500(request):
     return render(request, '404.html')
-
-
-# todo: async tasks of sending emails pending
-
-
-# sending emails on different actions
-def email_send(email, to):
-    html_content = ''
-    subject = ''
-    if to == 'newsletter':
-        html_content = render_to_string('inc/newsleter.html')
-        subject = 'THANK YOU FOR SUBSCRIBING!'
-    elif to == 'order':
-        html_content = render_to_string('inc/order_email.html')
-        subject = 'Your order is being processed'
-    elif to == 'register':
-        html_content = render_to_string('inc/email.html')
-        subject = 'Thank you for registering with TKC Kitchens'
-    elif to == 'install':
-        html_content = render_to_string('inc/instal_email.html')
-        subject = 'Thank you for Contacting TKC Kitchens'
-    text_content = strip_tags(html_content)
-    email = EmailMultiAlternatives(
-        subject,
-        text_content,
-        None,
-        [email],
-    )
-    email.attach_alternative(html_content, 'text/html')
-    email.send()
 
 
 # Static pages
@@ -892,6 +864,6 @@ def cook(request):
 def cart_count(request):
     if request.user.is_authenticated:
         return JsonResponse(
-            {'Count': Cart.objects.select_related('user').filter(user=request.user, checkedout=False).count()})
+            {'Count': Cart.objects.prefetch_related('user').filter(user=request.user, checkedout=False).count()})
     else:
         return JsonResponse({'Count': 0})

@@ -24,14 +24,6 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'testingtakenornot1@gmail.com'
-EMAIL_HOST_PASSWORD = config('email_password')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 ALLOWED_HOSTS = ['tkc-kitchen.nw.r.appspot.com', '127.0.0.1', 'tkckitchens.co.uk', 'www.tkckitchens.co.uk', ]
 
 # Application definition
@@ -203,5 +195,5 @@ RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')
 RECAPTCHA_REQUIRED_SCORE = 0.85
 
-
 from .celery_settings import *
+from .email_settings import *

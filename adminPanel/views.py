@@ -127,9 +127,10 @@ def addUnits(request, **kwargs):
         if not kwargs:
             form = AddUnitsForm(request.POST or None, request.FILES or None)
             if form.is_valid():
+                data=form.cleaned_data
                 form.save(commit=True)
                 return redirect(
-                    reverse_lazy('adminPanel:units', kwargs={'pk': KitchenCategory.objects.get(name=x['kitchen']).pk}))
+                    reverse_lazy('adminPanel:units', kwargs={'pk': KitchenCategory.objects.get(name=data['kitchen']).pk}))
         else:
             unit = Units.objects.get(pk=kwargs['pk'])
             img = unit.img
