@@ -129,8 +129,9 @@ class AccessoriesDetail(generic.DetailView):
     # Adding the context
     def get_context_data(self, **kwargs):
         ctx = super(AccessoriesDetail, self).get_context_data(**kwargs)
-        ctx['feature1'] = random_queryset()[0]
-        ctx['feature2'] = random_queryset()[1]
+        random_qs = random_queryset()
+        ctx['feature1'] = random_qs[0]
+        ctx['feature2'] = random_qs[1]
         ctx['product'] = 'accessories'
         ctx['review'] = Review.objects.select_related('accessories').filter(accessories_id=self.kwargs['pk'],
                                                                             approval='Approved')
@@ -277,9 +278,9 @@ class WorktopDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super(WorktopDetailView, self).get_context_data(**kwargs)
-
-        ctx['feature1'] = random_queryset()[0]
-        ctx['feature2'] = random_queryset()[1]
+        random_qs = random_queryset()
+        ctx['feature1'] = random_qs[0]
+        ctx['feature2'] = random_qs[1]
         if self.kwargs['name'] == 'worktop':
             ctx['product'] = 'worktop'
             ctx['review'] = Review.objects.select_related('worktop').filter(worktop_id=self.kwargs['pk'],
@@ -488,9 +489,10 @@ def cart(request):
 
     ctx = {'cart': cart, 'sample': sample_price, 'accessories_cart': accessories_cart, 'worktop_cart': worktop_cart,
            'appliances_cart': appliances_cart,
-           'total': price, 'feature1': random_queryset()[0],
-           'feature2': random_queryset()[1]}
-
+           'total': price}
+    random_qs = random_queryset()
+    ctx['feature1'] = random_qs[0]
+    ctx['feature2'] = random_qs[1]
     return render(request, 'cart.html', ctx)
 
 

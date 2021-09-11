@@ -140,10 +140,6 @@
             <a href="{% url 'adminPanel:bulk' %}" class="btn btn-success">Add bulk data</a>
         </div>
 
-	        <div class="text-center my-3">
-	    <a class="btn btn-primary" href="{% url 'adminPanel:all_rooms' %}">See All chat rooms</a>
-    </div>
-
  <div class="text-center my-2 ">
 	    <form action="{% url 'adminPanel:push' %}" class="mx-auto w-50" method="POST">
 		    {% csrf_token %}
