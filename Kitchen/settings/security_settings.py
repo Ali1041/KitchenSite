@@ -1,4 +1,4 @@
-from .__init__ import DEBUG
+from Kitchen.settings.__init__ import DEBUG
 
 if DEBUG:
     SESSION_COOKIE_SECURE = False

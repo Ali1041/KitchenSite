@@ -402,43 +402,9 @@ class ContactActual(models.Model):
         ordering = ['-pk']
 
 
-class MetaInfo(models.Model):
-    home_title = models.CharField(max_length=255)
-    home_name = models.CharField(max_length=255)
-    home_description = models.TextField()
-
-    kitchen_title = models.CharField(max_length=255)
-    kitchen_name = models.CharField(max_length=255)
-    kitchen_description = models.TextField()
-
-    worktop_title = models.CharField(max_length=255)
-    worktop_name = models.CharField(max_length=255)
-    worktop_description = models.TextField()
-
-    appliance_title = models.CharField(max_length=255)
-    appliance_name = models.CharField(max_length=255)
-    appliance_description = models.TextField()
-
-    design_title = models.CharField(max_length=255)
-    design_name = models.CharField(max_length=255)
-    design_description = models.TextField()
-
-    install_title = models.CharField(max_length=255)
-    install_name = models.CharField(max_length=255)
-    install_description = models.TextField()
-
-    contact_title = models.CharField(max_length=255)
-    contact_name = models.CharField(max_length=255)
-    contact_description = models.TextField()
-
-    accessories_title = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
-    accessories_name = models.CharField(max_length=255, default='Accessories', blank=True, null=True)
-    accessories_description = models.TextField(default='Accessories', blank=True, null=True)
-
-
 class MetaStatic(models.Model):
-    title = models.CharField(max_length=255,blank=True)
-    name = models.CharField(max_length=255,blank=True)
+    title = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     unique_id = models.CharField(max_length=100, unique=True, blank=True)
 

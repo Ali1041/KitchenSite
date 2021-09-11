@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from decouple import config
 from .security_settings import *
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Quick-start development settings - unsuitable for production
@@ -31,7 +32,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ALLOWED_HOSTS = ['tkc-kitchen.nw.r.appspot.com', '127.0.0.1', 'tkckitchens.co.uk', 'www.tkckitchens.co.uk',]
+ALLOWED_HOSTS = ['tkc-kitchen.nw.r.appspot.com', '127.0.0.1', 'tkckitchens.co.uk', 'www.tkckitchens.co.uk', ]
 
 # Application definition
 
@@ -51,11 +52,11 @@ INSTALLED_APPS = [
     'bootstrap4',
     'django_filters',
     'ckeditor',
+    'django_celery_beat',
     'openpyxl',
     'ckeditor_uploader',
     'jquery',
     'django_social_share',
-    'google_analytics',
     'corsheaders',
     'webpush',
     'compressor',
@@ -117,15 +118,14 @@ DEBUG = True
 
 if DEBUG == True:
     DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.mysql',
-                'HOST': '127.0.0.1',
-                'USER': 'root',
-                'PASSWORD': config('db_password'),
-                'NAME': 'main',
-            }
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'USER': 'root',
+            'PASSWORD': config('db_password'),
+            'NAME': 'main',
         }
-
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -146,9 +146,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 # web push settings
 WEBPUSH_SETTINGS = {
-   "VAPID_PUBLIC_KEY": config('web_push_public'),
-   "VAPID_PRIVATE_KEY": config('web_push_private'),
-   "VAPID_ADMIN_EMAIL": "admin@example.com"
+    "VAPID_PUBLIC_KEY": config('web_push_public'),
+    "VAPID_PRIVATE_KEY": config('web_push_private'),
+    "VAPID_ADMIN_EMAIL": "admin@example.com"
 }
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -202,3 +202,6 @@ LOGOUT_REDIRECT_URL = 'application:login'
 RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')
 RECAPTCHA_REQUIRED_SCORE = 0.85
+
+
+from .celery_settings import *

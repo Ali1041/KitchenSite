@@ -17,9 +17,10 @@ from django.utils.html import strip_tags
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 
-from .filters import *
-from .forms import *
-from .utils import get_captcha, random_queryset, display_error_messages, meta_static
+from application.filters import *
+from application.forms import *
+from application.utils import get_captcha, random_queryset, display_error_messages, meta_static
+from application.tasks import send_emails
 
 # Create your views here.
 User = get_user_model()
@@ -86,17 +87,8 @@ def index(request):
             email=request.POST['email'],
             detail=request.POST['detail']
         )
-        html_content = render_to_string('inc/brochure_email.html')
-        text_content = strip_tags(html_content)
 
-        email = EmailMultiAlternatives(
-            'YOUR BROCHURE',
-            text_content,
-            None,
-            [request.POST['email']]
-        )
-        email.attach_alternative(html_content, 'text/html')
-        email.send()
+        send_emails.delay('Your Brochure', 'inc/brochure_email.html', request.POST['email'])
         messages.success(request, 'Your brochure has been sent successfully!!')
         return redirect('application:index')
 

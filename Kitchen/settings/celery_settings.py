@@ -1,0 +1,5 @@
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TIMEZONE = 'UTC'
+CELERY_RESULT_PERSISTENT = True
+CELERY_TASK_IGNORE_RESULT = False
+CELERY_RESULT_BACKEND = 'django-db'

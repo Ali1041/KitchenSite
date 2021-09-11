@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from adminPanel.views import token, send_push
+from adminPanel.views import send_push
 from .views import *
 
 app_name = 'application'
@@ -71,7 +71,7 @@ urlpatterns = [
     path('google754a662932836b09.html/', google_verification, name='google-verification'),
 
     # Chat api integrations urls
-    path('token/', token, name='token'),
+    # path('token/', token, name='token'),
     path('send_push/', send_push, name='push'),
 ]
 
